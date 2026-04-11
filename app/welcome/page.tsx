@@ -133,7 +133,7 @@ export default async function WelcomePage({
 
         {/* CTA */}
         <Link
-          href="/shipping-address"
+          href={`/shipping-address?session_id=${session_id}`}
           className="btn-primary-lg block text-center w-full mb-3"
         >
           Next: where should we send your plaque? &rarr;

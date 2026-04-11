@@ -1,6 +1,12 @@
 import ShippingAddressForm from "./ShippingAddressForm";
 
-export default function ShippingAddressPage() {
+export default async function ShippingAddressPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ session_id?: string }>;
+}) {
+  const { session_id } = await searchParams;
+
   return (
     <div
       className="min-h-screen flex items-start justify-center"
@@ -26,7 +32,7 @@ export default function ShippingAddressPage() {
           or directly to your estate attorney or solicitor to hold for safekeeping.
         </p>
 
-        <ShippingAddressForm />
+        <ShippingAddressForm sessionId={session_id} />
       </div>
     </div>
   );

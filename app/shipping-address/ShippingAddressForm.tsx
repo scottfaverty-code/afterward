@@ -17,7 +17,7 @@ interface FormErrors {
   [key: string]: string;
 }
 
-export default function ShippingAddressForm({ isUpdate = false }: { isUpdate?: boolean }) {
+export default function ShippingAddressForm({ isUpdate = false, sessionId }: { isUpdate?: boolean; sessionId?: string }) {
   const router = useRouter();
   const [deliveryType, setDeliveryType] = useState<"home" | "estate_attorney">("home");
   const [fields, setFields] = useState({
@@ -71,10 +71,42 @@ export default function ShippingAddressForm({ isUpdate = false }: { isUpdate?: b
     if (!validate()) return;
     setLoading(true);
 
+    // Pre-auth flow: use API route with session_id
+    if (sessionId) {
+      const res = await fetch("/api/shipping-address", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session_id: sessionId,
+          delivery_type: deliveryType,
+          recipient_name: fields.recipient_name,
+          contact_name: fields.contact_name,
+          address_line_1: fields.address_line_1,
+          address_line_2: fields.address_line_2,
+          city: fields.city,
+          state_province: fields.state_province,
+          postal_code: fields.postal_code,
+          country: fields.country,
+          attorney_note: fields.attorney_note,
+        }),
+      });
+
+      if (!res.ok) {
+        setErrors({ form: "Something went wrong. Please try again." });
+        setLoading(false);
+        return;
+      }
+
+      router.push("/check-your-email");
+      return;
+    }
+
+    // Authenticated flow (update from dashboard)
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
+      setErrors({ form: "You must be logged in to update your address." });
       setLoading(false);
       return;
     }
@@ -100,11 +132,7 @@ export default function ShippingAddressForm({ isUpdate = false }: { isUpdate?: b
       return;
     }
 
-    if (isUpdate) {
-      router.push("/dashboard");
-    } else {
-      router.push("/check-your-email");
-    }
+    router.push("/dashboard");
   }
 
   async function handleSkip() {
