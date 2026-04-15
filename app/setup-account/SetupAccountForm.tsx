@@ -14,39 +14,15 @@ export default function SetupAccountForm({ hasError }: { hasError?: boolean }) {
   const [loading, setLoading] = useState(false);
   const [requestingLink, setRequestingLink] = useState(false);
   const [sessionReady, setSessionReady] = useState(false);
-  const [sessionError, setSessionError] = useState(false);
+  const [sessionChecked, setSessionChecked] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
-
-    // Listen for the PASSWORD_RECOVERY event which fires when
-    // Supabase detects the recovery token in the URL hash
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && session)) {
-        setSessionReady(true);
-      }
-    });
-
-    // Also check if a session already exists (e.g. page reload)
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setSessionReady(true);
+      setSessionReady(!!session);
+      setSessionChecked(true);
     });
-
-    // If no session after 5 seconds, show expired message
-    const timeout = setTimeout(() => {
-      setSessionError(true);
-    }, 5000);
-
-    return () => {
-      subscription.unsubscribe();
-      clearTimeout(timeout);
-    };
   }, []);
-
-  // Clear timeout if session becomes ready
-  useEffect(() => {
-    if (sessionReady) setSessionError(false);
-  }, [sessionReady]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -90,7 +66,7 @@ export default function SetupAccountForm({ hasError }: { hasError?: boolean }) {
     backgroundColor: "#fff",
   };
 
-  if (hasError || sessionError) {
+  if (hasError || (sessionChecked && !sessionReady)) {
     return (
       <div>
         <div
@@ -112,7 +88,7 @@ export default function SetupAccountForm({ hasError }: { hasError?: boolean }) {
     );
   }
 
-  if (!sessionReady) {
+  if (!sessionChecked) {
     return (
       <div className="text-center py-8" style={{ color: "#999", fontSize: "0.95rem" }}>
         Verifying your link...
