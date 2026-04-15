@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -13,6 +13,40 @@ export default function SetupAccountForm({ hasError }: { hasError?: boolean }) {
   const [errors, setErrors] = useState<{ password?: string; confirm?: string; form?: string }>({});
   const [loading, setLoading] = useState(false);
   const [requestingLink, setRequestingLink] = useState(false);
+  const [sessionReady, setSessionReady] = useState(false);
+  const [sessionError, setSessionError] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+
+    // Listen for the PASSWORD_RECOVERY event which fires when
+    // Supabase detects the recovery token in the URL hash
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && session)) {
+        setSessionReady(true);
+      }
+    });
+
+    // Also check if a session already exists (e.g. page reload)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setSessionReady(true);
+    });
+
+    // If no session after 5 seconds, show expired message
+    const timeout = setTimeout(() => {
+      setSessionError(true);
+    }, 5000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  // Clear timeout if session becomes ready
+  useEffect(() => {
+    if (sessionReady) setSessionError(false);
+  }, [sessionReady]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -38,7 +72,9 @@ export default function SetupAccountForm({ hasError }: { hasError?: boolean }) {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (user?.email) {
-      await supabase.auth.resend({ type: "signup", email: user.email });
+      await supabase.auth.resetPasswordForEmail(user.email, {
+        redirectTo: `${window.location.origin}/setup-account`,
+      });
     }
     router.push("/check-your-email");
   }
@@ -54,7 +90,7 @@ export default function SetupAccountForm({ hasError }: { hasError?: boolean }) {
     backgroundColor: "#fff",
   };
 
-  if (hasError) {
+  if (hasError || sessionError) {
     return (
       <div>
         <div
@@ -72,6 +108,14 @@ export default function SetupAccountForm({ hasError }: { hasError?: boolean }) {
         >
           {requestingLink ? "Sending..." : "Request a new link"}
         </button>
+      </div>
+    );
+  }
+
+  if (!sessionReady) {
+    return (
+      <div className="text-center py-8" style={{ color: "#999", fontSize: "0.95rem" }}>
+        Verifying your link...
       </div>
     );
   }
