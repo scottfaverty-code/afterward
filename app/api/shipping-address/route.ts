@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@supabase/supabase-js";
 import { getStripe } from "@/lib/stripe";
 
 export async function POST(req: NextRequest) {
@@ -22,7 +23,7 @@ export async function POST(req: NextRequest) {
 
     const admin = createAdminClient();
 
-    // Find the user by email directly
+    // Find the user by email
     const { data: { users }, error: listError } = await admin.auth.admin.listUsers({ perPage: 1000 });
     if (listError) {
       console.error("List users error:", listError);
@@ -56,18 +57,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Failed to save address" }, { status: 500 });
     }
 
-    // Send account setup email via magic link (triggers Supabase to send email)
-    const { error: emailError } = await admin.auth.admin.generateLink({
-      type: "magiclink",
-      email: customerEmail,
-      options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/setup-account`,
-      },
+    // Confirm the user's email so password reset email can be sent
+    await admin.auth.admin.updateUserById(user.id, { email_confirm: true });
+
+    // Send password setup email using the public client (actually sends the email)
+    const publicClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+
+    const { error: emailError } = await publicClient.auth.resetPasswordForEmail(customerEmail, {
+      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/setup-account`,
     });
 
     if (emailError) {
       console.error("Email send error:", emailError);
-      // Don't fail the whole request — address is saved
     }
 
     return NextResponse.json({ success: true });
