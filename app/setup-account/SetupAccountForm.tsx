@@ -18,10 +18,28 @@ export default function SetupAccountForm({ hasError }: { hasError?: boolean }) {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSessionReady(!!session);
-      setSessionChecked(true);
+
+    // Listen for PASSWORD_RECOVERY — fires when Supabase detects
+    // the #access_token hash in the URL from the recovery email
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && session)) {
+        setSessionReady(true);
+        setSessionChecked(true);
+      }
     });
+
+    // Also check for an existing session (e.g. already logged in)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setSessionReady(true);
+        setSessionChecked(true);
+      } else {
+        // Give the onAuthStateChange handler time to fire from the hash token
+        setTimeout(() => setSessionChecked(true), 3000);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {

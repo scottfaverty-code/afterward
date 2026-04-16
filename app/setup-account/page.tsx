@@ -23,7 +23,7 @@ export default async function SetupAccountPage({
           You&apos;re almost in. Set a password to access your Afterword account.
         </p>
 
-        <SetupAccountForm hasError={!!error} />
+        <SetupAccountForm />
       </div>
     </div>
   );

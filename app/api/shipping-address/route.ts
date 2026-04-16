@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     );
 
     const { error: emailError } = await publicClient.auth.resetPasswordForEmail(customerEmail, {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?next=/setup-account`,
+      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/setup-account`,
     });
 
     if (emailError) {
