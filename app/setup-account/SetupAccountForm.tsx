@@ -19,27 +19,39 @@ export default function SetupAccountForm({ hasError }: { hasError?: boolean }) {
   useEffect(() => {
     const supabase = createClient();
 
-    // Listen for PASSWORD_RECOVERY — fires when Supabase detects
-    // the #access_token hash in the URL from the recovery email
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && session)) {
-        setSessionReady(true);
-        setSessionChecked(true);
-      }
-    });
-
-    // Also check for an existing session (e.g. already logged in)
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    async function initSession() {
+      // First check for an existing session
+      const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         setSessionReady(true);
         setSessionChecked(true);
-      } else {
-        // Give the onAuthStateChange handler time to fire from the hash token
-        setTimeout(() => setSessionChecked(true), 3000);
+        return;
       }
-    });
 
-    return () => subscription.unsubscribe();
+      // Parse hash tokens from the URL (recovery email sends #access_token=...)
+      const hash = window.location.hash;
+      if (hash) {
+        const params = new URLSearchParams(hash.substring(1));
+        const access_token = params.get("access_token");
+        const refresh_token = params.get("refresh_token");
+        const type = params.get("type");
+
+        if (access_token && refresh_token && type === "recovery") {
+          const { data, error } = await supabase.auth.setSession({ access_token, refresh_token });
+          if (data.session && !error) {
+            setSessionReady(true);
+            setSessionChecked(true);
+            // Clean up the hash from the URL
+            window.history.replaceState(null, "", window.location.pathname);
+            return;
+          }
+        }
+      }
+
+      setSessionChecked(true);
+    }
+
+    initSession();
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
