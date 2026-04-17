@@ -3,22 +3,22 @@ import { createClient } from "@/lib/supabase/server";
 import { SECTIONS } from "@/lib/sections";
 import GuestbookForm from "./GuestbookForm";
 
-function sectionIntro(slug: string): string {
+function sectionIntro(slug: string, name: string): string {
   switch (slug) {
     case "your-roots":
-      return "What follows are their recollections about childhood — where they came from, their earliest memories, and the people who shaped them.";
+      return `What follows are ${name}'s recollections about childhood — where they came from, their earliest memories, and the people who shaped them.`;
     case "the-life-you-built":
-      return "This is their account of the life they built — the work they did, the risks they took, the hardest chapters, and the moments they would return to if they could.";
+      return `This is ${name}'s account of the life they built — the work they did, the risks they took, the hardest chapters, and the moments they would return to if they could.`;
     case "the-people-who-matter":
-      return "Here they speak about the people who mattered most — those who loved them, shaped them, and who they most wanted to say something to.";
+      return `Here, ${name} speaks about the people who mattered most — those who loved them, shaped them, and who they most wanted to say something to.`;
     case "what-you-believe":
-      return "What follows is their hard-won wisdom — the things they learned about life, about people, and about what actually matters, that took a lifetime to arrive at.";
+      return `What follows is ${name}'s hard-won wisdom — the things they learned about life, about people, and about what actually matters, that took a lifetime to arrive at.`;
     case "your-proudest-moments":
-      return "These are the moments they were most proud of — not by anyone else's measure, but by their own.";
+      return `These are the moments ${name} was most proud of — not by anyone else's measure, but by their own.`;
     case "how-you-want-to-be-remembered":
-      return "What follows are their words about how they want to be remembered — written directly to the people who will one day read this page.";
+      return `What follows are ${name}'s words about how they want to be remembered — written directly to the people who will one day read this page.`;
     default:
-      return "In their own words.";
+      return `In ${name}'s own words.`;
   }
 }
 
@@ -97,6 +97,7 @@ export default async function MemorialPage({
   const guestbook = (rawGuestbook ?? []) as GuestbookEntry[];
 
   const fullName = [p.first_name, p.last_name].filter(Boolean).join(" ");
+  const firstName = p.first_name ?? fullName ?? "them";
   const initial = p.first_name?.[0]?.toUpperCase() ?? "?";
 
   return (
@@ -154,7 +155,7 @@ export default async function MemorialPage({
               <div key={section.slug} className="mb-14">
                 <div className="mb-5" style={{ borderBottom: "2px solid #D6EAF4", paddingBottom: "14px" }}>
                   <div style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "#2E7DA3", marginBottom: "4px" }}>
-                    Their story
+                    {firstName}&rsquo;s story
                   </div>
                   <h2 className="font-serif" style={{ fontSize: "1.4rem", color: "#1B4F6B" }}>
                     {section.label}
@@ -162,7 +163,7 @@ export default async function MemorialPage({
                 </div>
 
                 <p style={{ fontStyle: "italic", fontSize: "0.9rem", color: "#7A5C1E", lineHeight: "1.7", marginBottom: "28px" }}>
-                  What follows is their letter to the people they love most. These are their own words, written for those closest to them.
+                  What follows is {firstName}&rsquo;s letter to the people they love most. These are their own words, written for those closest to them.
                 </p>
 
                 {/* Paper card */}
@@ -199,7 +200,7 @@ export default async function MemorialPage({
               {/* Section header */}
               <div className="mb-5" style={{ borderBottom: "2px solid #D6EAF4", paddingBottom: "14px" }}>
                 <div style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "#2E7DA3", marginBottom: "4px" }}>
-                  Their story
+                  {firstName}&rsquo;s story
                 </div>
                 <h2 className="font-serif" style={{ fontSize: "1.4rem", color: "#1B4F6B" }}>
                   {section.label}
@@ -218,7 +219,7 @@ export default async function MemorialPage({
                   lineHeight: "1.7",
                 }}
               >
-                {sectionIntro(section.slug)}
+                {sectionIntro(section.slug, firstName)}
               </div>
 
               {/* Answers — no question labels, just prose */}
