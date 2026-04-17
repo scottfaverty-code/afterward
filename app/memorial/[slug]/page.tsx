@@ -3,6 +3,23 @@ import { createClient } from "@/lib/supabase/server";
 import { SECTIONS } from "@/lib/sections";
 import GuestbookForm from "./GuestbookForm";
 
+function sectionIntro(slug: string, firstName: string): string {
+  switch (slug) {
+    case "your-roots":
+      return `What follows are ${firstName}'s recollections about their childhood — where they came from, their earliest memories, and the people who shaped who they were becoming.`;
+    case "the-life-you-built":
+      return `This is ${firstName}'s account of the life they built — the work they did, the risks they took, the hardest chapters, and the moments they'd return to if they could.`;
+    case "the-people-who-matter":
+      return `Here, ${firstName} speaks about the people who mattered most — those who loved them, shaped them, and who they most wanted to say something to.`;
+    case "what-you-believe":
+      return `What follows is ${firstName}'s hard-won wisdom — the things they learned about life, about people, and about what actually matters, that took a lifetime to arrive at.`;
+    case "your-proudest-moments":
+      return `These are the moments ${firstName} was most proud of — not by anyone else's measure, but by their own.`;
+    default:
+      return `In ${firstName}'s own words.`;
+  }
+}
+
 type Profile = {
   id: string;
   first_name: string | null;
@@ -126,28 +143,51 @@ export default async function MemorialPage({
 
           if (sectionAnswers.length === 0) return null;
 
+          const isLetter = section.slug === "a-letter-to-your-family";
+          const isRemembered = section.slug === "how-you-want-to-be-remembered";
+
           return (
-            <div key={section.slug} className="mb-10">
-              <h2
-                className="font-serif mb-5"
-                style={{ fontSize: "1.3rem", color: "#1B4F6B", borderBottom: "2px solid #D6EAF4", paddingBottom: "10px" }}
+            <div key={section.slug} className="mb-14">
+              {/* Section header */}
+              <div className="mb-5" style={{ borderBottom: "2px solid #D6EAF4", paddingBottom: "14px" }}>
+                <div style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "#2E7DA3", marginBottom: "4px" }}>
+                  {p.first_name}&rsquo;s story
+                </div>
+                <h2 className="font-serif" style={{ fontSize: "1.4rem", color: "#1B4F6B" }}>
+                  {section.label}
+                </h2>
+              </div>
+
+              {/* Section intro */}
+              <div
+                className="rounded-lg p-4 mb-6"
+                style={{
+                  backgroundColor: isLetter ? "#FDF3DC" : "#EEF7FC",
+                  borderLeft: `4px solid ${isLetter ? "#C9932A" : "#2E7DA3"}`,
+                  fontStyle: "italic",
+                  fontSize: "0.9rem",
+                  color: isLetter ? "#7A5C1E" : "#1B4F6B",
+                  lineHeight: "1.7",
+                }}
               >
-                {section.label}
-              </h2>
-              <div className="flex flex-col gap-5">
+                {isRemembered
+                  ? `What follows are ${p.first_name}'s words about how they want to be remembered — written directly to the people who will read this page.`
+                  : isLetter
+                  ? `What follows is ${p.first_name}'s letter to the people they love most. These are their own words, written for the people closest to them.`
+                  : sectionIntro(section.slug, p.first_name ?? "they")}
+              </div>
+
+              {/* Answers */}
+              <div className="flex flex-col gap-6">
                 {sectionAnswers.map(({ q, answer }) => (
-                  <div
-                    key={q.id}
-                    className="rounded-xl p-5"
-                    style={{ backgroundColor: "#fff", boxShadow: "0 1px 8px rgba(0,0,0,0.05)", borderLeft: "3px solid #2E7DA3" }}
-                  >
+                  <div key={q.id}>
                     <div
-                      className="font-bold mb-2"
-                      style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.08em", color: "#2E7DA3" }}
+                      className="mb-2"
+                      style={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#999" }}
                     >
-                      {q.text.length > 60 ? q.text.substring(0, 60) + "..." : q.text}
+                      {q.text}
                     </div>
-                    <p style={{ fontSize: "0.95rem", color: "#333", lineHeight: "1.75", whiteSpace: "pre-wrap" }}>
+                    <p style={{ fontSize: "1rem", color: "#1A1A1A", lineHeight: "1.85", whiteSpace: "pre-wrap" }}>
                       {answer}
                     </p>
                   </div>
