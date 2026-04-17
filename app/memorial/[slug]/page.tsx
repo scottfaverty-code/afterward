@@ -3,20 +3,22 @@ import { createClient } from "@/lib/supabase/server";
 import { SECTIONS } from "@/lib/sections";
 import GuestbookForm from "./GuestbookForm";
 
-function sectionIntro(slug: string, firstName: string): string {
+function sectionIntro(slug: string): string {
   switch (slug) {
     case "your-roots":
-      return `What follows are ${firstName}'s recollections about their childhood — where they came from, their earliest memories, and the people who shaped who they were becoming.`;
+      return "What follows are their recollections about childhood — where they came from, their earliest memories, and the people who shaped who they were becoming.";
     case "the-life-you-built":
-      return `This is ${firstName}'s account of the life they built — the work they did, the risks they took, the hardest chapters, and the moments they'd return to if they could.`;
+      return "This is their account of the life they built — the work they did, the risks they took, the hardest chapters, and the moments they would return to if they could.";
     case "the-people-who-matter":
-      return `Here, ${firstName} speaks about the people who mattered most — those who loved them, shaped them, and who they most wanted to say something to.`;
+      return "Here they speak about the people who mattered most — those who loved them, shaped them, and who they most wanted to say something to.";
     case "what-you-believe":
-      return `What follows is ${firstName}'s hard-won wisdom — the things they learned about life, about people, and about what actually matters, that took a lifetime to arrive at.`;
+      return "What follows is their hard-won wisdom — the things they learned about life, about people, and about what actually matters, that took a lifetime to arrive at.";
     case "your-proudest-moments":
-      return `These are the moments ${firstName} was most proud of — not by anyone else's measure, but by their own.`;
+      return "These are the moments they were most proud of — not by anyone else's measure, but by their own.";
+    case "how-you-want-to-be-remembered":
+      return "What follows are their words about how they want to be remembered — written directly to the people who will one day read this page.";
     default:
-      return `In ${firstName}'s own words.`;
+      return "In their own words.";
   }
 }
 
@@ -152,7 +154,7 @@ export default async function MemorialPage({
               <div key={section.slug} className="mb-14">
                 <div className="mb-5" style={{ borderBottom: "2px solid #D6EAF4", paddingBottom: "14px" }}>
                   <div style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "#2E7DA3", marginBottom: "4px" }}>
-                    {p.first_name}&rsquo;s story
+                    Their story
                   </div>
                   <h2 className="font-serif" style={{ fontSize: "1.4rem", color: "#1B4F6B" }}>
                     {section.label}
@@ -160,48 +162,33 @@ export default async function MemorialPage({
                 </div>
 
                 <p style={{ fontStyle: "italic", fontSize: "0.9rem", color: "#7A5C1E", lineHeight: "1.7", marginBottom: "28px" }}>
-                  What follows is {p.first_name}&rsquo;s letter to the people they love most. These are their own words, written for the people closest to them.
+                  What follows is their letter to the people they love most. These are their own words, written for those closest to them.
                 </p>
 
                 {/* Paper card */}
                 <div
                   style={{
-                    backgroundColor: "#FFFEF7",
-                    backgroundImage: "repeating-linear-gradient(transparent, transparent 31px, #e8e0d0 31px, #e8e0d0 32px)",
-                    borderRadius: "4px",
-                    boxShadow: "0 4px 6px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.06), inset 0 0 0 1px rgba(0,0,0,0.04)",
-                    padding: "48px 52px 52px",
-                    position: "relative",
-                    lineHeight: "32px",
+                    backgroundColor: "#ffffff",
+                    borderRadius: "2px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08)",
+                    padding: "56px 60px 64px",
                   }}
                 >
-                  {/* Red margin line */}
-                  <div style={{
-                    position: "absolute",
-                    top: 0,
-                    bottom: 0,
-                    left: "72px",
-                    width: "1px",
-                    backgroundColor: "rgba(220, 100, 100, 0.25)",
-                  }} />
-
-                  <div style={{ paddingLeft: "20px" }}>
-                    {sectionAnswers.map(({ answer }, i) => (
-                      <p
-                        key={i}
-                        style={{
-                          fontFamily: "'Courier New', Courier, monospace",
-                          fontSize: "0.92rem",
-                          color: "#2a2a2a",
-                          lineHeight: "32px",
-                          whiteSpace: "pre-wrap",
-                          marginBottom: i < sectionAnswers.length - 1 ? "32px" : 0,
-                        }}
-                      >
-                        {answer}
-                      </p>
-                    ))}
-                  </div>
+                  {sectionAnswers.map(({ answer }, i) => (
+                    <p
+                      key={i}
+                      style={{
+                        fontFamily: "'Courier New', Courier, monospace",
+                        fontSize: "0.92rem",
+                        color: "#2a2a2a",
+                        lineHeight: "1.9",
+                        whiteSpace: "pre-wrap",
+                        marginBottom: i < sectionAnswers.length - 1 ? "2em" : 0,
+                      }}
+                    >
+                      {answer}
+                    </p>
+                  ))}
                 </div>
               </div>
             );
@@ -212,7 +199,7 @@ export default async function MemorialPage({
               {/* Section header */}
               <div className="mb-5" style={{ borderBottom: "2px solid #D6EAF4", paddingBottom: "14px" }}>
                 <div style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "#2E7DA3", marginBottom: "4px" }}>
-                  {p.first_name}&rsquo;s story
+                  Their story
                 </div>
                 <h2 className="font-serif" style={{ fontSize: "1.4rem", color: "#1B4F6B" }}>
                   {section.label}
@@ -231,25 +218,15 @@ export default async function MemorialPage({
                   lineHeight: "1.7",
                 }}
               >
-                {isRemembered
-                  ? `What follows are ${p.first_name}'s words about how they want to be remembered — written directly to the people who will read this page.`
-                  : sectionIntro(section.slug, p.first_name ?? "they")}
+                {sectionIntro(section.slug)}
               </div>
 
-              {/* Answers */}
+              {/* Answers — no question labels, just prose */}
               <div className="flex flex-col gap-6">
                 {sectionAnswers.map(({ q, answer }) => (
-                  <div key={q.id}>
-                    <div
-                      className="mb-2"
-                      style={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#999" }}
-                    >
-                      {q.text}
-                    </div>
-                    <p style={{ fontSize: "1rem", color: "#1A1A1A", lineHeight: "1.85", whiteSpace: "pre-wrap" }}>
-                      {answer}
-                    </p>
-                  </div>
+                  <p key={q.id} style={{ fontSize: "1rem", color: "#1A1A1A", lineHeight: "1.85", whiteSpace: "pre-wrap" }}>
+                    {answer}
+                  </p>
                 ))}
               </div>
             </div>
