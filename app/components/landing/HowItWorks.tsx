@@ -5,25 +5,21 @@ const steps = [
     num: "1",
     title: "Answer guided questions about your life",
     body: "We give you thoughtful prompts: your childhood, your defining moments, your values, what you want your family to know. Takes 30\u201360 minutes.",
-    image: null,
   },
   {
     num: "2",
     title: "Share your story your way: write, speak, or both",
     body: "Type your answers, record them in your own voice, or use our optional AI writing assistant to help shape your words. Every method preserves what matters: your voice, your story.",
-    image: "/images/pexels-ron-lach-10223571.jpg",
   },
   {
     num: "3",
     title: "Your QR plaque arrives by post",
-    body: "A durable, weather-resistant plaque, ready to affix to a headstone, memorial stone, urn, or any surface that matters to your family.",
-    image: null,
+    body: "A 316 stainless steel plaque, ready to affix to a headstone, memorial stone, urn, or any surface that matters to your family.",
   },
   {
     num: "4",
     title: "Your story lives permanently",
     body: "No renewals. No subscriptions. No risk of a payment lapsing and a page disappearing. It\u2019s there whenever your family needs it, for generations.",
-    image: null,
   },
 ];
 
@@ -52,10 +48,22 @@ export default function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="section-pad"
-      style={{ backgroundColor: "#fff", borderTop: "1px solid #E5E5E5" }}
+      className="section-pad relative overflow-hidden"
+      style={{ borderTop: "1px solid #E5E5E5" }}
     >
-      <div className="container-main">
+      {/* Background image */}
+      <div className="absolute inset-0">
+        <Image
+          src="/images/pexels-ron-lach-10223571.jpg"
+          alt=""
+          fill
+          style={{ objectFit: "cover" }}
+          loading="lazy"
+        />
+        <div className="absolute inset-0" style={{ backgroundColor: "rgba(255,255,255,0.93)" }} />
+      </div>
+
+      <div className="relative container-main">
         <div className="text-center mb-14">
           <h2
             className="font-serif mb-3"
@@ -79,17 +87,6 @@ export default function HowItWorks() {
         >
           {steps.map((step) => (
             <div key={step.num} className="flex flex-col">
-              {step.image && (
-                <Image
-                  src={step.image}
-                  alt="A person writing their story"
-                  width={240}
-                  height={140}
-                  className="rounded-lg mb-4 w-full"
-                  style={{ objectFit: "cover", height: "140px" }}
-                  loading="lazy"
-                />
-              )}
               <div
                 className="flex items-center justify-center rounded-full mb-3 font-bold font-serif"
                 style={{

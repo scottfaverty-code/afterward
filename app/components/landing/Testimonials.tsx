@@ -18,9 +18,9 @@ const testimonials = [
   {
     initial: "D",
     quote:
-      "\u201cMy mother chose cremation. We scattered her ashes at the place she loved most, but I always worried there was nowhere to go, nothing to visit. The QR plaque is on the memorial bench we placed for her. Scan it and she\u2019s right there, in her own words.\u201d",
+      "\u201cMom had included an Afterword QR plaque in her trust documents. She\u2019d set up her whole page herself, planned exactly where it would go. When we scattered her ashes, we placed the plaque right there. Scan it and she\u2019s telling her own story. It was the most her thing she could have done.\u201d",
     name: "David L.",
-    role: "Son, set up Afterword after his mother\u2019s cremation",
+    role: "Son, found his mother\u2019s QR plaque included in her trust",
   },
 ];
 

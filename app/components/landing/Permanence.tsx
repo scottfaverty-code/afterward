@@ -1,15 +1,15 @@
 const pillars = [
   {
     title: "One payment. No renewals.",
-    body: "Your $199.99 covers permanent hosting with no renewal dates, no expiry notices, no annual fees.",
+    body: "Your $199.99 covers hosting with no renewal dates, no expiry notices, no annual fees. We built this to last.",
   },
   {
     title: "Your data, always yours.",
-    body: "You can export everything, every word, every photo, at any time. We\u2019ll never hold your story hostage.",
+    body: "Export everything \u2014 every word, every photo \u2014 at any time. If we ever need to make changes to the service, we\u2019ll give you advance notice and a full data export.",
   },
   {
-    title: "The QR link never breaks.",
-    body: "The URL your QR plaque points to is guaranteed to remain active. If anything ever changes, we redirect it.",
+    title: "The QR link stays active.",
+    body: "The URL your QR plaque points to is designed to remain active. If anything ever changes, we\u2019ll redirect it and notify you well in advance.",
   },
 ];
 
@@ -45,8 +45,8 @@ export default function Permanence() {
         >
           Most digital memorial products are subscriptions. Stop paying, and the page disappears,
           taking every story and photo with it. We built Afterword differently.
-          One payment covers permanent hosting. Not for 10 years.
-          Not until you stop paying. Forever.
+          One payment covers hosting with no renewal dates. If anything ever changes,
+          we&apos;ll give you advance notice and the tools to export everything you&apos;ve written.
         </p>
 
         <div
