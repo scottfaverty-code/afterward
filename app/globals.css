@@ -165,3 +165,71 @@ h1, h2, h3, h4, h5, h6 {
   padding-top: 64px;
   padding-bottom: 64px;
 }
+
+/* Blog prose renderer */
+.prose-afterword {
+  font-size: 1.05rem;
+  color: #333;
+  line-height: 1.85;
+}
+
+.prose-afterword p {
+  margin-bottom: 1.5em;
+}
+
+.prose-afterword h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.4rem;
+  color: #1B4F6B;
+  font-weight: 700;
+  margin-top: 2.5em;
+  margin-bottom: 0.75em;
+  line-height: 1.3;
+}
+
+.prose-afterword h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.15rem;
+  color: #1B4F6B;
+  font-weight: 700;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+}
+
+.prose-afterword em {
+  font-style: italic;
+}
+
+.prose-afterword strong {
+  font-weight: 700;
+  color: #1A1A1A;
+}
+
+.prose-afterword blockquote {
+  border-left: 4px solid #D6EAF4;
+  padding-left: 1.25em;
+  margin-left: 0;
+  color: #555;
+  font-style: italic;
+}
+
+.prose-afterword a {
+  color: #2E7DA3;
+  text-decoration: underline;
+}
+
+.prose-afterword ul {
+  padding-left: 1.5em;
+  margin-bottom: 1.5em;
+  list-style: disc;
+}
+
+.prose-afterword ol {
+  padding-left: 1.5em;
+  margin-bottom: 1.5em;
+  list-style: decimal;
+}
+
+.prose-afterword li {
+  margin-bottom: 0.4em;
+}

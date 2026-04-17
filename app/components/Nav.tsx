@@ -35,6 +35,14 @@ export default function Nav() {
               </a>
             </li>
             <li>
+              <Link
+                href="/blog"
+                className="text-dark hover:text-teal-dark transition-colors text-sm"
+              >
+                Journal
+              </Link>
+            </li>
+            <li>
               <a
                 href="#pricing"
                 className="text-dark hover:text-teal-dark transition-colors text-sm"
