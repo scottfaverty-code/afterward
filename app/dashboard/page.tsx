@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import DashboardHeader from "./DashboardHeader";
 import ProfileNudge from "./ProfileNudge";
+import AfterwordQR from "@/app/components/AfterwordQR";
 
 type Profile = {
   id: string;
@@ -345,6 +346,20 @@ export default async function DashboardPage() {
                   >
                     Update shipping address
                   </Link>
+
+                  {memorialSlug && (
+                    <div className="mt-6 pt-5" style={{ borderTop: "1px solid #EEF7FC" }}>
+                      <p className="mb-4" style={{ fontSize: "0.8rem", color: "#999", textAlign: "center" }}>
+                        This is the QR code that will appear on your plaque
+                      </p>
+                      <div className="flex justify-center">
+                        <AfterwordQR
+                          url={`${process.env.NEXT_PUBLIC_APP_URL}/memorial/${memorialSlug}`}
+                          size={180}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
