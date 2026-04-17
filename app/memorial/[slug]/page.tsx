@@ -6,7 +6,7 @@ import GuestbookForm from "./GuestbookForm";
 function sectionIntro(slug: string): string {
   switch (slug) {
     case "your-roots":
-      return "What follows are their recollections about childhood — where they came from, their earliest memories, and the people who shaped who they were becoming.";
+      return "What follows are their recollections about childhood — where they came from, their earliest memories, and the people who shaped them.";
     case "the-life-you-built":
       return "This is their account of the life they built — the work they did, the risks they took, the hardest chapters, and the moments they would return to if they could.";
     case "the-people-who-matter":
