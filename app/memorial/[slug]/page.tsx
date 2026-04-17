@@ -146,6 +146,67 @@ export default async function MemorialPage({
           const isLetter = section.slug === "a-letter-to-your-family";
           const isRemembered = section.slug === "how-you-want-to-be-remembered";
 
+          // Letter to family: typewriter paper treatment
+          if (isLetter) {
+            return (
+              <div key={section.slug} className="mb-14">
+                <div className="mb-5" style={{ borderBottom: "2px solid #D6EAF4", paddingBottom: "14px" }}>
+                  <div style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "#2E7DA3", marginBottom: "4px" }}>
+                    {p.first_name}&rsquo;s story
+                  </div>
+                  <h2 className="font-serif" style={{ fontSize: "1.4rem", color: "#1B4F6B" }}>
+                    {section.label}
+                  </h2>
+                </div>
+
+                <p style={{ fontStyle: "italic", fontSize: "0.9rem", color: "#7A5C1E", lineHeight: "1.7", marginBottom: "28px" }}>
+                  What follows is {p.first_name}&rsquo;s letter to the people they love most. These are their own words, written for the people closest to them.
+                </p>
+
+                {/* Paper card */}
+                <div
+                  style={{
+                    backgroundColor: "#FFFEF7",
+                    backgroundImage: "repeating-linear-gradient(transparent, transparent 31px, #e8e0d0 31px, #e8e0d0 32px)",
+                    borderRadius: "4px",
+                    boxShadow: "0 4px 6px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.06), inset 0 0 0 1px rgba(0,0,0,0.04)",
+                    padding: "48px 52px 52px",
+                    position: "relative",
+                    lineHeight: "32px",
+                  }}
+                >
+                  {/* Red margin line */}
+                  <div style={{
+                    position: "absolute",
+                    top: 0,
+                    bottom: 0,
+                    left: "72px",
+                    width: "1px",
+                    backgroundColor: "rgba(220, 100, 100, 0.25)",
+                  }} />
+
+                  <div style={{ paddingLeft: "20px" }}>
+                    {sectionAnswers.map(({ answer }, i) => (
+                      <p
+                        key={i}
+                        style={{
+                          fontFamily: "'Courier New', Courier, monospace",
+                          fontSize: "0.92rem",
+                          color: "#2a2a2a",
+                          lineHeight: "32px",
+                          whiteSpace: "pre-wrap",
+                          marginBottom: i < sectionAnswers.length - 1 ? "32px" : 0,
+                        }}
+                      >
+                        {answer}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          }
+
           return (
             <div key={section.slug} className="mb-14">
               {/* Section header */}
@@ -162,18 +223,16 @@ export default async function MemorialPage({
               <div
                 className="rounded-lg p-4 mb-6"
                 style={{
-                  backgroundColor: isLetter ? "#FDF3DC" : "#EEF7FC",
-                  borderLeft: `4px solid ${isLetter ? "#C9932A" : "#2E7DA3"}`,
+                  backgroundColor: isRemembered ? "#EEF7FC" : "#EEF7FC",
+                  borderLeft: "4px solid #2E7DA3",
                   fontStyle: "italic",
                   fontSize: "0.9rem",
-                  color: isLetter ? "#7A5C1E" : "#1B4F6B",
+                  color: "#1B4F6B",
                   lineHeight: "1.7",
                 }}
               >
                 {isRemembered
                   ? `What follows are ${p.first_name}'s words about how they want to be remembered — written directly to the people who will read this page.`
-                  : isLetter
-                  ? `What follows is ${p.first_name}'s letter to the people they love most. These are their own words, written for the people closest to them.`
                   : sectionIntro(section.slug, p.first_name ?? "they")}
               </div>
 
