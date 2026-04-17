@@ -46,18 +46,28 @@ export default async function AdminPage() {
     .select("user_id, id")
     .eq("skipped", false);
 
+  // Fetch auth user data (last login, email confirmed, password set)
+  const { data: authUsersData } = await admin.auth.admin.listUsers({ perPage: 1000 });
+  const authUsers = authUsersData?.users ?? [];
+
   const profileMap = Object.fromEntries((profiles ?? []).map((p) => [p.id, p]));
   const addressMap = Object.fromEntries((shippingAddresses ?? []).map((a) => [a.user_id, a]));
   const answerCountMap: Record<string, number> = {};
   for (const a of answerCounts ?? []) {
     answerCountMap[a.user_id] = (answerCountMap[a.user_id] ?? 0) + 1;
   }
+  const authUserMap = Object.fromEntries(authUsers.map((u) => [u.id, {
+    lastSignIn: u.last_sign_in_at ?? null,
+    emailConfirmed: !!u.email_confirmed_at,
+    hasPassword: u.identities?.some((i) => i.provider === "email") ?? false,
+  }]));
 
   const orders = (purchases ?? []).map((p) => ({
     ...p,
     profile: profileMap[p.user_id ?? ""] ?? null,
     shippingAddress: addressMap[p.user_id ?? ""] ?? null,
     answerCount: answerCountMap[p.user_id ?? ""] ?? 0,
+    auth: authUserMap[p.user_id ?? ""] ?? null,
   }));
 
   // Stats

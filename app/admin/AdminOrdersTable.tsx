@@ -28,6 +28,11 @@ type Order = {
     delivery_type: string | null;
   } | null;
   answerCount: number;
+  auth: {
+    lastSignIn: string | null;
+    emailConfirmed: boolean;
+    hasPassword: boolean;
+  } | null;
 };
 
 const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
@@ -35,6 +40,17 @@ const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
   shipped: { bg: "#EEF7FC", color: "#1B4F6B" },
   delivered: { bg: "#d4edda", color: "#155724" },
 };
+
+function relativeTime(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diff / 60000);
+  const hours = Math.floor(mins / 60);
+  const days = Math.floor(hours / 24);
+  if (days > 0) return `${days}d ago`;
+  if (hours > 0) return `${hours}h ago`;
+  if (mins > 0) return `${mins}m ago`;
+  return "just now";
+}
 
 export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; appUrl: string }) {
   const [updating, setUpdating] = useState<string | null>(null);
@@ -62,7 +78,7 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.82rem" }}>
         <thead>
           <tr style={{ borderBottom: "2px solid #F0F0F0" }}>
-            {["Date", "Customer", "Email", "Address", "Stories", "Page", "Plaque status", "Actions"].map((h) => (
+            {["Date", "Customer", "Email", "Account", "Address", "Stories", "Page", "Plaque status", "Actions"].map((h) => (
               <th
                 key={h}
                 style={{
@@ -88,11 +104,13 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
             const fullName = [order.profile?.first_name, order.profile?.last_name].filter(Boolean).join(" ") || "—";
             const trackingUrl = trackingInputs[order.id] ?? order.plaque_tracking_url ?? "";
 
+            const emailConfirmed = order.auth?.emailConfirmed ?? false;
+            const hasPassword = order.auth?.hasPassword ?? false;
+            const lastSignIn = order.auth?.lastSignIn ?? null;
+            const accountIssue = !emailConfirmed || !hasPassword;
+
             return (
-              <tr
-                key={order.id}
-                style={{ borderBottom: "1px solid #F8F8F8" }}
-              >
+              <tr key={order.id} style={{ borderBottom: "1px solid #F8F8F8" }}>
                 {/* Date */}
                 <td style={{ padding: "14px 16px", color: "#999", whiteSpace: "nowrap" }}>
                   {new Date(order.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
@@ -108,6 +126,52 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
                   <a href={`mailto:${order.email}`} style={{ color: "#1B4F6B" }}>
                     {order.email ?? "—"}
                   </a>
+                  {order.stripe_session_id && (
+                    <div style={{ marginTop: "3px" }}>
+                      <a
+                        href={`https://dashboard.stripe.com/payments/${order.stripe_session_id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ fontSize: "0.7rem", color: "#999" }}
+                      >
+                        Stripe ↗
+                      </a>
+                    </div>
+                  )}
+                </td>
+
+                {/* Account health */}
+                <td style={{ padding: "14px 16px", minWidth: "140px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                    {/* Email confirmed */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                      <span style={{ fontSize: "0.7rem", color: emailConfirmed ? "#155724" : "#C9932A", fontWeight: 600 }}>
+                        {emailConfirmed ? "✓" : "✗"}
+                      </span>
+                      <span style={{ fontSize: "0.72rem", color: "#666" }}>Email confirmed</span>
+                    </div>
+                    {/* Password set */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                      <span style={{ fontSize: "0.7rem", color: hasPassword ? "#155724" : "#C9932A", fontWeight: 600 }}>
+                        {hasPassword ? "✓" : "✗"}
+                      </span>
+                      <span style={{ fontSize: "0.72rem", color: "#666" }}>Password set</span>
+                    </div>
+                    {/* Last login */}
+                    <div style={{ fontSize: "0.7rem", color: "#aaa", marginTop: "2px" }}>
+                      {lastSignIn
+                        ? `Last login: ${relativeTime(lastSignIn)}`
+                        : accountIssue
+                          ? <span style={{ color: "#C9932A", fontWeight: 600 }}>Never logged in</span>
+                          : "Never logged in"}
+                    </div>
+                    {/* Slug missing */}
+                    {!order.profile?.memorial_slug && (
+                      <div style={{ fontSize: "0.7rem", color: "#C9932A", fontWeight: 600 }}>
+                        ⚠ No memorial slug
+                      </div>
+                    )}
+                  </div>
                 </td>
 
                 {/* Address */}
