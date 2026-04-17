@@ -58,10 +58,15 @@ export default async function WelcomePage({
           plaque_status: "pending",
         });
 
-        // Create profile row
+        // Generate a unique memorial slug from email prefix + random suffix
+        const emailPrefix = customerEmail.split("@")[0].toLowerCase().replace(/[^a-z0-9]/g, "");
+        const randomSuffix = Math.random().toString(36).substring(2, 7);
+        const memorialSlug = `${emailPrefix}-${randomSuffix}`;
+
+        // Create profile row with slug
         await admin
           .from("profiles")
-          .upsert({ id: userId }, { onConflict: "id", ignoreDuplicates: true });
+          .upsert({ id: userId, memorial_slug: memorialSlug }, { onConflict: "id", ignoreDuplicates: true });
       }
     }
   } catch {
