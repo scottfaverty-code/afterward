@@ -62,13 +62,22 @@ export default function Nav() {
             </li>
           </ul>
 
-          <a
-            href={href("#pricing")}
-            className="btn-primary text-sm"
-            style={{ padding: "11px 20px" }}
-          >
-            Get Started
-          </a>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/login"
+              className="hidden md:inline-block text-sm"
+              style={{ color: "#666", textDecoration: "none" }}
+            >
+              Log in
+            </Link>
+            <a
+              href={href("#pricing")}
+              className="btn-primary text-sm"
+              style={{ padding: "11px 20px" }}
+            >
+              Get Started
+            </a>
+          </div>
         </div>
       </div>
     </nav>
