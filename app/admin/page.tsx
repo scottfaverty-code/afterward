@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import AdminOrdersTable from "./AdminOrdersTable";
+import SeedDemoButton from "./SeedDemoButton";
 
 export default async function AdminPage() {
   // Auth check — must be logged in as the admin email
@@ -117,6 +118,11 @@ export default async function AdminPage() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Demo tools */}
+        <div style={{ marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
+          <SeedDemoButton appUrl={process.env.NEXT_PUBLIC_APP_URL ?? ""} />
         </div>
 
         {/* Orders table */}
