@@ -6,7 +6,7 @@ export default function WhatYouGet() {
     },
     {
       title: "Physical QR Plaque, Shipped to You",
-      body: "A 316 stainless steel QR plaque — rated for 30–50 years and suitable for coastal climates — that links directly to your Afterword page. Attach it to a headstone, memorial stone, urn, bench, or any surface you choose. Especially meaningful for families who chose cremation.",
+      body: "A 316 stainless steel QR plaque — rated for 30–50 years and suitable for coastal climates — that links directly to your Afterword page. Attach it to a headstone, memorial stone, urn, bench, or most outdoor surfaces. Especially meaningful for families who chose cremation.",
     },
     {
       title: "Permanent Hosting: No Subscription Required",

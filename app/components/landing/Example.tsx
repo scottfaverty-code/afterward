@@ -169,7 +169,7 @@ export default function Example() {
                   target="_blank"
                   style={{ fontSize: "0.82rem", color: "#1B4F6B", fontWeight: 600 }}
                 >
-                  Read {demo.pronoun} full story &rarr;
+                  {`Read ${demo.pronoun} full story →`}
                 </Link>
               </div>
             </div>
