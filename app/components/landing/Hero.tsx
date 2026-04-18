@@ -56,7 +56,7 @@ export default function Hero() {
               Afterword is the only memorial you write yourself, while you still can.
               Your story, your voice, your message to the people you love.
               Permanently hosted. Accessible forever via a QR plaque on your headstone,
-              urn, or any surface you choose.
+              urn, or most outdoor surfaces.
             </p>
 
             <div className="flex flex-col gap-4">

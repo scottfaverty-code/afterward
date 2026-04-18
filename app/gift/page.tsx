@@ -102,7 +102,7 @@ export default function GiftPage() {
                   Afterword is a permanent, self-written memorial page. You give it as a gift.
                   You set it up together. They write their story in their own words, and your family
                   has it forever &mdash; hosted permanently, accessible via a QR plaque on their headstone,
-                  urn, or any surface your family chooses.
+                  urn, or most outdoor surfaces.
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" }}>
                   <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
@@ -412,7 +412,7 @@ export default function GiftPage() {
                 },
                 {
                   title: "Physical QR Plaque, Shipped to You",
-                  body: "A durable, weather-resistant QR plaque that links directly to their Afterword page. Attach it to a headstone, memorial stone, urn, bench, or any surface you choose. Especially meaningful for families who chose cremation.",
+                  body: "A durable, weather-resistant QR plaque that links directly to their Afterword page. Attach it to a headstone, memorial stone, urn, bench, or most outdoor surfaces. Especially meaningful for families who chose cremation.",
                 },
                 {
                   title: "Permanent Hosting: No Subscription Required",
@@ -661,7 +661,7 @@ export default function GiftPage() {
                 {
                   num: "3",
                   title: "Their QR plaque arrives by post",
-                  body: "A durable, weather-resistant plaque that links to their page. Affixes to a headstone, urn, memorial bench, or any surface that matters.",
+                  body: "A durable, weather-resistant plaque that links to their page. Affixes to a headstone, urn, memorial bench, or most outdoor surfaces.",
                 },
                 {
                   num: "4",
@@ -1221,7 +1221,7 @@ export default function GiftPage() {
               <ul style={{ listStyle: "none", marginBottom: "28px" }}>
                 {[
                   ["Permanent hosted memorial page", "written entirely in their own words"],
-                  ["Physical QR plaque", "shipped to your door, weatherproof, attaches to any surface"],
+                  ["Physical QR plaque", "shipped to your door, weatherproof, attaches to most outdoor surfaces"],
                   ["Guided story prompts", "thoughtful questions to draw out the stories that matter"],
                   ["Write, speak, or use AI assistance", "three ways to share their story; they choose"],
                   ["Voice recording", "record answers aloud if typing is difficult or they prefer their natural voice"],

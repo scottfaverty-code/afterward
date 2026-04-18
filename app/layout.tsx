@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Afterword: Write Your Own Story, Before Someone Else Does",
   description:
-    "Afterword is the only memorial you write yourself, while you still can. One purchase. Permanently hosted. Accessible forever via a QR plaque on your headstone, urn, or any surface you choose.",
+    "Afterword is the only memorial you write yourself, while you still can. One purchase. Permanently hosted. Accessible forever via a QR plaque on your headstone, urn, or most outdoor surfaces.",
 };
 
 export default function RootLayout({
