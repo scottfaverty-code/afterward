@@ -1,6 +1,16 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Nav() {
+  const pathname = usePathname();
+  const onHome = pathname === "/";
+
+  function href(anchor: string) {
+    return onHome ? anchor : `/${anchor}`;
+  }
+
   return (
     <nav
       className="sticky top-0 z-50 bg-white"
@@ -20,7 +30,7 @@ export default function Nav() {
           <ul className="hidden md:flex items-center gap-8 list-none">
             <li>
               <a
-                href="#how-it-works"
+                href={href("#how-it-works")}
                 className="text-dark hover:text-teal-dark transition-colors text-sm"
               >
                 How it works
@@ -28,7 +38,7 @@ export default function Nav() {
             </li>
             <li>
               <a
-                href="#example"
+                href={href("#example")}
                 className="text-dark hover:text-teal-dark transition-colors text-sm"
               >
                 See an example
@@ -44,7 +54,7 @@ export default function Nav() {
             </li>
             <li>
               <a
-                href="#pricing"
+                href={href("#pricing")}
                 className="text-dark hover:text-teal-dark transition-colors text-sm"
               >
                 Pricing
@@ -53,7 +63,7 @@ export default function Nav() {
           </ul>
 
           <a
-            href="#pricing"
+            href={href("#pricing")}
             className="btn-primary text-sm"
             style={{ padding: "11px 20px" }}
           >
