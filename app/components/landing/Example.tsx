@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import AfterwordQR from "@/app/components/AfterwordQR";
 
 const pageSections = [
   "Your autobiography, in as much detail as you choose",
@@ -180,7 +181,13 @@ export default function Example() {
                   </div>
                 ))}
 
-                <div style={{ borderTop: "1px solid #E5E5E5", paddingTop: "12px", textAlign: "center" }}>
+                <div style={{ borderTop: "1px solid #E5E5E5", paddingTop: "16px", textAlign: "center" }}>
+                  <div style={{ fontSize: "0.7rem", color: "#999", marginBottom: "10px", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                    Scan to visit Patrick&apos;s page
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
+                    <AfterwordQR url="https://www.myafterword.co/memorial/patrick-william" size={140} />
+                  </div>
                   <Link
                     href="/memorial/patrick-william"
                     target="_blank"
