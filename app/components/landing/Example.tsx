@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const pageSections = [
   "Your autobiography, in as much detail as you choose",
@@ -6,7 +7,6 @@ const pageSections = [
   "Your values and words of wisdom",
   "A personal message to your loved ones",
   "A living guestbook where family can leave memories",
-  "Photos and any other media you choose to share",
 ];
 
 export default function Example() {
@@ -49,18 +49,14 @@ export default function Example() {
             </h2>
 
             <p className="mb-3" style={{ color: "#666", lineHeight: "1.7" }}>
-              Your Afterword page is a complete portrait, not a summary. Every section
-              is written by you, in your words, to be discovered by your family
-              long after you&apos;re gone.
+              Patrick William spent forty years as an educator in Arizona. He wrote his Afterword page himself — his childhood in Indiana, the risks he took, the people he loved, and what he most wanted his grandchildren to know.
             </p>
 
             <p className="mb-6" style={{ color: "#666", lineHeight: "1.7" }}>
-              Scan the QR plaque at the headstone and this is what appears.
-              Eleanor&apos;s page has been visited 847 times since her passing.
-              Her grandchildren visit it on her birthday.
+              Every word on his page is his own. Written while he still could.
             </p>
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 mb-7">
               {pageSections.map((section) => (
                 <div key={section} className="flex items-center gap-3">
                   <div
@@ -80,9 +76,18 @@ export default function Example() {
                 </div>
               ))}
             </div>
+
+            <Link
+              href="/memorial/patrick-william"
+              target="_blank"
+              className="btn-ghost inline-block"
+              style={{ fontSize: "0.9rem", padding: "10px 20px" }}
+            >
+              Read Patrick&apos;s full page &rarr;
+            </Link>
           </div>
 
-          {/* Right: full memorial preview card */}
+          {/* Right: preview card */}
           <div>
             <div
               className="rounded-2xl overflow-hidden"
@@ -101,16 +106,16 @@ export default function Example() {
                   className="avatar-fallback mx-auto mb-2"
                   style={{ width: 64, height: 64, fontSize: "1.5rem" }}
                 >
-                  E
+                  P
                 </div>
                 <div className="font-serif mb-0.5" style={{ fontSize: "1.1rem" }}>
-                  Eleanor Rose Mitchell
+                  Patrick William
                 </div>
                 <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.5)" }}>
-                  March 15, 1942 &ndash; November 3, 2024
+                  1949 &ndash;
                 </div>
                 <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.4)", fontStyle: "italic" }}>
-                  Beloved Mother, Grandmother &amp; Friend
+                  Educator. Father. Husband.
                 </div>
               </div>
 
@@ -118,21 +123,23 @@ export default function Example() {
               <div className="p-5 flex flex-col gap-3">
                 {[
                   {
-                    label: "My Story",
-                    text: "\u201cI want you to know where I came from. I grew up in a small farmhouse in Vermont, where the winters were long but our kitchen was always warm\u2026\u201d",
+                    label: "His Roots",
+                    text: "\u201cWhat I remember most is the space of it \u2014 the open fields, the way corn rows stretched to the horizon in summer, the particular smell of a grain elevator on a hot August day\u2026\u201d",
                   },
                   {
-                    label: "My Proudest Moment",
-                    text: "\u201cWhen Thomas and I started out, we had nothing but love and a secondhand kitchen table. Sixty-two years later, that table hosted thousands of meals\u2026\u201d",
-                  },
-                  {
-                    label: "Words of Wisdom",
-                    text: "\u201cLove freely, forgive quickly, and never go to bed angry.\u201d",
+                    label: "What He Believes",
+                    text: "\u201cThe life is in the ordinary days, not the extraordinary ones. Pay attention to ordinary Tuesdays. That\u2019s where most of your life actually happens.\u201d",
                     italic: true,
                   },
                   {
-                    label: "To My Family",
-                    text: "\u201cYou were my greatest adventure and my deepest joy. Carry our memories forward, but don\u2019t live in them\u2026\u201d",
+                    label: "To His Family",
+                    text: "\u201cYou were never background in my life. You were the whole point of it.\u201d",
+                    italic: true,
+                  },
+                  {
+                    label: "How He Wants to Be Remembered",
+                    text: "\u201cThe thing I most want you to know is that a quiet, ordinary life \u2014 done with care \u2014 can be a life that mattered enormously.\u201d",
+                    italic: true,
                   },
                 ].map((s) => (
                   <div
@@ -167,34 +174,14 @@ export default function Example() {
                   </div>
                 ))}
 
-                {/* Guestbook */}
-                <div style={{ borderTop: "1px solid #E5E5E5", paddingTop: "14px" }}>
-                  <div
-                    className="font-bold mb-2"
-                    style={{
-                      fontSize: "0.68rem",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.08em",
-                      color: "#999",
-                    }}
+                <div style={{ borderTop: "1px solid #E5E5E5", paddingTop: "12px", textAlign: "center" }}>
+                  <Link
+                    href="/memorial/patrick-william"
+                    target="_blank"
+                    style={{ fontSize: "0.82rem", color: "#1B4F6B", fontWeight: 600 }}
                   >
-                    Guestbook: 23 messages
-                  </div>
-                  {[
-                    { author: "Sarah M., Granddaughter", msg: "Reading this in her own words still makes me feel like she\u2019s here." },
-                    { author: "David L., Son", msg: "I didn\u2019t know the Vermont farmhouse story until I read this page." },
-                  ].map((entry) => (
-                    <div
-                      key={entry.author}
-                      className="rounded-lg p-2.5 mb-1.5"
-                      style={{ backgroundColor: "#fafafa", fontSize: "0.8rem", color: "#666" }}
-                    >
-                      <div className="font-semibold mb-0.5" style={{ fontSize: "0.75rem", color: "#333" }}>
-                        {entry.author}
-                      </div>
-                      {entry.msg}
-                    </div>
-                  ))}
+                    Read his full story &rarr;
+                  </Link>
                 </div>
               </div>
             </div>
