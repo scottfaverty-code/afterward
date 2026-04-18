@@ -37,7 +37,7 @@ export default function SeedDemoButton({ appUrl }: { appUrl: string }) {
           opacity: status === "loading" ? 0.6 : 1,
         }}
       >
-        {status === "idle" && "Seed Patrick William demo"}
+        {status === "idle" && "Seed Patrick Williams demo"}
         {status === "loading" && "Seeding…"}
         {status === "done" && "✓ Demo seeded"}
         {status === "error" && "✗ Error — try again"}

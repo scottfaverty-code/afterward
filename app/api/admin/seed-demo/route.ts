@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-// One-time route to seed the Patrick William demo memorial.
+// One-time route to seed the Patrick Williams demo memorial.
 // Protected: only scott.faverty@gmail.com can trigger it.
 // Hit POST /api/admin/seed-demo to run.
 
@@ -233,7 +233,7 @@ export async function POST() {
   await admin.from("profiles").upsert({
     id: userId,
     first_name: "Patrick",
-    last_name: "William",
+    last_name: "Williams",
     avatar_url: `${appUrl}/images/patrick-william.png`,
     memorial_slug: DEMO_SLUG,
     page_is_public: true,

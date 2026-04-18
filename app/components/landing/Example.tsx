@@ -49,7 +49,7 @@ export default function Example() {
             </h2>
 
             <p className="mb-3" style={{ color: "#666", lineHeight: "1.7" }}>
-              Patrick William spent forty years as an educator in Arizona. He wrote his Afterword page himself — his childhood in Indiana, the risks he took, the people he loved, and what he most wanted his grandchildren to know.
+              Patrick Williams spent forty years as an educator in Arizona. He wrote his Afterword page himself — his childhood in Indiana, the risks he took, the people he loved, and what he most wanted his grandchildren to know.
             </p>
 
             <p className="mb-6" style={{ color: "#666", lineHeight: "1.7" }}>
@@ -108,14 +108,14 @@ export default function Example() {
                 >
                   <Image
                     src="/images/patrick-william.png"
-                    alt="Patrick William"
+                    alt="Patrick Williams"
                     width={64}
                     height={64}
                     style={{ objectFit: "cover", objectPosition: "center top", width: "100%", height: "100%" }}
                   />
                 </div>
                 <div className="font-serif mb-0.5" style={{ fontSize: "1.1rem" }}>
-                  Patrick William
+                  Patrick Williams
                 </div>
                 <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.5)" }}>
                   1949 &ndash;
