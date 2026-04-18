@@ -229,10 +229,12 @@ export async function POST() {
   const userId = demoUser.id;
 
   // Upsert profile
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.myafterword.co";
   await admin.from("profiles").upsert({
     id: userId,
     first_name: "Patrick",
     last_name: "William",
+    avatar_url: `${appUrl}/images/patrick-william.png`,
     memorial_slug: DEMO_SLUG,
     page_is_public: true,
     has_seen_dashboard: true,

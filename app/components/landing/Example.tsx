@@ -103,10 +103,16 @@ export default function Example() {
                 style={{ background: "linear-gradient(135deg, #0f2d3d, #1B4F6B)" }}
               >
                 <div
-                  className="avatar-fallback mx-auto mb-2"
-                  style={{ width: 64, height: 64, fontSize: "1.5rem" }}
+                  className="mx-auto mb-2 rounded-full overflow-hidden"
+                  style={{ width: 64, height: 64, border: "2px solid rgba(255,255,255,0.3)" }}
                 >
-                  P
+                  <Image
+                    src="/images/patrick-william.png"
+                    alt="Patrick William"
+                    width={64}
+                    height={64}
+                    style={{ objectFit: "cover", objectPosition: "center top", width: "100%", height: "100%" }}
+                  />
                 </div>
                 <div className="font-serif mb-0.5" style={{ fontSize: "1.1rem" }}>
                   Patrick William
