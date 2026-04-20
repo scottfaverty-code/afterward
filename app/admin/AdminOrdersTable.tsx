@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import JSZip from "jszip";
 
 type Order = {
   id: string;
@@ -52,10 +53,106 @@ function relativeTime(iso: string): string {
   return "just now";
 }
 
+function slugLabel(order: Order): string {
+  const name = [order.profile?.first_name, order.profile?.last_name].filter(Boolean).join(" ");
+  return name || order.profile?.memorial_slug || order.id;
+}
+
+/** Fetch a single EPS file as text */
+async function fetchEPS(slug: string, name: string): Promise<string> {
+  const params = new URLSearchParams({ slug, name });
+  const res = await fetch(`/api/admin/qr-eps?${params}`);
+  if (!res.ok) throw new Error(`Failed to generate EPS for ${slug}: ${res.status}`);
+  return res.text();
+}
+
+/** Trigger a browser download for a text blob */
+function downloadText(content: string, filename: string) {
+  const blob = new Blob([content], { type: "application/postscript" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; appUrl: string }) {
   const [updating, setUpdating] = useState<string | null>(null);
   const [trackingInputs, setTrackingInputs] = useState<Record<string, string>>({});
   const [localStatuses, setLocalStatuses] = useState<Record<string, string>>({});
+
+  // QR download state
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [downloading, setDownloading] = useState<string | null>(null); // orderId or "bulk"
+  const [bulkProgress, setBulkProgress] = useState<string | null>(null);
+
+  // Orders that have a memorial slug (can generate QR)
+  const downloadableOrders = orders.filter((o) => o.profile?.memorial_slug);
+
+  const allSelected =
+    downloadableOrders.length > 0 &&
+    downloadableOrders.every((o) => selected.has(o.id));
+
+  function toggleAll() {
+    if (allSelected) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(downloadableOrders.map((o) => o.id)));
+    }
+  }
+
+  function toggleOne(orderId: string) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(orderId)) next.delete(orderId);
+      else next.add(orderId);
+      return next;
+    });
+  }
+
+  async function downloadSingle(order: Order) {
+    if (!order.profile?.memorial_slug) return;
+    setDownloading(order.id);
+    try {
+      const eps = await fetchEPS(order.profile.memorial_slug, slugLabel(order));
+      downloadText(eps, `afterword-qr-${order.profile.memorial_slug}.eps`);
+    } catch (e) {
+      alert(`Download failed: ${(e as Error).message}`);
+    } finally {
+      setDownloading(null);
+    }
+  }
+
+  async function downloadBulk(targetOrders: Order[]) {
+    const valid = targetOrders.filter((o) => o.profile?.memorial_slug);
+    if (valid.length === 0) return;
+
+    setDownloading("bulk");
+    setBulkProgress(`0 / ${valid.length}`);
+
+    try {
+      const zip = new JSZip();
+      for (let i = 0; i < valid.length; i++) {
+        const order = valid[i];
+        setBulkProgress(`${i + 1} / ${valid.length} — ${slugLabel(order)}`);
+        const eps = await fetchEPS(order.profile!.memorial_slug!, slugLabel(order));
+        zip.file(`afterword-qr-${order.profile!.memorial_slug}.eps`, eps);
+      }
+      const blob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `afterword-qr-codes-${new Date().toISOString().slice(0, 10)}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      alert(`Bulk download failed: ${(e as Error).message}`);
+    } finally {
+      setDownloading(null);
+      setBulkProgress(null);
+    }
+  }
 
   async function updateStatus(orderId: string, status: string, trackingUrl?: string) {
     setUpdating(orderId);
@@ -73,250 +170,385 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
     }
   }
 
+  const selectedOrders = orders.filter((o) => selected.has(o.id));
+
   return (
-    <div style={{ overflowX: "auto" }}>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.82rem" }}>
-        <thead>
-          <tr style={{ borderBottom: "2px solid #F0F0F0" }}>
-            {["Date", "Customer", "Email", "Account", "Address", "Stories", "Page", "Plaque status", "Actions"].map((h) => (
-              <th
-                key={h}
-                style={{
-                  padding: "12px 16px",
-                  textAlign: "left",
-                  fontSize: "0.72rem",
-                  fontWeight: 700,
-                  color: "#999",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {h}
+    <div>
+      {/* QR Bulk Toolbar */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          padding: "12px 16px",
+          backgroundColor: "#F9F9F9",
+          borderBottom: "1px solid #F0F0F0",
+          flexWrap: "wrap",
+        }}
+      >
+        <span style={{ fontSize: "0.78rem", color: "#666", fontWeight: 600 }}>
+          QR EPS Downloads
+        </span>
+
+        <button
+          onClick={() => downloadBulk(downloadableOrders)}
+          disabled={downloading !== null || downloadableOrders.length === 0}
+          style={{
+            padding: "5px 14px",
+            fontSize: "0.75rem",
+            fontWeight: 600,
+            borderRadius: "6px",
+            border: "1px solid #1B4F6B",
+            backgroundColor: "#1B4F6B",
+            color: "#fff",
+            cursor: downloading !== null || downloadableOrders.length === 0 ? "default" : "pointer",
+            opacity: downloading !== null || downloadableOrders.length === 0 ? 0.5 : 1,
+          }}
+        >
+          Download All ({downloadableOrders.length}) as ZIP
+        </button>
+
+        {selected.size > 0 && (
+          <button
+            onClick={() => downloadBulk(selectedOrders)}
+            disabled={downloading !== null}
+            style={{
+              padding: "5px 14px",
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              borderRadius: "6px",
+              border: "1px solid #2E7DA3",
+              backgroundColor: "#2E7DA3",
+              color: "#fff",
+              cursor: downloading !== null ? "default" : "pointer",
+              opacity: downloading !== null ? 0.5 : 1,
+            }}
+          >
+            Download Selected ({selected.size}) as ZIP
+          </button>
+        )}
+
+        {downloading === "bulk" && bulkProgress && (
+          <span style={{ fontSize: "0.75rem", color: "#1B4F6B", fontStyle: "italic" }}>
+            Generating… {bulkProgress}
+          </span>
+        )}
+
+        {selected.size > 0 && (
+          <button
+            onClick={() => setSelected(new Set())}
+            style={{
+              padding: "4px 10px",
+              fontSize: "0.72rem",
+              borderRadius: "6px",
+              border: "1px solid #E0E0E0",
+              backgroundColor: "#fff",
+              color: "#999",
+              cursor: "pointer",
+            }}
+          >
+            Clear selection
+          </button>
+        )}
+      </div>
+
+      {/* Table */}
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.82rem" }}>
+          <thead>
+            <tr style={{ borderBottom: "2px solid #F0F0F0" }}>
+              {/* Select-all checkbox */}
+              <th style={{ padding: "12px 12px 12px 16px", width: "32px" }}>
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={toggleAll}
+                  title="Select all"
+                  style={{ cursor: "pointer" }}
+                />
               </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order) => {
-            const status = localStatuses[order.id] ?? order.plaque_status;
-            const statusStyle = STATUS_COLORS[status] ?? STATUS_COLORS.pending;
-            const fullName = [order.profile?.first_name, order.profile?.last_name].filter(Boolean).join(" ") || "—";
-            const trackingUrl = trackingInputs[order.id] ?? order.plaque_tracking_url ?? "";
+              {["Date", "Customer", "Email", "Account", "Address", "Stories", "Page", "Plaque status", "Actions"].map((h) => (
+                <th
+                  key={h}
+                  style={{
+                    padding: "12px 16px",
+                    textAlign: "left",
+                    fontSize: "0.72rem",
+                    fontWeight: 700,
+                    color: "#999",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {orders.map((order) => {
+              const status = localStatuses[order.id] ?? order.plaque_status;
+              const statusStyle = STATUS_COLORS[status] ?? STATUS_COLORS.pending;
+              const fullName = [order.profile?.first_name, order.profile?.last_name].filter(Boolean).join(" ") || "—";
+              const trackingUrl = trackingInputs[order.id] ?? order.plaque_tracking_url ?? "";
+              const hasSlug = !!order.profile?.memorial_slug;
 
-            const emailConfirmed = order.auth?.emailConfirmed ?? false;
-            const hasPassword = order.auth?.hasPassword ?? false;
-            const lastSignIn = order.auth?.lastSignIn ?? null;
-            const accountIssue = !emailConfirmed || !hasPassword;
+              const emailConfirmed = order.auth?.emailConfirmed ?? false;
+              const hasPassword = order.auth?.hasPassword ?? false;
+              const lastSignIn = order.auth?.lastSignIn ?? null;
+              const accountIssue = !emailConfirmed || !hasPassword;
 
-            return (
-              <tr key={order.id} style={{ borderBottom: "1px solid #F8F8F8" }}>
-                {/* Date */}
-                <td style={{ padding: "14px 16px", color: "#999", whiteSpace: "nowrap" }}>
-                  {new Date(order.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                </td>
+              const isDownloading = downloading === order.id;
 
-                {/* Customer */}
-                <td style={{ padding: "14px 16px", fontWeight: 600, color: "#1A1A1A", whiteSpace: "nowrap" }}>
-                  {fullName}
-                </td>
+              return (
+                <tr
+                  key={order.id}
+                  style={{
+                    borderBottom: "1px solid #F8F8F8",
+                    backgroundColor: selected.has(order.id) ? "#F0F7FF" : "transparent",
+                  }}
+                >
+                  {/* Checkbox */}
+                  <td style={{ padding: "14px 12px 14px 16px" }}>
+                    {hasSlug ? (
+                      <input
+                        type="checkbox"
+                        checked={selected.has(order.id)}
+                        onChange={() => toggleOne(order.id)}
+                        style={{ cursor: "pointer" }}
+                      />
+                    ) : (
+                      <span title="No memorial slug — cannot generate QR" style={{ color: "#ddd", fontSize: "0.75rem" }}>—</span>
+                    )}
+                  </td>
 
-                {/* Email */}
-                <td style={{ padding: "14px 16px", color: "#555" }}>
-                  <a href={`mailto:${order.email}`} style={{ color: "#1B4F6B" }}>
-                    {order.email ?? "—"}
-                  </a>
-                  {order.stripe_session_id && (
-                    <div style={{ marginTop: "3px" }}>
-                      <a
-                        href={`https://dashboard.stripe.com/payments/${order.stripe_session_id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ fontSize: "0.7rem", color: "#999" }}
-                      >
-                        Stripe ↗
-                      </a>
-                    </div>
-                  )}
-                </td>
+                  {/* Date */}
+                  <td style={{ padding: "14px 16px", color: "#999", whiteSpace: "nowrap" }}>
+                    {new Date(order.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  </td>
 
-                {/* Account health */}
-                <td style={{ padding: "14px 16px", minWidth: "140px" }}>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                    {/* Email confirmed */}
-                    <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                      <span style={{ fontSize: "0.7rem", color: emailConfirmed ? "#155724" : "#C9932A", fontWeight: 600 }}>
-                        {emailConfirmed ? "✓" : "✗"}
-                      </span>
-                      <span style={{ fontSize: "0.72rem", color: "#666" }}>Email confirmed</span>
-                    </div>
-                    {/* Password set */}
-                    <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                      <span style={{ fontSize: "0.7rem", color: hasPassword ? "#155724" : "#C9932A", fontWeight: 600 }}>
-                        {hasPassword ? "✓" : "✗"}
-                      </span>
-                      <span style={{ fontSize: "0.72rem", color: "#666" }}>Password set</span>
-                    </div>
-                    {/* Last login */}
-                    <div style={{ fontSize: "0.7rem", color: "#aaa", marginTop: "2px" }}>
-                      {lastSignIn
-                        ? `Last login: ${relativeTime(lastSignIn)}`
-                        : accountIssue
-                          ? <span style={{ color: "#C9932A", fontWeight: 600 }}>Never logged in</span>
-                          : "Never logged in"}
-                    </div>
-                    {/* Slug missing */}
-                    {!order.profile?.memorial_slug && (
-                      <div style={{ fontSize: "0.7rem", color: "#C9932A", fontWeight: 600 }}>
-                        ⚠ No memorial slug
+                  {/* Customer */}
+                  <td style={{ padding: "14px 16px", fontWeight: 600, color: "#1A1A1A", whiteSpace: "nowrap" }}>
+                    {fullName}
+                  </td>
+
+                  {/* Email */}
+                  <td style={{ padding: "14px 16px", color: "#555" }}>
+                    <a href={`mailto:${order.email}`} style={{ color: "#1B4F6B" }}>
+                      {order.email ?? "—"}
+                    </a>
+                    {order.stripe_session_id && (
+                      <div style={{ marginTop: "3px" }}>
+                        <a
+                          href={`https://dashboard.stripe.com/payments/${order.stripe_session_id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ fontSize: "0.7rem", color: "#999" }}
+                        >
+                          Stripe ↗
+                        </a>
                       </div>
                     )}
-                  </div>
-                </td>
+                  </td>
 
-                {/* Address */}
-                <td style={{ padding: "14px 16px", color: "#555", minWidth: "160px" }}>
-                  {order.shipping_address_deferred || !order.shippingAddress ? (
-                    <span style={{ color: "#C9932A", fontWeight: 600 }}>⚠ Not provided</span>
-                  ) : (
-                    <div>
-                      <div>{order.shippingAddress.recipient_name}</div>
-                      <div style={{ color: "#999", fontSize: "0.75rem" }}>
-                        {order.shippingAddress.city}, {order.shippingAddress.state_province} {order.shippingAddress.postal_code}
+                  {/* Account health */}
+                  <td style={{ padding: "14px 16px", minWidth: "140px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                        <span style={{ fontSize: "0.7rem", color: emailConfirmed ? "#155724" : "#C9932A", fontWeight: 600 }}>
+                          {emailConfirmed ? "✓" : "✗"}
+                        </span>
+                        <span style={{ fontSize: "0.72rem", color: "#666" }}>Email confirmed</span>
                       </div>
-                      <div style={{ color: "#999", fontSize: "0.75rem" }}>{order.shippingAddress.country}</div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                        <span style={{ fontSize: "0.7rem", color: hasPassword ? "#155724" : "#C9932A", fontWeight: 600 }}>
+                          {hasPassword ? "✓" : "✗"}
+                        </span>
+                        <span style={{ fontSize: "0.72rem", color: "#666" }}>Password set</span>
+                      </div>
+                      <div style={{ fontSize: "0.7rem", color: "#aaa", marginTop: "2px" }}>
+                        {lastSignIn
+                          ? `Last login: ${relativeTime(lastSignIn)}`
+                          : accountIssue
+                            ? <span style={{ color: "#C9932A", fontWeight: 600 }}>Never logged in</span>
+                            : "Never logged in"}
+                      </div>
+                      {!order.profile?.memorial_slug && (
+                        <div style={{ fontSize: "0.7rem", color: "#C9932A", fontWeight: 600 }}>
+                          ⚠ No memorial slug
+                        </div>
+                      )}
                     </div>
-                  )}
-                </td>
+                  </td>
 
-                {/* Story answers */}
-                <td style={{ padding: "14px 16px", textAlign: "center" }}>
-                  <span
-                    style={{
-                      display: "inline-block",
-                      borderRadius: "999px",
-                      padding: "2px 10px",
-                      backgroundColor: order.answerCount > 0 ? "#EEF7FC" : "#F5F5F5",
-                      color: order.answerCount > 0 ? "#1B4F6B" : "#999",
-                      fontWeight: 600,
-                      fontSize: "0.78rem",
-                    }}
-                  >
-                    {order.answerCount}
-                  </span>
-                </td>
+                  {/* Address */}
+                  <td style={{ padding: "14px 16px", color: "#555", minWidth: "160px" }}>
+                    {order.shipping_address_deferred || !order.shippingAddress ? (
+                      <span style={{ color: "#C9932A", fontWeight: 600 }}>⚠ Not provided</span>
+                    ) : (
+                      <div>
+                        <div>{order.shippingAddress.recipient_name}</div>
+                        <div style={{ color: "#999", fontSize: "0.75rem" }}>
+                          {order.shippingAddress.city}, {order.shippingAddress.state_province} {order.shippingAddress.postal_code}
+                        </div>
+                        <div style={{ color: "#999", fontSize: "0.75rem" }}>{order.shippingAddress.country}</div>
+                      </div>
+                    )}
+                  </td>
 
-                {/* Memorial page */}
-                <td style={{ padding: "14px 16px" }}>
-                  {order.profile?.memorial_slug ? (
-                    <a
-                      href={`${appUrl}/memorial/${order.profile.memorial_slug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ color: "#1B4F6B", fontSize: "0.78rem" }}
+                  {/* Story answers */}
+                  <td style={{ padding: "14px 16px", textAlign: "center" }}>
+                    <span
+                      style={{
+                        display: "inline-block",
+                        borderRadius: "999px",
+                        padding: "2px 10px",
+                        backgroundColor: order.answerCount > 0 ? "#EEF7FC" : "#F5F5F5",
+                        color: order.answerCount > 0 ? "#1B4F6B" : "#999",
+                        fontWeight: 600,
+                        fontSize: "0.78rem",
+                      }}
                     >
-                      {order.profile.page_is_public ? "Public ↗" : "Private ↗"}
-                    </a>
-                  ) : (
-                    <span style={{ color: "#ccc" }}>—</span>
-                  )}
-                </td>
+                      {order.answerCount}
+                    </span>
+                  </td>
 
-                {/* Plaque status badge */}
-                <td style={{ padding: "14px 16px" }}>
-                  <span
-                    style={{
-                      display: "inline-block",
-                      borderRadius: "999px",
-                      padding: "3px 10px",
-                      backgroundColor: statusStyle.bg,
-                      color: statusStyle.color,
-                      fontWeight: 700,
-                      fontSize: "0.72rem",
-                      textTransform: "capitalize",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {status}
-                  </span>
-                </td>
+                  {/* Memorial page */}
+                  <td style={{ padding: "14px 16px" }}>
+                    {order.profile?.memorial_slug ? (
+                      <a
+                        href={`${appUrl}/memorial/${order.profile.memorial_slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: "#1B4F6B", fontSize: "0.78rem" }}
+                      >
+                        {order.profile.page_is_public ? "Public ↗" : "Private ↗"}
+                      </a>
+                    ) : (
+                      <span style={{ color: "#ccc" }}>—</span>
+                    )}
+                  </td>
 
-                {/* Actions */}
-                <td style={{ padding: "14px 16px", minWidth: "220px" }}>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                    {/* Status buttons */}
-                    <div style={{ display: "flex", gap: "4px" }}>
-                      {["pending", "shipped", "delivered"].map((s) => (
+                  {/* Plaque status badge */}
+                  <td style={{ padding: "14px 16px" }}>
+                    <span
+                      style={{
+                        display: "inline-block",
+                        borderRadius: "999px",
+                        padding: "3px 10px",
+                        backgroundColor: statusStyle.bg,
+                        color: statusStyle.color,
+                        fontWeight: 700,
+                        fontSize: "0.72rem",
+                        textTransform: "capitalize",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {status}
+                    </span>
+                  </td>
+
+                  {/* Actions */}
+                  <td style={{ padding: "14px 16px", minWidth: "220px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                      {/* Status buttons */}
+                      <div style={{ display: "flex", gap: "4px" }}>
+                        {["pending", "shipped", "delivered"].map((s) => (
+                          <button
+                            key={s}
+                            disabled={status === s || updating === order.id}
+                            onClick={() => updateStatus(order.id, s, s === "shipped" ? trackingUrl : undefined)}
+                            style={{
+                              padding: "3px 8px",
+                              fontSize: "0.7rem",
+                              fontWeight: 600,
+                              borderRadius: "4px",
+                              border: "1px solid #E0E0E0",
+                              backgroundColor: status === s ? "#1B4F6B" : "#fff",
+                              color: status === s ? "#fff" : "#555",
+                              cursor: status === s ? "default" : "pointer",
+                              opacity: updating === order.id ? 0.5 : 1,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {s}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Tracking URL input */}
+                      <div style={{ display: "flex", gap: "4px" }}>
+                        <input
+                          type="text"
+                          placeholder="Tracking URL"
+                          value={trackingUrl}
+                          onChange={(e) => setTrackingInputs((prev) => ({ ...prev, [order.id]: e.target.value }))}
+                          style={{
+                            flex: 1,
+                            fontSize: "0.72rem",
+                            padding: "3px 6px",
+                            border: "1px solid #E0E0E0",
+                            borderRadius: "4px",
+                            minWidth: 0,
+                          }}
+                        />
                         <button
-                          key={s}
-                          disabled={status === s || updating === order.id}
-                          onClick={() => updateStatus(order.id, s, s === "shipped" ? trackingUrl : undefined)}
+                          disabled={!trackingInputs[order.id] || updating === order.id}
+                          onClick={() => updateStatus(order.id, status, trackingInputs[order.id])}
                           style={{
                             padding: "3px 8px",
                             fontSize: "0.7rem",
                             fontWeight: 600,
                             borderRadius: "4px",
-                            border: "1px solid #E0E0E0",
-                            backgroundColor: status === s ? "#1B4F6B" : "#fff",
-                            color: status === s ? "#fff" : "#555",
-                            cursor: status === s ? "default" : "pointer",
-                            opacity: updating === order.id ? 0.5 : 1,
-                            textTransform: "capitalize",
+                            border: "1px solid #1B4F6B",
+                            backgroundColor: "#1B4F6B",
+                            color: "#fff",
+                            cursor: "pointer",
+                            whiteSpace: "nowrap",
+                            opacity: !trackingInputs[order.id] || updating === order.id ? 0.4 : 1,
                           }}
                         >
-                          {s}
+                          Save
                         </button>
-                      ))}
-                    </div>
+                      </div>
 
-                    {/* Tracking URL input */}
-                    <div style={{ display: "flex", gap: "4px" }}>
-                      <input
-                        type="text"
-                        placeholder="Tracking URL"
-                        value={trackingUrl}
-                        onChange={(e) => setTrackingInputs((prev) => ({ ...prev, [order.id]: e.target.value }))}
-                        style={{
-                          flex: 1,
-                          fontSize: "0.72rem",
-                          padding: "3px 6px",
-                          border: "1px solid #E0E0E0",
-                          borderRadius: "4px",
-                          minWidth: 0,
-                        }}
-                      />
-                      <button
-                        disabled={!trackingInputs[order.id] || updating === order.id}
-                        onClick={() => updateStatus(order.id, status, trackingInputs[order.id])}
-                        style={{
-                          padding: "3px 8px",
-                          fontSize: "0.7rem",
-                          fontWeight: 600,
-                          borderRadius: "4px",
-                          border: "1px solid #1B4F6B",
-                          backgroundColor: "#1B4F6B",
-                          color: "#fff",
-                          cursor: "pointer",
-                          whiteSpace: "nowrap",
-                          opacity: !trackingInputs[order.id] || updating === order.id ? 0.4 : 1,
-                        }}
-                      >
-                        Save
-                      </button>
+                      {/* QR EPS download */}
+                      {hasSlug && (
+                        <button
+                          onClick={() => downloadSingle(order)}
+                          disabled={isDownloading || downloading === "bulk"}
+                          style={{
+                            padding: "3px 8px",
+                            fontSize: "0.7rem",
+                            fontWeight: 600,
+                            borderRadius: "4px",
+                            border: "1px solid #9B59B6",
+                            backgroundColor: isDownloading ? "#E8D5F5" : "#fff",
+                            color: "#9B59B6",
+                            cursor: isDownloading || downloading === "bulk" ? "default" : "pointer",
+                            opacity: downloading === "bulk" ? 0.5 : 1,
+                            whiteSpace: "nowrap",
+                            textAlign: "left",
+                          }}
+                        >
+                          {isDownloading ? "Generating…" : "⬇ QR (EPS)"}
+                        </button>
+                      )}
                     </div>
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
 
-      {orders.length === 0 && (
-        <div style={{ padding: "48px", textAlign: "center", color: "#999" }}>
-          No orders yet.
-        </div>
-      )}
+        {orders.length === 0 && (
+          <div style={{ padding: "48px", textAlign: "center", color: "#999" }}>
+            No orders yet.
+          </div>
+        )}
+      </div>
     </div>
   );
 }
