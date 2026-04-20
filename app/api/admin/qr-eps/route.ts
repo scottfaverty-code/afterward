@@ -3,6 +3,43 @@ import { isAdmin } from "@/lib/admin-auth";
 import QRCode from "qrcode";
 
 /**
+ * Builds a clean SVG from a QR matrix.
+ * Each module is a <rect> element — fully vector, scales to any size.
+ */
+function buildSVG(url: string, modules: boolean[][], label: string): string {
+  const count = modules.length;
+  const quietZone = 4;
+  const totalModules = count + quietZone * 2;
+  // Use integer viewBox units — 1 unit per module. Scale with width/height attr.
+  const vbSize = totalModules;
+
+  const rects: string[] = [];
+  for (let row = 0; row < count; row++) {
+    for (let col = 0; col < count; col++) {
+      if (modules[row][col]) {
+        const x = col + quietZone;
+        const y = row + quietZone;
+        rects.push(`<rect x="${x}" y="${y}" width="1" height="1"/>`);
+      }
+    }
+  }
+
+  return [
+    `<?xml version="1.0" encoding="UTF-8"?>`,
+    `<!-- Afterword QR Code | ${label} | ${url} -->`,
+    `<svg xmlns="http://www.w3.org/2000/svg"`,
+    `     viewBox="0 0 ${vbSize} ${vbSize}"`,
+    `     width="${vbSize * 4}" height="${vbSize * 4}"`,
+    `     shape-rendering="crispEdges">`,
+    `  <rect width="${vbSize}" height="${vbSize}" fill="white"/>`,
+    `  <g fill="black">`,
+    ...rects.map((r) => `    ${r}`),
+    `  </g>`,
+    `</svg>`,
+  ].join("\n");
+}
+
+/**
  * Builds a clean EPS file from a QR matrix.
  * Each module is rendered as a filled PostScript rectangle.
  * The output is print/engrave-ready at any scale.
@@ -63,6 +100,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const slug = searchParams.get("slug");
   const name = searchParams.get("name") ?? slug ?? "memorial";
+  const format = searchParams.get("format") === "svg" ? "svg" : "eps";
 
   if (!slug) {
     return NextResponse.json({ error: "Missing slug" }, { status: 400 });
@@ -73,26 +111,35 @@ export async function GET(req: NextRequest) {
 
   // Generate QR matrix
   const qr = QRCode.create(url, { errorCorrectionLevel: "H" });
-  const size = qr.modules.size;
+  const moduleCount = qr.modules.size;
   const data = qr.modules.data as Uint8Array;
 
   // Build 2D boolean matrix
   const modules: boolean[][] = [];
-  for (let r = 0; r < size; r++) {
+  for (let r = 0; r < moduleCount; r++) {
     modules[r] = [];
-    for (let c = 0; c < size; c++) {
-      modules[r][c] = data[r * size + c] === 1;
+    for (let c = 0; c < moduleCount; c++) {
+      modules[r][c] = data[r * moduleCount + c] === 1;
     }
   }
 
-  const eps = buildEPS(url, modules, name);
-  const filename = `afterword-qr-${slug}.eps`;
+  if (format === "svg") {
+    const svg = buildSVG(url, modules, name);
+    return new NextResponse(svg, {
+      status: 200,
+      headers: {
+        "Content-Type": "image/svg+xml",
+        "Content-Disposition": `attachment; filename="afterword-qr-${slug}.svg"`,
+      },
+    });
+  }
 
+  const eps = buildEPS(url, modules, name);
   return new NextResponse(eps, {
     status: 200,
     headers: {
       "Content-Type": "application/postscript",
-      "Content-Disposition": `attachment; filename="${filename}"`,
+      "Content-Disposition": `attachment; filename="afterword-qr-${slug}.eps"`,
     },
   });
 }

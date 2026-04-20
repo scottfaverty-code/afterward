@@ -58,17 +58,19 @@ function slugLabel(order: Order): string {
   return name || order.profile?.memorial_slug || order.id;
 }
 
-/** Fetch a single EPS file as text */
-async function fetchEPS(slug: string, name: string): Promise<string> {
-  const params = new URLSearchParams({ slug, name });
+type QRFormat = "eps" | "svg";
+
+/** Fetch a single QR file as text */
+async function fetchQR(slug: string, name: string, format: QRFormat): Promise<string> {
+  const params = new URLSearchParams({ slug, name, format });
   const res = await fetch(`/api/admin/qr-eps?${params}`);
-  if (!res.ok) throw new Error(`Failed to generate EPS for ${slug}: ${res.status}`);
+  if (!res.ok) throw new Error(`Failed to generate ${format.toUpperCase()} for ${slug}: ${res.status}`);
   return res.text();
 }
 
 /** Trigger a browser download for a text blob */
-function downloadText(content: string, filename: string) {
-  const blob = new Blob([content], { type: "application/postscript" });
+function downloadText(content: string, filename: string, mimeType: string) {
+  const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -77,6 +79,11 @@ function downloadText(content: string, filename: string) {
   URL.revokeObjectURL(url);
 }
 
+const FORMAT_MIME: Record<QRFormat, string> = {
+  eps: "application/postscript",
+  svg: "image/svg+xml",
+};
+
 export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; appUrl: string }) {
   const [updating, setUpdating] = useState<string | null>(null);
   const [trackingInputs, setTrackingInputs] = useState<Record<string, string>>({});
@@ -84,7 +91,7 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
 
   // QR download state
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [downloading, setDownloading] = useState<string | null>(null); // orderId or "bulk"
+  const [downloading, setDownloading] = useState<string | null>(null); // orderId+format or "bulk"
   const [bulkProgress, setBulkProgress] = useState<string | null>(null);
 
   // Orders that have a memorial slug (can generate QR)
@@ -111,12 +118,13 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
     });
   }
 
-  async function downloadSingle(order: Order) {
+  async function downloadSingle(order: Order, format: QRFormat) {
     if (!order.profile?.memorial_slug) return;
-    setDownloading(order.id);
+    const key = `${order.id}-${format}`;
+    setDownloading(key);
     try {
-      const eps = await fetchEPS(order.profile.memorial_slug, slugLabel(order));
-      downloadText(eps, `afterword-qr-${order.profile.memorial_slug}.eps`);
+      const content = await fetchQR(order.profile.memorial_slug, slugLabel(order), format);
+      downloadText(content, `afterword-qr-${order.profile.memorial_slug}.${format}`, FORMAT_MIME[format]);
     } catch (e) {
       alert(`Download failed: ${(e as Error).message}`);
     } finally {
@@ -124,7 +132,7 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
     }
   }
 
-  async function downloadBulk(targetOrders: Order[]) {
+  async function downloadBulk(targetOrders: Order[], format: QRFormat) {
     const valid = targetOrders.filter((o) => o.profile?.memorial_slug);
     if (valid.length === 0) return;
 
@@ -136,14 +144,14 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
       for (let i = 0; i < valid.length; i++) {
         const order = valid[i];
         setBulkProgress(`${i + 1} / ${valid.length} — ${slugLabel(order)}`);
-        const eps = await fetchEPS(order.profile!.memorial_slug!, slugLabel(order));
-        zip.file(`afterword-qr-${order.profile!.memorial_slug}.eps`, eps);
+        const content = await fetchQR(order.profile!.memorial_slug!, slugLabel(order), format);
+        zip.file(`afterword-qr-${order.profile!.memorial_slug}.${format}`, content);
       }
       const blob = await zip.generateAsync({ type: "blob" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `afterword-qr-codes-${new Date().toISOString().slice(0, 10)}.zip`;
+      a.download = `afterword-qr-${format}-${new Date().toISOString().slice(0, 10)}.zip`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (e) {
@@ -190,43 +198,49 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
           QR EPS Downloads
         </span>
 
-        <button
-          onClick={() => downloadBulk(downloadableOrders)}
-          disabled={downloading !== null || downloadableOrders.length === 0}
-          style={{
-            padding: "5px 14px",
-            fontSize: "0.75rem",
-            fontWeight: 600,
-            borderRadius: "6px",
-            border: "1px solid #1B4F6B",
-            backgroundColor: "#1B4F6B",
-            color: "#fff",
-            cursor: downloading !== null || downloadableOrders.length === 0 ? "default" : "pointer",
-            opacity: downloading !== null || downloadableOrders.length === 0 ? 0.5 : 1,
-          }}
-        >
-          Download All ({downloadableOrders.length}) as ZIP
-        </button>
-
-        {selected.size > 0 && (
+        {/* All — EPS + SVG */}
+        {(["eps", "svg"] as QRFormat[]).map((fmt) => (
           <button
-            onClick={() => downloadBulk(selectedOrders)}
+            key={`all-${fmt}`}
+            onClick={() => downloadBulk(downloadableOrders, fmt)}
+            disabled={downloading !== null || downloadableOrders.length === 0}
+            style={{
+              padding: "5px 14px",
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              borderRadius: "6px",
+              border: `1px solid ${fmt === "eps" ? "#1B4F6B" : "#9B59B6"}`,
+              backgroundColor: fmt === "eps" ? "#1B4F6B" : "#9B59B6",
+              color: "#fff",
+              cursor: downloading !== null || downloadableOrders.length === 0 ? "default" : "pointer",
+              opacity: downloading !== null || downloadableOrders.length === 0 ? 0.5 : 1,
+            }}
+          >
+            All ({downloadableOrders.length}) → {fmt.toUpperCase()} ZIP
+          </button>
+        ))}
+
+        {/* Selected — EPS + SVG */}
+        {selected.size > 0 && (["eps", "svg"] as QRFormat[]).map((fmt) => (
+          <button
+            key={`sel-${fmt}`}
+            onClick={() => downloadBulk(selectedOrders, fmt)}
             disabled={downloading !== null}
             style={{
               padding: "5px 14px",
               fontSize: "0.75rem",
               fontWeight: 600,
               borderRadius: "6px",
-              border: "1px solid #2E7DA3",
-              backgroundColor: "#2E7DA3",
-              color: "#fff",
+              border: `1px solid ${fmt === "eps" ? "#2E7DA3" : "#8E44AD"}`,
+              backgroundColor: "transparent",
+              color: fmt === "eps" ? "#2E7DA3" : "#8E44AD",
               cursor: downloading !== null ? "default" : "pointer",
               opacity: downloading !== null ? 0.5 : 1,
             }}
           >
-            Download Selected ({selected.size}) as ZIP
+            Selected ({selected.size}) → {fmt.toUpperCase()} ZIP
           </button>
-        )}
+        ))}
 
         {downloading === "bulk" && bulkProgress && (
           <span style={{ fontSize: "0.75rem", color: "#1B4F6B", fontStyle: "italic" }}>
@@ -298,8 +312,6 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
               const hasPassword = order.auth?.hasPassword ?? false;
               const lastSignIn = order.auth?.lastSignIn ?? null;
               const accountIssue = !emailConfirmed || !hasPassword;
-
-              const isDownloading = downloading === order.id;
 
               return (
                 <tr
@@ -513,27 +525,35 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
                         </button>
                       </div>
 
-                      {/* QR EPS download */}
+                      {/* QR downloads — EPS + SVG */}
                       {hasSlug && (
-                        <button
-                          onClick={() => downloadSingle(order)}
-                          disabled={isDownloading || downloading === "bulk"}
-                          style={{
-                            padding: "3px 8px",
-                            fontSize: "0.7rem",
-                            fontWeight: 600,
-                            borderRadius: "4px",
-                            border: "1px solid #9B59B6",
-                            backgroundColor: isDownloading ? "#E8D5F5" : "#fff",
-                            color: "#9B59B6",
-                            cursor: isDownloading || downloading === "bulk" ? "default" : "pointer",
-                            opacity: downloading === "bulk" ? 0.5 : 1,
-                            whiteSpace: "nowrap",
-                            textAlign: "left",
-                          }}
-                        >
-                          {isDownloading ? "Generating…" : "⬇ QR (EPS)"}
-                        </button>
+                        <div style={{ display: "flex", gap: "4px" }}>
+                          {(["eps", "svg"] as QRFormat[]).map((fmt) => {
+                            const fmtKey = `${order.id}-${fmt}`;
+                            const isThisDownloading = downloading === fmtKey;
+                            return (
+                              <button
+                                key={fmt}
+                                onClick={() => downloadSingle(order, fmt)}
+                                disabled={downloading !== null}
+                                style={{
+                                  padding: "3px 8px",
+                                  fontSize: "0.7rem",
+                                  fontWeight: 600,
+                                  borderRadius: "4px",
+                                  border: "1px solid #9B59B6",
+                                  backgroundColor: isThisDownloading ? "#E8D5F5" : "#fff",
+                                  color: "#9B59B6",
+                                  cursor: downloading !== null ? "default" : "pointer",
+                                  opacity: downloading !== null && !isThisDownloading ? 0.4 : 1,
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {isThisDownloading ? "…" : `⬇ ${fmt.toUpperCase()}`}
+                              </button>
+                            );
+                          })}
+                        </div>
                       )}
                     </div>
                   </td>
