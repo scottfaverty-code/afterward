@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { isAdmin } from "@/lib/admin-auth";
 import QRCode from "qrcode";
 
 /**
@@ -56,17 +56,8 @@ function buildEPS(url: string, modules: boolean[][], label: string): string {
 }
 
 export async function GET(req: NextRequest) {
-  // Admin-only: verify the caller is the service-role admin
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
+  if (!(await isAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  // Check admin — same guard as /app/admin/page.tsx
-  if (user.email !== "scott.faverty@gmail.com") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const { searchParams } = new URL(req.url);

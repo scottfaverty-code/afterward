@@ -1,19 +1,21 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getAdminAuth } from "@/lib/admin-auth";
 import AdminOrdersTable from "./AdminOrdersTable";
 import SeedDemoButton from "./SeedDemoButton";
+import ManageAdmins from "./ManageAdmins";
 
 export default async function AdminPage() {
-  // Auth check — must be logged in as the admin email
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user, role } = await getAdminAuth();
 
-  if (!user || user.email !== "scott.faverty@gmail.com") {
-    redirect("/");
-  }
+  if (!user || !role) redirect("/");
 
   const admin = createAdminClient();
+
+  // Fetch admins list (for super_admin)
+  const { data: adminsList } = role === "super_admin"
+    ? await admin.from("admins").select("id, email, role, added_by, created_at").order("created_at")
+    : { data: null };
 
   // Fetch all purchases with profile and shipping address
   const { data: purchases } = await admin
@@ -139,6 +141,30 @@ export default async function AdminPage() {
           </div>
           <AdminOrdersTable orders={orders} appUrl={process.env.NEXT_PUBLIC_APP_URL ?? ""} />
         </div>
+
+        {/* Admin management — super_admin only */}
+        {role === "super_admin" && (
+          <div
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: "16px",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+              overflow: "hidden",
+              marginTop: "32px",
+            }}
+          >
+            <div style={{ padding: "20px 24px", borderBottom: "1px solid #F0F0F0" }}>
+              <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "#1A1A1A" }}>Admin access</h2>
+              <p style={{ fontSize: "0.78rem", color: "#999", marginTop: "4px" }}>
+                Manage who can access this admin panel. Only super admins can make changes.
+              </p>
+            </div>
+            <ManageAdmins
+              initialAdmins={adminsList ?? []}
+              currentUserEmail={user.email}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

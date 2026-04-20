@@ -1,6 +1,27 @@
 -- Afterword database schema
 -- Run this in your Supabase SQL editor
 
+-- ============================================================
+-- admins table
+-- Stores who has access to the admin panel and at what level.
+-- super_admin: full access including managing other admins
+-- admin: orders, plaque status, QR downloads
+-- ============================================================
+create table if not exists public.admins (
+  id         uuid primary key default gen_random_uuid(),
+  email      text not null unique,
+  role       text not null default 'admin' check (role in ('super_admin', 'admin')),
+  added_by   text,
+  created_at timestamptz not null default now()
+);
+
+-- Seed the super admin (idempotent)
+insert into public.admins (email, role, added_by)
+values ('scott.faverty@gmail.com', 'super_admin', 'system')
+on conflict (email) do update set role = 'super_admin';
+
+-- No RLS needed; this table is only ever accessed via service role
+
 -- Enable UUID extension
 create extension if not exists "pgcrypto";
 

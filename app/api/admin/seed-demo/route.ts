@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // One-time route to seed the Patrick Williams demo memorial.
@@ -202,9 +201,8 @@ That's the whole thing, as best as I can figure. That was always the whole thing
 ];
 
 export async function POST() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user || user.email !== "scott.faverty@gmail.com") {
+  const { isAdmin } = await import("@/lib/admin-auth");
+  if (!(await isAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

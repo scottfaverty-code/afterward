@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const DEMO_EMAIL = "eleanor.mitchell.demo@myafterword.co";
@@ -168,9 +167,8 @@ And carry forward the knowledge that ordinary things, done with love and consist
 ];
 
 export async function POST() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user || user.email !== "scott.faverty@gmail.com") {
+  const { isAdmin } = await import("@/lib/admin-auth");
+  if (!(await isAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
