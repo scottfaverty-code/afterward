@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import DashboardHeader from "./DashboardHeader";
 import ProfileNudge from "./ProfileNudge";
 import AfterwordQR from "@/app/components/AfterwordQR";
+import PublishToggle from "./PublishToggle";
 
 type Profile = {
   id: string;
@@ -250,23 +251,22 @@ export default async function DashboardPage() {
                 </div>
               </div>
 
-              {memorialSlug ? (
+              {memorialSlug && profile?.page_is_public && (
                 <Link
                   href={`/memorial/${memorialSlug}`}
                   target="_blank"
                   className="btn-ghost block text-center text-sm"
-                  style={{ padding: "10px 16px" }}
+                  style={{ padding: "10px 16px", marginBottom: "8px" }}
                 >
                   View your live page &rarr;
                 </Link>
-              ) : (
-                <p style={{ fontSize: "0.78rem", color: "#999", textAlign: "center" }}>
-                  Your public page URL will be available after you complete your profile.
-                </p>
               )}
-              <p className="mt-3 text-center" style={{ fontSize: "0.75rem", color: "#999" }}>
-                Your page is private by default. You control when it becomes publicly accessible.
-              </p>
+
+              <PublishToggle
+                initialPublished={profile?.page_is_public ?? false}
+                memorialSlug={memorialSlug}
+                completedSections={completedCount}
+              />
             </div>
 
             {/* Plaque status card */}

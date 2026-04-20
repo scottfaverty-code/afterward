@@ -24,6 +24,7 @@ export default function QuestionnaireClient({
   const [answers, setAnswers] = useState<Record<string, string>>(initialAnswers);
   const [skipped, setSkipped] = useState<Record<string, boolean>>(initialSkipped);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
+  const [navigating, setNavigating] = useState(false);
   const [showCompletion, setShowCompletion] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -72,6 +73,7 @@ export default function QuestionnaireClient({
   async function handleNext() {
     // Save current answer before advancing
     if (saveTimer.current) clearTimeout(saveTimer.current);
+    setNavigating(true);
     await saveAnswer(currentQuestion.id, answers[currentQuestion.id] ?? "", false);
 
     if (isLastQuestion) {
@@ -79,6 +81,7 @@ export default function QuestionnaireClient({
     } else {
       setCurrentIndex((i) => i + 1);
     }
+    setNavigating(false);
   }
 
   async function handleSkip() {
@@ -268,10 +271,11 @@ export default function QuestionnaireClient({
 
             <button
               onClick={handleNext}
+              disabled={navigating}
               className="btn-primary"
-              style={{ padding: "12px 28px", fontSize: "0.9rem" }}
+              style={{ padding: "12px 28px", fontSize: "0.9rem", opacity: navigating ? 0.6 : 1, cursor: navigating ? "default" : "pointer" }}
             >
-              {isLastQuestion ? "Finish section" : "Next question \u2192"}
+              {navigating ? "Saving…" : isLastQuestion ? "Finish section" : "Next question \u2192"}
             </button>
           </div>
 
