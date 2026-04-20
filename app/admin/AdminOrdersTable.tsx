@@ -60,12 +60,68 @@ function slugLabel(order: Order): string {
 
 type QRFormat = "eps" | "svg";
 
-/** Fetch a single QR file as text */
-async function fetchQR(slug: string, name: string, format: QRFormat): Promise<string> {
-  const params = new URLSearchParams({ slug, name, format });
+/** Fetch EPS from the server route */
+async function fetchEPS(slug: string, name: string): Promise<string> {
+  const params = new URLSearchParams({ slug, name, format: "eps" });
   const res = await fetch(`/api/admin/qr-eps?${params}`);
-  if (!res.ok) throw new Error(`Failed to generate ${format.toUpperCase()} for ${slug}: ${res.status}`);
+  if (!res.ok) throw new Error(`Failed to generate EPS for ${slug}: ${res.status}`);
   return res.text();
+}
+
+/**
+ * Generate a stylized SVG client-side using qr-code-styling —
+ * matches the AfterwordQR component exactly (rounded dots, blue gradient,
+ * extra-rounded corners) then injects the "AFTERWORD" wordmark below.
+ */
+async function generateStyledSVG(url: string): Promise<string> {
+  const QRCodeStyling = (await import("qr-code-styling")).default;
+  const size = 400;
+
+  const qr = new QRCodeStyling({
+    width: size,
+    height: size,
+    type: "svg",
+    data: url,
+    margin: 12,
+    qrOptions: { errorCorrectionLevel: "M" },
+    dotsOptions: {
+      type: "extra-rounded",
+      gradient: {
+        type: "radial",
+        rotation: 0,
+        colorStops: [
+          { offset: 0, color: "#2E7DA3" },
+          { offset: 1, color: "#0f2d3d" },
+        ],
+      },
+    },
+    cornersSquareOptions: { type: "extra-rounded", color: "#1B4F6B" },
+    cornersDotOptions: { type: "dot", color: "#2E7DA3" },
+    backgroundOptions: { color: "#ffffff" },
+  });
+
+  const blob = await qr.getRawData("svg");
+  if (!blob) throw new Error("qr-code-styling returned no data");
+  const svgText = await (blob as Blob).text();
+
+  // Expand height to make room for the wordmark below the QR
+  const wordmarkHeight = 40;
+  const expanded = svgText
+    .replace(/height="(\d+)"/, (_, h) => `height="${parseInt(h) + wordmarkHeight}"`)
+    .replace(
+      "</svg>",
+      `<text ` +
+        `x="${size / 2}" ` +
+        `y="${size + 26}" ` +
+        `font-family="Georgia, 'Times New Roman', serif" ` +
+        `font-size="12" ` +
+        `letter-spacing="9" ` +
+        `text-anchor="middle" ` +
+        `fill="#1B4F6B"` +
+      `>AFTERWORD</text>\n</svg>`,
+    );
+
+  return expanded;
 }
 
 /** Trigger a browser download for a text blob */
@@ -78,11 +134,6 @@ function downloadText(content: string, filename: string, mimeType: string) {
   a.click();
   URL.revokeObjectURL(url);
 }
-
-const FORMAT_MIME: Record<QRFormat, string> = {
-  eps: "application/postscript",
-  svg: "image/svg+xml",
-};
 
 export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; appUrl: string }) {
   const [updating, setUpdating] = useState<string | null>(null);
@@ -120,11 +171,20 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
 
   async function downloadSingle(order: Order, format: QRFormat) {
     if (!order.profile?.memorial_slug) return;
+    const slug = order.profile.memorial_slug;
     const key = `${order.id}-${format}`;
     setDownloading(key);
     try {
-      const content = await fetchQR(order.profile.memorial_slug, slugLabel(order), format);
-      downloadText(content, `afterword-qr-${order.profile.memorial_slug}.${format}`, FORMAT_MIME[format]);
+      const appUrl = window.location.origin;
+      const memUrl = `${appUrl}/memorial/${slug}`;
+      const content = format === "svg"
+        ? await generateStyledSVG(memUrl)
+        : await fetchEPS(slug, slugLabel(order));
+      downloadText(
+        content,
+        `afterword-qr-${slug}.${format}`,
+        format === "svg" ? "image/svg+xml" : "application/postscript",
+      );
     } catch (e) {
       alert(`Download failed: ${(e as Error).message}`);
     } finally {
@@ -141,12 +201,21 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
 
     try {
       const zip = new JSZip();
+      const appUrl = window.location.origin;
+
       for (let i = 0; i < valid.length; i++) {
         const order = valid[i];
+        const slug = order.profile!.memorial_slug!;
         setBulkProgress(`${i + 1} / ${valid.length} — ${slugLabel(order)}`);
-        const content = await fetchQR(order.profile!.memorial_slug!, slugLabel(order), format);
-        zip.file(`afterword-qr-${order.profile!.memorial_slug}.${format}`, content);
+
+        const memUrl = `${appUrl}/memorial/${slug}`;
+        const content = format === "svg"
+          ? await generateStyledSVG(memUrl)
+          : await fetchEPS(slug, slugLabel(order));
+
+        zip.file(`afterword-qr-${slug}.${format}`, content);
       }
+
       const blob = await zip.generateAsync({ type: "blob" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
