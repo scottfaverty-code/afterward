@@ -32,7 +32,7 @@ export default async function SetupProfilePage({
         style={{ backgroundColor: "#fff", boxShadow: "0 8px 40px rgba(0,0,0,0.08)", maxWidth: "520px" }}
       >
         <p className="text-center mb-5" style={{ fontSize: "0.875rem", color: "#999" }}>
-          {isUpdate ? "Update your profile" : "Almost there \u2014 just one more step"}
+          {isUpdate ? "Update your profile" : "Almost there, just one more step"}
         </p>
 
         <h1 className="font-serif mb-3" style={{ fontSize: "1.8rem", color: "#1B4F6B" }}>

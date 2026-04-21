@@ -65,7 +65,7 @@ export default function SetupProfileForm({
         .upload(path, photoFile, { upsert: true });
 
       if (uploadError) {
-        setErrors({ photo: "We couldn\u2019t upload your photo \u2014 you can try again or skip for now" });
+        setErrors({ photo: "We couldn\u2019t upload your photo, you can try again or skip for now" });
         setLoading(false);
         return;
       }
@@ -163,7 +163,7 @@ export default function SetupProfileForm({
         <p className="text-center mt-2" style={{ fontSize: "0.8rem", color: "#999", lineHeight: "1.5" }}>
           A recent photo works best. JPG, PNG, or HEIC. Max 10MB.
           <br />
-          Don&apos;t have one handy? Skip this &mdash; you can add it later from your dashboard.
+          Don&apos;t have one handy? Skip this, you can add it later from your dashboard.
         </p>
       </div>
 
@@ -217,7 +217,7 @@ export default function SetupProfileForm({
             onClick={handleSkip}
             style={{ fontSize: "0.875rem", color: "#999", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}
           >
-            Skip for now &mdash; I&apos;ll add these later
+            Skip for now, I&apos;ll add these later
           </button>
         </p>
       )}

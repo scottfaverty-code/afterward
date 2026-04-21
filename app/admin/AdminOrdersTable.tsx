@@ -213,7 +213,7 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
       for (let i = 0; i < valid.length; i++) {
         const order = valid[i];
         const slug = order.profile!.memorial_slug!;
-        setBulkProgress(`${i + 1} / ${valid.length} — ${slugLabel(order)}`);
+        setBulkProgress(`${i + 1} / ${valid.length}, ${slugLabel(order)}`);
 
         const memUrl = `${appUrl}/memorial/${slug}`;
         const content = format === "svg"
@@ -274,7 +274,7 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
           QR EPS Downloads
         </span>
 
-        {/* All — EPS + SVG */}
+        {/* All, EPS + SVG */}
         {(["eps", "svg"] as QRFormat[]).map((fmt) => (
           <button
             key={`all-${fmt}`}
@@ -296,7 +296,7 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
           </button>
         ))}
 
-        {/* Selected — EPS + SVG */}
+        {/* Selected, EPS + SVG */}
         {selected.size > 0 && (["eps", "svg"] as QRFormat[]).map((fmt) => (
           <button
             key={`sel-${fmt}`}
@@ -407,7 +407,7 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
                         style={{ cursor: "pointer" }}
                       />
                     ) : (
-                      <span title="No memorial slug — cannot generate QR" style={{ color: "#ddd", fontSize: "0.75rem" }}>—</span>
+                      <span title="No memorial slug, cannot generate QR" style={{ color: "#ddd", fontSize: "0.75rem" }}>—</span>
                     )}
                   </td>
 
@@ -601,7 +601,7 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
                         </button>
                       </div>
 
-                      {/* QR downloads — EPS + SVG */}
+                      {/* QR downloads, EPS + SVG */}
                       {hasSlug && (
                         <div style={{ display: "flex", gap: "4px" }}>
                           {(["eps", "svg"] as QRFormat[]).map((fmt) => {

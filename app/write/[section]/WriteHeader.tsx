@@ -62,7 +62,7 @@ export default function WriteHeader({ sectionLabel, sectionNumber }: Props) {
         className="container-main py-1"
         style={{ fontSize: "0.72rem", color: "#999" }}
       >
-        Section {sectionNumber} of 7 &mdash; {sectionLabel}
+        Section {sectionNumber} of 7, {sectionLabel}
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ export type BlogPost = {
   content: string;    // Markdown
 };
 
-// Registry — add a new import here each time you publish a post
+// Registry, add a new import here each time you publish a post
 import fearOfBeingForgotten from "@/content/blog/fear-of-being-forgotten";
 
 const posts: BlogPost[] = [

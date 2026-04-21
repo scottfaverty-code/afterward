@@ -42,7 +42,7 @@ function SeedButton({ label, endpoint, slug, appUrl }: {
         {status === "idle" && label}
         {status === "loading" && "Seeding…"}
         {status === "done" && "✓ Seeded"}
-        {status === "error" && "✗ Error — try again"}
+        {status === "error" && "✗ Error, try again"}
       </button>
       {status === "done" && (
         <a href={`${appUrl}/memorial/${slug}`} target="_blank" rel="noopener noreferrer"

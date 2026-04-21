@@ -33,7 +33,7 @@ export default function ForgotPasswordForm() {
           style={{ backgroundColor: "#EEF7FC", borderLeft: "4px solid #1B4F6B" }}
         >
           <p style={{ fontSize: "0.9rem", color: "#1B4F6B", fontWeight: 600 }}>
-            Done &mdash; check your inbox for the reset link.
+            Done, check your inbox for the reset link.
           </p>
         </div>
         <Link href="/login" style={{ fontSize: "0.875rem", color: "#1B4F6B", textDecoration: "underline" }}>

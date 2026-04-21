@@ -5,7 +5,7 @@ const pillars = [
   },
   {
     title: "Your data, always yours.",
-    body: "Export everything \u2014 every word, every photo \u2014 at any time. If we ever need to make changes to the service, we\u2019ll give you advance notice and a full data export.",
+    body: "Export everything, every word, every photo, at any time. If we ever need to make changes to the service, we\u2019ll give you advance notice and a full data export.",
   },
   {
     title: "The QR link stays active.",

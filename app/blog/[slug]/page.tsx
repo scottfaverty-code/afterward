@@ -81,7 +81,7 @@ export default async function BlogPostPage({
               Your story deserves to be told in your own words.
             </h3>
             <p className="mb-5" style={{ fontSize: "0.95rem", color: "#555", lineHeight: "1.7" }}>
-              Afterword gives you the space to write it — guided questions, permanent hosting, and a QR plaque shipped to your door.
+              Afterword gives you the space to write it, guided questions, permanent hosting, and a QR plaque shipped to your door.
             </p>
             <Link href="/#pricing" className="btn-primary">
               Get started &rarr;

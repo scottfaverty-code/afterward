@@ -11,11 +11,11 @@ const demos = [
     photo: "/images/patrick-william.png",
     pronoun: "his",
     description:
-      "Patrick spent forty years as an educator in Arizona — teacher, principal, superintendent. He wrote his Afterword page himself, in his own words, while he still could.",
+      "Patrick spent forty years as an educator in Arizona, teacher, principal, superintendent. He wrote his Afterword page himself, in his own words, while he still could.",
     quotes: [
       {
         label: "His Roots",
-        text: "\u201cWhat I remember most is the space of it \u2014 the open fields, the way corn rows stretched to the horizon in summer, the particular smell of a grain elevator on a hot August day\u2026\u201d",
+        text: "\u201cWhat I remember most is the space of it, the open fields, the way corn rows stretched to the horizon in summer, the particular smell of a grain elevator on a hot August day\u2026\u201d",
         italic: false,
       },
       {
@@ -81,7 +81,7 @@ export default function Example() {
             className="mx-auto"
             style={{ color: "#666", lineHeight: "1.75", maxWidth: "560px" }}
           >
-            Every word on an Afterword page is written by the person themselves — their story, their voice, their message to the people they love. Scan either QR code to read the full page.
+            Every word on an Afterword page is written by the person themselves, their story, their voice, their message to the people they love. Scan either QR code to read the full page.
           </p>
         </div>
 

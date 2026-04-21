@@ -17,7 +17,7 @@ export default async function ShippingAddressPage({
         style={{ backgroundColor: "#fff", boxShadow: "0 8px 40px rgba(0,0,0,0.08)", maxWidth: "560px", margin: "0 24px" }}
       >
         <p className="text-center mb-5" style={{ fontSize: "0.875rem", color: "#999" }}>
-          Step 2 of 2 &mdash; almost done
+          Step 2 of 2, almost done
         </p>
 
         <h1

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getAdminAuth } from "@/lib/admin-auth";
 
-/** POST /api/admin/admins — add a new admin (super_admin only) */
+/** POST /api/admin/admins, add a new admin (super_admin only) */
 export async function POST(req: NextRequest) {
   const { user, role } = await getAdminAuth();
 
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ admin: data });
 }
 
-/** DELETE /api/admin/admins — remove an admin by id (super_admin only, cannot remove self) */
+/** DELETE /api/admin/admins, remove an admin by id (super_admin only, cannot remove self) */
 export async function DELETE(req: NextRequest) {
   const { user, role } = await getAdminAuth();
 

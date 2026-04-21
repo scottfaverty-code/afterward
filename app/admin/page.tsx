@@ -142,7 +142,7 @@ export default async function AdminPage() {
           <AdminOrdersTable orders={orders} appUrl={process.env.NEXT_PUBLIC_APP_URL ?? ""} />
         </div>
 
-        {/* Admin management — super_admin only */}
+        {/* Admin management, super_admin only */}
         {role === "super_admin" && (
           <div
             style={{

@@ -330,7 +330,7 @@ export default function ShippingAddressForm({ isUpdate = false, sessionId }: { i
             <textarea
               value={fields.attorney_note}
               onChange={(e) => set("attorney_note", e.target.value)}
-              placeholder="Anything you\u2019d like us to include in the note to your attorney \u2014 e.g. your file reference, any special instructions"
+              placeholder="Anything you\u2019d like us to include in the note to your attorney, e.g. your file reference, any special instructions"
               rows={3}
               maxLength={300}
               style={{

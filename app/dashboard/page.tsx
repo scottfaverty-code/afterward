@@ -119,7 +119,7 @@ export default async function DashboardPage() {
           {/* Profile nudge */}
           <ProfileNudge missingName={missingName} missingPhoto={missingPhoto} />
 
-          {/* Welcome banner — first visit */}
+          {/* Welcome banner, first visit */}
           {isFirstVisit && (
             <div
               className="rounded-2xl px-8 py-6 mb-6 flex items-center justify-between gap-6"
@@ -127,7 +127,7 @@ export default async function DashboardPage() {
             >
               <div>
                 <h2 className="font-serif mb-1" style={{ fontSize: "1.4rem", color: "#fff" }}>
-                  Welcome to Afterword{firstName ? `, ${firstName}` : ""}. Your page is ready &mdash; let&apos;s start filling it in.
+                  Welcome to Afterword{firstName ? `, ${firstName}` : ""}. Your page is ready, let&apos;s start filling it in.
                 </h2>
               </div>
               <Link
@@ -318,7 +318,7 @@ export default async function DashboardPage() {
                     >
                       {purchase?.plaque_status === "shipped" ? "Shipped"
                         : purchase?.plaque_status === "delivered" ? "Delivered"
-                        : "Order received \u2014 processing"}
+                        : "Order received, processing"}
                     </span>
                   </div>
 
@@ -372,7 +372,7 @@ export default async function DashboardPage() {
           <a href="mailto:scott@myafterword.co" style={{ color: "#1B4F6B" }}>
             scott@myafterword.co
           </a>{" "}
-          &mdash; we read everything.
+         , we read everything.
         </div>
       </main>
     </>

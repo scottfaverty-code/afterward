@@ -101,7 +101,7 @@ export default function GiftPage() {
                 <p style={{ fontSize: "1.1rem", color: "rgba(255,255,255,0.8)", lineHeight: 1.65, marginBottom: "36px", maxWidth: "520px" }}>
                   Afterword is a permanent, self-written memorial page. You give it as a gift.
                   You set it up together. They write their story in their own words, and your family
-                  has it forever &mdash; hosted permanently, accessible via a QR plaque on their headstone,
+                  has it forever, hosted permanently, accessible via a QR plaque on their headstone,
                   urn, or most outdoor surfaces.
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" }}>
@@ -547,11 +547,11 @@ export default function GiftPage() {
                     {[
                       {
                         label: "My Story",
-                        text: "&ldquo;I grew up in a coal town in Pennsylvania where ambition was considered suspicious. I was the first person in my family to go to college &mdash; which meant being the first person to leave...&rdquo;",
+                        text: "&ldquo;I grew up in a coal town in Pennsylvania where ambition was considered suspicious. I was the first person in my family to go to college, which meant being the first person to leave...&rdquo;",
                       },
                       {
                         label: "What I Want My Grandchildren to Know",
-                        text: "&ldquo;By the time you read this, I&apos;ll have been gone a while. So let me say it clearly: the things that seemed important to me at 40 &mdash; the job, the house, the status &mdash; none of them were what mattered...&rdquo;",
+                        text: "&ldquo;By the time you read this, I&apos;ll have been gone a while. So let me say it clearly: the things that seemed important to me at 40, the job, the house, the status, none of them were what mattered...&rdquo;",
                       },
                       {
                         label: "Words of Wisdom",
@@ -720,7 +720,7 @@ export default function GiftPage() {
                   &ldquo;Will they actually sit down and do it?&rdquo;
                 </h2>
                 <p style={{ fontSize: "1rem", color: "#666", lineHeight: 1.7, marginBottom: "16px" }}>
-                  It&apos;s the first thing most gift-givers wonder. The honest answer: yes &mdash; because
+                  It&apos;s the first thing most gift-givers wonder. The honest answer: yes, because
                   Afterword removes every barrier that normally stops people from getting started.
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "28px" }}>
@@ -735,7 +735,7 @@ export default function GiftPage() {
                     },
                     {
                       title: "The setup session itself is the gift.",
-                      body: "Most families sit down together for the first pass. That afternoon \u2014 the stories that come out, the things you never knew to ask \u2014 becomes something people treasure as much as the finished page.",
+                      body: "Most families sit down together for the first pass. That afternoon, the stories that come out, the things you never knew to ask, becomes something people treasure as much as the finished page.",
                     },
                     {
                       title: "It never has to be \u201cfinished.\u201d",
@@ -931,7 +931,7 @@ export default function GiftPage() {
             >
               Most digital memorial products are subscriptions. Stop paying, and the page disappears,
               taking every story and photo with it. We built Afterword differently.
-              Your one-time payment covers permanent hosting &mdash; not for 10 years, not until someone
+              Your one-time payment covers permanent hosting, not for 10 years, not until someone
               stops paying. Forever.
             </p>
             <div
@@ -992,7 +992,7 @@ export default function GiftPage() {
                 },
                 {
                   featured: false,
-                  quote: "I gave this to my mother for her 75th birthday. She was skeptical at first \u2014 she kept saying she didn\u2019t have anything interesting to say. Three weeks later she had written 14 sections and was asking me how to add more photos. She\u2019s added something new almost every month since.",
+                  quote: "I gave this to my mother for her 75th birthday. She was skeptical at first, she kept saying she didn\u2019t have anything interesting to say. Three weeks later she had written 14 sections and was asking me how to add more photos. She\u2019s added something new almost every month since.",
                   initial: "K",
                   name: "Karen T.",
                   role: "Daughter, gifted Afterword to her mother, age 75",
@@ -1103,7 +1103,7 @@ export default function GiftPage() {
                 {
                   occasion: "As a family gift",
                   title: "Pool together. Make it the gift that matters to everyone.",
-                  body: "For a parent\u2019s milestone birthday, anniversary, or the holidays \u2014 when you want to give something that means more than anything you could buy. Siblings often go in together. It\u2019s the one gift everyone agrees was the right call.",
+                  body: "For a parent\u2019s milestone birthday, anniversary, or the holidays, when you want to give something that means more than anything you could buy. Siblings often go in together. It\u2019s the one gift everyone agrees was the right call.",
                   hook: "\u201cFive siblings, and we all agreed this was the most meaningful thing we\u2019d ever given her.\u201d",
                 },
               ].map((card) => (
@@ -1275,19 +1275,19 @@ export default function GiftPage() {
                 },
                 {
                   q: "Can I help them set it up, or does it need to be done alone?",
-                  a: "Absolutely — and most families do exactly this. You purchase the Afterword and set it up together, over a weekend visit or a long phone call. You might ask the questions and type their answers, or sit together while they use voice recording. The process often becomes a treasured conversation in its own right.",
+                  a: "Absolutely, and most families do exactly this. You purchase the Afterword and set it up together, over a weekend visit or a long phone call. You might ask the questions and type their answers, or sit together while they use voice recording. The process often becomes a treasured conversation in its own right.",
                 },
                 {
                   q: "What if they're skeptical or think it's morbid?",
-                  a: "This is common. The reframe that tends to land: this isn't about death — it's about their story being heard. Most people who are initially reluctant become some of the most enthusiastic users once they realize the prompts are genuinely interesting and the process feels more like sharing than preparing for something. Many say it's the most meaningful afternoon they've spent in years.",
+                  a: "This is common. The reframe that tends to land: this isn't about death, it's about their story being heard. Most people who are initially reluctant become some of the most enthusiastic users once they realize the prompts are genuinely interesting and the process feels more like sharing than preparing for something. Many say it's the most meaningful afternoon they've spent in years.",
                 },
                 {
                   q: "Can I set this up as a surprise, or should I involve them?",
-                  a: "You can purchase it as a surprise gift, but the recipient needs to be involved to write their page — which is the whole point. The gift is the opportunity and the platform; their story is theirs to tell. Most people present it as a gift and set up the first session together.",
+                  a: "You can purchase it as a surprise gift, but the recipient needs to be involved to write their page, which is the whole point. The gift is the opportunity and the platform; their story is theirs to tell. Most people present it as a gift and set up the first session together.",
                 },
                 {
                   q: "What if they start but don't finish?",
-                  a: "There is no \"finished.\" The page is designed to be added to over time. Even a partially complete Afterword page — a few sections, some photos, a message to the family — is infinitely more valuable than nothing. And most people, once they start, find they want to keep going.",
+                  a: "There is no \"finished.\" The page is designed to be added to over time. Even a partially complete Afterword page, a few sections, some photos, a message to the family, is infinitely more valuable than nothing. And most people, once they start, find they want to keep going.",
                 },
                 {
                   q: "What does \"permanent\" actually mean? What if Afterword shuts down?",

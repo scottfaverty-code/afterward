@@ -39,14 +39,14 @@ export default async function WriteCompletePage() {
             lineHeight: "1.7",
           }}
         >
-          Everything you&apos;ve shared &mdash; your roots, the life you built, the people you love, the things you believe &mdash; is now part of your permanent Afterword page. It will be there whenever your family needs it, exactly as you wrote it.
+          Everything you&apos;ve shared, your roots, the life you built, the people you love, the things you believe, is now part of your permanent Afterword page. It will be there whenever your family needs it, exactly as you wrote it.
         </p>
 
         {/* Confirmation items */}
         <div className="flex flex-col gap-4 mb-10 text-left">
           {[
             "Your page is live and saving in real time",
-            "Your QR plaque is on its way &mdash; ships within 10 business days",
+            "Your QR plaque is on its way, ships within 10 business days",
             "You can return and add to your page at any time",
           ].map((item, i) => (
             <div key={i} className="flex items-start gap-4">
@@ -94,7 +94,7 @@ export default async function WriteCompletePage() {
           className="mt-8"
           style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.5)" }}
         >
-          You can always come back to add more &mdash; most people find new stories to tell over time.
+          You can always come back to add more, most people find new stories to tell over time.
         </p>
       </div>
     </div>

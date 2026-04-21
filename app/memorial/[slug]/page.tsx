@@ -6,17 +6,17 @@ import GuestbookForm from "./GuestbookForm";
 function sectionIntro(slug: string, name: string): string {
   switch (slug) {
     case "your-roots":
-      return `What follows are ${name}'s recollections about childhood — where they came from, their earliest memories, and the people who shaped them.`;
+      return `What follows are ${name}'s recollections about childhood, where they came from, their earliest memories, and the people who shaped them.`;
     case "the-life-you-built":
-      return `This is ${name}'s account of the life they built — the work they did, the risks they took, the hardest chapters, and the moments they would return to if they could.`;
+      return `This is ${name}'s account of the life they built, the work they did, the risks they took, the hardest chapters, and the moments they would return to if they could.`;
     case "the-people-who-matter":
-      return `Here, ${name} speaks about the people who mattered most — those who loved them, shaped them, and who they most wanted to say something to.`;
+      return `Here, ${name} speaks about the people who mattered most, those who loved them, shaped them, and who they most wanted to say something to.`;
     case "what-you-believe":
-      return `What follows is ${name}'s hard-won wisdom — the things they learned about life, about people, and about what actually matters, that took a lifetime to arrive at.`;
+      return `What follows is ${name}'s hard-won wisdom, the things they learned about life, about people, and about what actually matters, that took a lifetime to arrive at.`;
     case "your-proudest-moments":
-      return `These are the moments ${name} was most proud of — not by anyone else's measure, but by their own.`;
+      return `These are the moments ${name} was most proud of, not by anyone else's measure, but by their own.`;
     case "how-you-want-to-be-remembered":
-      return `What follows are ${name}'s words about how they want to be remembered — written directly to the people who will one day read this page.`;
+      return `What follows are ${name}'s words about how they want to be remembered, written directly to the people who will one day read this page.`;
     default:
       return `In ${name}'s own words.`;
   }
@@ -133,7 +133,7 @@ export default async function MemorialPage({
 
         <h1 className="font-serif mb-1" style={{ fontSize: "1.6rem" }}>{fullName}</h1>
         <div style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.5)" }}>
-          Afterword &mdash; Written in their own words
+          Afterword, Written in their own words
         </div>
       </div>
 
@@ -222,7 +222,7 @@ export default async function MemorialPage({
                 {sectionIntro(section.slug, firstName)}
               </div>
 
-              {/* Answers — no question labels, just prose */}
+              {/* Answers, no question labels, just prose */}
               <div className="flex flex-col gap-6">
                 {sectionAnswers.map(({ q, answer }) => (
                   <p key={q.id} style={{ fontSize: "1rem", color: "#1A1A1A", lineHeight: "1.85", whiteSpace: "pre-wrap" }}>

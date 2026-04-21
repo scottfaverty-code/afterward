@@ -4,13 +4,13 @@ import QRCode from "qrcode";
 
 /**
  * Builds a clean SVG from a QR matrix.
- * Each module is a <rect> element — fully vector, scales to any size.
+ * Each module is a <rect> element, fully vector, scales to any size.
  */
 function buildSVG(url: string, modules: boolean[][], label: string): string {
   const count = modules.length;
   const quietZone = 4;
   const totalModules = count + quietZone * 2;
-  // Use integer viewBox units — 1 unit per module. Scale with width/height attr.
+  // Use integer viewBox units, 1 unit per module. Scale with width/height attr.
   const vbSize = totalModules;
 
   const rects: string[] = [];
