@@ -5,8 +5,7 @@ export default function Problem() {
     <section style={{ backgroundColor: "#F9F9F9", padding: "96px 0" }}>
       <div className="container-main">
         <div
-          className="grid gap-16 items-center"
-          style={{ gridTemplateColumns: "1fr 1fr" }}
+          className="grid gap-16 items-center cols-2"
         >
           {/* Left: text + photo */}
           <div>

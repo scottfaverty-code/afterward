@@ -50,8 +50,7 @@ export default function Permanence() {
         </p>
 
         <div
-          className="grid gap-6"
-          style={{ gridTemplateColumns: "repeat(3, 1fr)" }}
+          className="grid gap-6 cols-3"
         >
           {pillars.map((p) => (
             <div key={p.title}>

@@ -26,8 +26,7 @@ export default function Hero() {
 
       <div className="relative container-main section-pad">
         <div
-          className="grid gap-16 items-center"
-          style={{ gridTemplateColumns: "1fr 1fr" }}
+          className="grid gap-16 items-center cols-2"
         >
           {/* Left: content */}
           <div className="text-white">

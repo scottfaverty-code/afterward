@@ -166,6 +166,50 @@ h1, h2, h3, h4, h5, h6 {
   padding-bottom: 64px;
 }
 
+/* ============================================================
+   Responsive grid utilities
+   Use these classes instead of inline gridTemplateColumns.
+   All grids collapse to a single column on mobile.
+   ============================================================ */
+
+/* 2-column: stacked on mobile, side-by-side at 768px+ */
+.cols-2 { grid-template-columns: 1fr; }
+
+/* 3-column: stacked on mobile, 2-col at 640px, 3-col at 900px+ */
+.cols-3 { grid-template-columns: 1fr; }
+
+/* 4-column: stacked on mobile, 2-col at 640px, 4-col at 1024px+ */
+.cols-4 { grid-template-columns: 1fr; }
+
+@media (min-width: 640px) {
+  .cols-3 { grid-template-columns: repeat(2, 1fr); }
+  .cols-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 768px) {
+  .cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .cols-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .cols-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Tighter section padding on mobile */
+@media (max-width: 767px) {
+  .section-pad {
+    padding-top: 56px;
+    padding-bottom: 56px;
+  }
+  .section-pad-tight {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+  /* Reduce large gaps between grid items on mobile */
+  .gap-16 { gap: 2rem !important; }
+  .gap-12 { gap: 1.5rem !important; }
+}
+
 /* Blog prose renderer */
 .prose-afterword {
   font-size: 1.05rem;

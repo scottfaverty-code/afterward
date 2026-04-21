@@ -140,7 +140,7 @@ export default async function DashboardPage() {
             </div>
           )}
 
-          <div className="grid gap-5" style={{ gridTemplateColumns: "1fr 1fr" }}>
+          <div className="grid gap-5 cols-2">
             {/* Progress card */}
             <div
               className="rounded-2xl p-6 col-span-2"

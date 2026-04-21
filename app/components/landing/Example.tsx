@@ -87,8 +87,7 @@ export default function Example() {
 
         {/* Two cards */}
         <div
-          className="grid gap-8"
-          style={{ gridTemplateColumns: "repeat(2, 1fr)" }}
+          className="grid gap-8 cols-2"
         >
           {demos.map((demo) => (
             <div

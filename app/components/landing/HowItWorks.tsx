@@ -82,8 +82,7 @@ export default function HowItWorks() {
 
         {/* Steps */}
         <div
-          className="grid gap-8 mb-12"
-          style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
+          className="grid gap-8 mb-12 cols-4"
         >
           {steps.map((step) => (
             <div key={step.num} className="flex flex-col">
@@ -124,8 +123,7 @@ export default function HowItWorks() {
             Three ways to share your story, you choose
           </div>
           <div
-            className="grid gap-5"
-            style={{ gridTemplateColumns: "repeat(3, 1fr)" }}
+            className="grid gap-5 cols-3"
           >
             {inputMethods.map((method) => (
               <div

@@ -36,8 +36,7 @@ export default function WhoItsFor() {
         </div>
 
         <div
-          className="grid gap-6"
-          style={{ gridTemplateColumns: "repeat(3, 1fr)" }}
+          className="grid gap-6 cols-3"
         >
           {cards.map((card) => (
             <div
