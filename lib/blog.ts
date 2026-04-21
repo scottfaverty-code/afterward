@@ -8,9 +8,11 @@ export type BlogPost = {
 
 // Registry, add a new import here each time you publish a post
 import fearOfBeingForgotten from "@/content/blog/fear-of-being-forgotten";
+import yourStoryShouldntWait from "@/content/blog/your-story-shouldnt-wait";
 
 const posts: BlogPost[] = [
   fearOfBeingForgotten,
+  yourStoryShouldntWait,
 ];
 
 // Sorted newest first
