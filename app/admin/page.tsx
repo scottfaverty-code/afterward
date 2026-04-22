@@ -4,6 +4,7 @@ import { getAdminAuth } from "@/lib/admin-auth";
 import AdminOrdersTable from "./AdminOrdersTable";
 import SeedDemoButton from "./SeedDemoButton";
 import ManageAdmins from "./ManageAdmins";
+import UserLookup from "./UserLookup";
 
 export default async function AdminPage() {
   const { user, role } = await getAdminAuth();
@@ -125,6 +126,25 @@ export default async function AdminPage() {
         {/* Demo tools */}
         <div style={{ marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
           <SeedDemoButton appUrl={process.env.NEXT_PUBLIC_APP_URL ?? ""} />
+        </div>
+
+        {/* Customer lookup */}
+        <div
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: "16px",
+            boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+            overflow: "hidden",
+            marginBottom: "24px",
+          }}
+        >
+          <div style={{ padding: "20px 24px", borderBottom: "1px solid #F0F0F0" }}>
+            <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "#1A1A1A" }}>Customer lookup</h2>
+            <p style={{ fontSize: "0.78rem", color: "#999", marginTop: "4px" }}>
+              Find any user by email, check account status, and generate a support login link.
+            </p>
+          </div>
+          <UserLookup />
         </div>
 
         {/* Orders table */}
