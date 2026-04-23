@@ -97,7 +97,7 @@ export default function ShippingAddressForm({ isUpdate = false, sessionId }: { i
         return;
       }
 
-      router.push("/check-your-email");
+      router.push(`/account-ready?session_id=${sessionId}`);
       return;
     }
 
@@ -144,7 +144,7 @@ export default function ShippingAddressForm({ isUpdate = false, sessionId }: { i
         .update({ shipping_address_deferred: true })
         .eq("user_id", user.id);
     }
-    router.push("/check-your-email");
+    router.push(sessionId ? `/account-ready?session_id=${sessionId}` : "/dashboard");
   }
 
   const inputStyle: React.CSSProperties = {

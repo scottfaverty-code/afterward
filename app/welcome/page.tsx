@@ -36,7 +36,9 @@ export default async function WelcomePage({
     if (!existingUser) {
       const { data: newUser } = await admin.auth.admin.createUser({
         email: customerEmail,
-        email_confirm: false,
+        // Payment through Stripe verifies the email address — no confirmation
+        // email needed. Skip it and give the user a direct access link instead.
+        email_confirm: true,
       });
       userId = newUser?.user?.id;
     }
@@ -102,9 +104,9 @@ export default async function WelcomePage({
         </h1>
 
         <p className="text-center mb-7" style={{ fontSize: "1.05rem", color: "#666", lineHeight: "1.7" }}>
-          Your Afterword page has been created. We&apos;ve sent a link to{" "}
-          <strong style={{ color: "#1A1A1A" }}>{customerEmail}</strong>{" "}
-          to set up your password and access your account.
+          Your Afterword page has been created for{" "}
+          <strong style={{ color: "#1A1A1A" }}>{customerEmail}</strong>.
+          {" "}First, tell us where to send your plaque. Then you&apos;ll set up your password and start writing.
         </p>
 
         {/* Confirmation items */}
@@ -132,7 +134,7 @@ export default async function WelcomePage({
           style={{ backgroundColor: "#FDF3DC", border: "1px solid #C9932A" }}
         >
           <p style={{ fontSize: "0.875rem", color: "#1A1A1A", lineHeight: "1.7" }}>
-            <strong>What happens next:</strong> Check your email for a link to set up your password. Once you&apos;re in, guided prompts will walk you through writing your story, most people finish their first pass in a single afternoon.
+            <strong>What happens next:</strong> Tell us where to send your plaque (takes 60 seconds), then you&apos;ll set your password and start writing. Guided prompts walk you through your story, most people finish their first pass in a single afternoon.
           </p>
         </div>
 
@@ -145,7 +147,7 @@ export default async function WelcomePage({
         </Link>
 
         <p className="text-center" style={{ fontSize: "0.8rem", color: "#999" }}>
-          Takes 60 seconds. We&apos;ll confirm everything by email.
+          Takes 60 seconds, then you&apos;ll set up your account.
         </p>
 
         {/* Founder note */}
