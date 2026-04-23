@@ -253,7 +253,10 @@ export default function UserLookup() {
                   marginBottom: "12px",
                 }}
               >
-                <strong>Confirmation email not received.</strong> Generate a magic link below, then send it to the customer directly. It bypasses email confirmation and drops them straight into the dashboard.
+                <strong>Confirmation email not received.</strong>{" "}
+                {result.hasPassword
+                  ? "Generate a magic link below. It bypasses email confirmation and takes them straight to their dashboard."
+                  : "This user hasn't set a password yet. Generate a magic link below — it will log them in and take them to the password setup page first, then into their dashboard."}
               </div>
             )}
 
@@ -273,7 +276,11 @@ export default function UserLookup() {
                   opacity: generatingLink ? 0.6 : 1,
                 }}
               >
-                {generatingLink ? "Generating…" : "Generate magic login link"}
+                {generatingLink
+                  ? "Generating…"
+                  : result.hasPassword
+                  ? "Generate magic login link"
+                  : "Generate setup + login link"}
               </button>
               {result.profile?.memorial_slug && (
                 <a
