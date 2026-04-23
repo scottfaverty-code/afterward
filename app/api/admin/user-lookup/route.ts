@@ -62,7 +62,9 @@ export async function POST(req: NextRequest) {
       type: "magiclink",
       email: user.email!,
       options: {
-        redirectTo: `${siteUrl}/dashboard`,
+        // Must route through /auth/callback so the PKCE code gets exchanged
+        // and session cookies are set before landing on the dashboard
+        redirectTo: `${siteUrl}/auth/callback?next=/dashboard`,
       },
     });
 
