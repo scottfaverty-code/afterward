@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
 
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
@@ -17,9 +16,12 @@ export default function ForgotPasswordForm() {
       return;
     }
     setLoading(true);
-    const supabase = createClient();
-    await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/setup-account`,
+    // Use our Resend-backed route — generates a recovery link via Supabase
+    // admin API and sends it through Resend for reliable delivery.
+    await fetch("/api/send-password-reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email.trim() }),
     });
     setSent(true);
     setLoading(false);

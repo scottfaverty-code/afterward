@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getStripe } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getResend, FROM_ADDRESS, REPLY_TO, purchaseConfirmationEmail } from "@/lib/email";
 
 export default async function WelcomePage({
   searchParams,
@@ -69,6 +70,21 @@ export default async function WelcomePage({
         await admin
           .from("profiles")
           .upsert({ id: userId, memorial_slug: memorialSlug }, { onConflict: "id", ignoreDuplicates: true });
+
+        // Send purchase confirmation email via Resend
+        try {
+          const resend = getResend();
+          const { subject, html } = purchaseConfirmationEmail(customerEmail);
+          await resend.emails.send({
+            from: FROM_ADDRESS,
+            replyTo: REPLY_TO,
+            to: customerEmail,
+            subject,
+            html,
+          });
+        } catch {
+          // Non-fatal — purchase is recorded, email failure shouldn't block the flow
+        }
       }
     }
   } catch {
