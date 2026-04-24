@@ -68,7 +68,7 @@ export function passwordSetupEmail(setupLink: string): { subject: string; html: 
 
 export function passwordResetEmail(resetLink: string): { subject: string; html: string } {
   return {
-    subject: "Reset your Afterword password",
+    subject: "Set up your Afterword password",
     html: `
 <!DOCTYPE html>
 <html>
@@ -85,13 +85,13 @@ export function passwordResetEmail(resetLink: string): { subject: string; html: 
 
         <!-- Body -->
         <tr><td style="padding:40px 40px 32px;">
-          <h1 style="margin:0 0 16px;font-family:Georgia,'Times New Roman',serif;font-size:1.6rem;color:#1B4F6B;line-height:1.2;">Reset your password</h1>
+          <h1 style="margin:0 0 16px;font-family:Georgia,'Times New Roman',serif;font-size:1.6rem;color:#1B4F6B;line-height:1.2;">Set up your password</h1>
           <p style="margin:0 0 24px;font-size:1rem;color:#555;line-height:1.7;">
-            We received a request to reset your Afterword password. Click below to choose a new one. This link expires in 1 hour.
+            Click below to set your Afterword password and access your account. This link expires in 1 hour.
           </p>
           <table cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
             <tr><td style="background:#1B4F6B;border-radius:8px;">
-              <a href="${resetLink}" style="display:inline-block;padding:16px 32px;font-size:1rem;font-weight:600;color:#ffffff;text-decoration:none;">Reset my password &rarr;</a>
+              <a href="${resetLink}" style="display:inline-block;padding:16px 32px;font-size:1rem;font-weight:600;color:#ffffff;text-decoration:none;">Set up my password &rarr;</a>
             </td></tr>
           </table>
           <p style="margin:0 0 16px;font-size:0.82rem;color:#999;line-height:1.6;">
@@ -99,7 +99,7 @@ export function passwordResetEmail(resetLink: string): { subject: string; html: 
             <a href="${resetLink}" style="color:#2E7DA3;word-break:break-all;">${resetLink}</a>
           </p>
           <p style="margin:0;font-size:0.82rem;color:#999;line-height:1.6;">
-            If you didn't request a password reset, you can safely ignore this email.
+            If you didn't request this, you can safely ignore this email.
           </p>
         </td></tr>
 
