@@ -36,12 +36,12 @@ export default function SetupAccountForm({ hasError }: { hasError?: boolean }) {
         const refresh_token = params.get("refresh_token");
         const type = params.get("type");
 
-        if (access_token && refresh_token && type === "recovery") {
+        // Handle both recovery links and magiclinks — both carry valid sessions
+        if (access_token && refresh_token && (type === "recovery" || type === "magiclink")) {
           const { data, error } = await supabase.auth.setSession({ access_token, refresh_token });
           if (data.session && !error) {
             setSessionReady(true);
             setSessionChecked(true);
-            // Clean up the hash from the URL
             window.history.replaceState(null, "", window.location.pathname);
             return;
           }
@@ -73,16 +73,11 @@ export default function SetupAccountForm({ hasError }: { hasError?: boolean }) {
     router.push("/setup-profile");
   }
 
-  async function handleRequestNewLink() {
-    setRequestingLink(true);
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user?.email) {
-      await supabase.auth.resetPasswordForEmail(user.email, {
-        redirectTo: `${window.location.origin}/setup-account`,
-      });
-    }
-    router.push("/check-your-email");
+  function handleRequestNewLink() {
+    // Send to forgot-password where they can enter their email and get a
+    // fresh recovery link. We don't try to send email here because SMTP
+    // may not be configured and we have no confirmed session to read from.
+    router.push("/forgot-password");
   }
 
   const inputStyle: React.CSSProperties = {

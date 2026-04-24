@@ -59,20 +59,16 @@ export async function POST(req: NextRequest) {
     // (bypasses email confirmation requirement)
     const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.myafterword.co";
 
-    // Users who haven't set a password yet need to land on /setup-account first.
-    // Users who already have a password can go straight to /dashboard.
     const hasPassword = user.identities?.some((i) => i.provider === "email") ?? false;
-    const nextPage = hasPassword ? "/dashboard" : "/setup-account";
 
-    const { data: linkData, error: linkErr } = await admin.auth.admin.generateLink({
-      type: "magiclink",
-      email: user.email!,
-      options: {
-        // Must route through /auth/callback so the PKCE code gets exchanged
-        // and session cookies are set before landing on the destination
-        redirectTo: `${siteUrl}/auth/callback?next=${nextPage}`,
-      },
-    });
+    // New users: recovery link direct to /setup-account — Supabase sends hash
+    // tokens (#access_token=...&type=recovery) which SetupAccountForm handles.
+    // Existing users: magiclink through /auth/callback to /dashboard.
+    const { data: linkData, error: linkErr } = await admin.auth.admin.generateLink(
+      hasPassword
+        ? { type: "magiclink", email: user.email!, options: { redirectTo: `${siteUrl}/auth/callback?next=/dashboard` } }
+        : { type: "recovery", email: user.email!, options: { redirectTo: `${siteUrl}/setup-account` } }
+    );
 
     if (linkErr) {
       return NextResponse.json({ ...userInfo, magicLinkError: linkErr.message });

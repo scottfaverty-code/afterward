@@ -29,17 +29,26 @@ export default async function AccountReadyPage({
 
       if (user) {
         const hasPassword = user.identities?.some((i) => i.provider === "email") ?? false;
-        const nextPage = hasPassword ? "/dashboard" : "/setup-account";
 
-        const { data: linkData } = await admin.auth.admin.generateLink({
-          type: "magiclink",
-          email: user.email!,
-          options: {
-            redirectTo: `${siteUrl}/auth/callback?next=${nextPage}`,
-          },
-        });
-
-        setupLink = linkData?.properties?.action_link ?? null;
+        if (hasPassword) {
+          // Existing user — magiclink through callback to dashboard
+          const { data: linkData } = await admin.auth.admin.generateLink({
+            type: "magiclink",
+            email: user.email!,
+            options: { redirectTo: `${siteUrl}/auth/callback?next=/dashboard` },
+          });
+          setupLink = linkData?.properties?.action_link ?? null;
+        } else {
+          // New user — recovery link direct to /setup-account so the hash
+          // tokens (#access_token=...&type=recovery) land right there.
+          // Avoids the server-side /auth/callback which can't read URL hashes.
+          const { data: linkData } = await admin.auth.admin.generateLink({
+            type: "recovery",
+            email: user.email!,
+            options: { redirectTo: `${siteUrl}/setup-account` },
+          });
+          setupLink = linkData?.properties?.action_link ?? null;
+        }
       }
     }
   } catch {
