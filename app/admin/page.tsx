@@ -1,10 +1,7 @@
 import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getAdminAuth } from "@/lib/admin-auth";
-import AdminOrdersTable from "./AdminOrdersTable";
-import SeedDemoButton from "./SeedDemoButton";
-import ManageAdmins from "./ManageAdmins";
-import UserLookup from "./UserLookup";
+import AdminShell from "./AdminShell";
 
 export default async function AdminPage() {
   const { user, role } = await getAdminAuth();
@@ -80,112 +77,35 @@ export default async function AdminPage() {
   const shipped = (purchases ?? []).filter((p) => p.plaque_status === "shipped").length;
   const delivered = (purchases ?? []).filter((p) => p.plaque_status === "delivered").length;
 
+  const stats = [
+    { label: "Total customers", value: orders.length },
+    { label: "Total revenue", value: `$${(totalRevenue / 100).toLocaleString("en-US", { minimumFractionDigits: 2 })}` },
+    { label: "Plaques pending", value: pending, highlight: pending > 0 },
+    { label: "Plaques shipped", value: shipped },
+    { label: "Plaques delivered", value: delivered },
+  ];
+
   return (
     <div style={{ backgroundColor: "#F4F7FA", minHeight: "100vh" }}>
       {/* Header */}
       <div style={{ backgroundColor: "#0f2d3d", padding: "20px 32px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
           <div style={{ fontFamily: "Georgia, serif", fontSize: "1.3rem", color: "#fff" }}>Afterword</div>
-          <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.5)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Super Admin</div>
+          <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.5)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Admin</div>
         </div>
         <div style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.5)" }}>
           {user.email}
         </div>
       </div>
 
-      <div style={{ padding: "32px" }}>
-        {/* Stats strip */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "16px", marginBottom: "32px" }}>
-          {[
-            { label: "Total customers", value: orders.length },
-            { label: "Total revenue", value: `$${(totalRevenue / 100).toLocaleString("en-US", { minimumFractionDigits: 2 })}` },
-            { label: "Plaques pending", value: pending, highlight: pending > 0 },
-            { label: "Plaques shipped", value: shipped },
-            { label: "Plaques delivered", value: delivered },
-          ].map((stat) => (
-            <div
-              key={stat.label}
-              style={{
-                backgroundColor: "#fff",
-                borderRadius: "12px",
-                padding: "20px",
-                boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-                borderLeft: stat.highlight ? "4px solid #C9932A" : "4px solid #D6EAF4",
-              }}
-            >
-              <div style={{ fontSize: "1.6rem", fontWeight: 700, color: "#1B4F6B", lineHeight: 1 }}>
-                {stat.value}
-              </div>
-              <div style={{ fontSize: "0.75rem", color: "#999", marginTop: "6px" }}>
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Demo tools */}
-        <div style={{ marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
-          <SeedDemoButton appUrl={process.env.NEXT_PUBLIC_APP_URL ?? ""} />
-        </div>
-
-        {/* Customer lookup */}
-        <div
-          style={{
-            backgroundColor: "#fff",
-            borderRadius: "16px",
-            boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-            overflow: "hidden",
-            marginBottom: "24px",
-          }}
-        >
-          <div style={{ padding: "20px 24px", borderBottom: "1px solid #F0F0F0" }}>
-            <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "#1A1A1A" }}>Customer lookup</h2>
-            <p style={{ fontSize: "0.78rem", color: "#999", marginTop: "4px" }}>
-              Find any user by email, check account status, and generate a support login link.
-            </p>
-          </div>
-          <UserLookup />
-        </div>
-
-        {/* Orders table */}
-        <div
-          style={{
-            backgroundColor: "#fff",
-            borderRadius: "16px",
-            boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-            overflow: "hidden",
-          }}
-        >
-          <div style={{ padding: "20px 24px", borderBottom: "1px solid #F0F0F0" }}>
-            <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "#1A1A1A" }}>All orders</h2>
-          </div>
-          <AdminOrdersTable orders={orders} appUrl={process.env.NEXT_PUBLIC_APP_URL ?? ""} />
-        </div>
-
-        {/* Admin management, super_admin only */}
-        {role === "super_admin" && (
-          <div
-            style={{
-              backgroundColor: "#fff",
-              borderRadius: "16px",
-              boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-              overflow: "hidden",
-              marginTop: "32px",
-            }}
-          >
-            <div style={{ padding: "20px 24px", borderBottom: "1px solid #F0F0F0" }}>
-              <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "#1A1A1A" }}>Admin access</h2>
-              <p style={{ fontSize: "0.78rem", color: "#999", marginTop: "4px" }}>
-                Manage who can access this admin panel. Only super admins can make changes.
-              </p>
-            </div>
-            <ManageAdmins
-              initialAdmins={adminsList ?? []}
-              currentUserEmail={user.email}
-            />
-          </div>
-        )}
-      </div>
+      <AdminShell
+        stats={stats}
+        orders={orders}
+        appUrl={process.env.NEXT_PUBLIC_APP_URL ?? ""}
+        role={role}
+        adminsList={adminsList}
+        currentUserEmail={user.email}
+      />
     </div>
   );
 }
