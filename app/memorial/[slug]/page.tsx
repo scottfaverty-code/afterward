@@ -3,20 +3,28 @@ import { createClient } from "@/lib/supabase/server";
 import { SECTIONS } from "@/lib/sections";
 import GuestbookForm from "./GuestbookForm";
 
-function sectionIntro(slug: string, name: string): string {
+type Pronouns = { subj: string; obj: string; poss: string };
+
+function getPronouns(referredAs: string): Pronouns {
+  if (referredAs === "he") return { subj: "he", obj: "him", poss: "his" };
+  if (referredAs === "she") return { subj: "she", obj: "her", poss: "her" };
+  return { subj: "they", obj: "them", poss: "their" };
+}
+
+function sectionIntro(slug: string, name: string, p: Pronouns): string {
   switch (slug) {
     case "your-roots":
-      return `What follows are ${name}'s recollections about childhood, where they came from, their earliest memories, and the people who shaped them.`;
+      return `What follows are ${name}'s recollections about childhood, where ${p.subj} came from, ${p.poss} earliest memories, and the people who shaped ${p.obj}.`;
     case "the-life-you-built":
-      return `This is ${name}'s account of the life they built, the work they did, the risks they took, the hardest chapters, and the moments they would return to if they could.`;
+      return `This is ${name}'s account of the life ${p.subj} built, the work ${p.subj} did, the risks ${p.subj} took, the hardest chapters, and the moments ${p.subj} would return to if ${p.subj} could.`;
     case "the-people-who-matter":
-      return `Here, ${name} speaks about the people who mattered most, those who loved them, shaped them, and who they most wanted to say something to.`;
+      return `Here, ${name} speaks about the people who mattered most, those who loved ${p.obj}, shaped ${p.obj}, and who ${p.subj} most wanted to say something to.`;
     case "what-you-believe":
-      return `What follows is ${name}'s hard-won wisdom, the things they learned about life, about people, and about what actually matters, that took a lifetime to arrive at.`;
+      return `What follows is ${name}'s hard-won wisdom, the things ${p.subj} learned about life, about people, and about what actually matters, that took a lifetime to arrive at.`;
     case "your-proudest-moments":
-      return `These are the moments ${name} was most proud of, not by anyone else's measure, but by their own.`;
+      return `These are the moments ${name} was most proud of, not by anyone else's measure, but by ${p.poss} own.`;
     case "how-you-want-to-be-remembered":
-      return `What follows are ${name}'s words about how they want to be remembered, written directly to the people who will one day read this page.`;
+      return `What follows are ${name}'s words about how ${p.subj} wants to be remembered, written directly to the people who will one day read this page.`;
     default:
       return `In ${name}'s own words.`;
   }
@@ -29,6 +37,7 @@ type Profile = {
   avatar_url: string | null;
   page_is_public: boolean;
   memorial_slug: string | null;
+  referred_as: string | null;
 };
 
 type GuestbookEntry = {
@@ -48,7 +57,7 @@ export default async function MemorialPage({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, first_name, last_name, avatar_url, page_is_public, memorial_slug")
+    .select("id, first_name, last_name, avatar_url, page_is_public, memorial_slug, referred_as")
     .eq("memorial_slug", slug)
     .single();
 
@@ -99,6 +108,7 @@ export default async function MemorialPage({
   const fullName = [p.first_name, p.last_name].filter(Boolean).join(" ");
   const firstName = p.first_name ?? fullName ?? "them";
   const initial = p.first_name?.[0]?.toUpperCase() ?? "?";
+  const pr = getPronouns(p.referred_as ?? "they");
 
   return (
     <div style={{ backgroundColor: "#FAFAFA", minHeight: "100vh" }}>
@@ -133,7 +143,7 @@ export default async function MemorialPage({
 
         <h1 className="font-serif mb-1" style={{ fontSize: "1.6rem" }}>{fullName}</h1>
         <div style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.5)" }}>
-          Afterword, Written in their own words
+          Afterword, Written in {pr.poss} own words
         </div>
       </div>
 
@@ -163,7 +173,7 @@ export default async function MemorialPage({
                 </div>
 
                 <p style={{ fontStyle: "italic", fontSize: "0.9rem", color: "#7A5C1E", lineHeight: "1.7", marginBottom: "28px" }}>
-                  What follows is {firstName}&rsquo;s letter to the people they love most. These are their own words, written for those closest to them.
+                  What follows is {firstName}&rsquo;s letter to the people {pr.subj} loves most. These are {pr.poss} own words, written for those closest to {pr.obj}.
                 </p>
 
                 {/* Paper card */}
@@ -219,7 +229,7 @@ export default async function MemorialPage({
                   lineHeight: "1.7",
                 }}
               >
-                {sectionIntro(section.slug, firstName)}
+                {sectionIntro(section.slug, firstName, pr)}
               </div>
 
               {/* Answers, no question labels, just prose */}

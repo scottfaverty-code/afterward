@@ -234,6 +234,7 @@ export async function POST() {
     last_name: "Williams",
     avatar_url: `${appUrl}/images/patrick-william.png`,
     memorial_slug: DEMO_SLUG,
+    referred_as: "he",
     page_is_public: true,
     has_seen_dashboard: true,
   }, { onConflict: "id" });

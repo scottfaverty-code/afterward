@@ -12,11 +12,11 @@ export default async function SetupProfilePage({
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  let profile: { first_name?: string | null; last_name?: string | null; avatar_url?: string | null } = {};
+  let profile: { first_name?: string | null; last_name?: string | null; avatar_url?: string | null; referred_as?: string | null } = {};
   if (user) {
     const { data } = await supabase
       .from("profiles")
-      .select("first_name, last_name, avatar_url")
+      .select("first_name, last_name, avatar_url, referred_as")
       .eq("id", user.id)
       .single();
     profile = data ?? {};
@@ -47,6 +47,7 @@ export default async function SetupProfilePage({
           initialFirstName={profile.first_name ?? ""}
           initialLastName={profile.last_name ?? ""}
           initialAvatarUrl={profile.avatar_url ?? ""}
+          initialReferredAs={(profile.referred_as as "he" | "she" | "they") ?? "they"}
           isUpdate={isUpdate}
         />
       </div>

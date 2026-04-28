@@ -8,16 +8,19 @@ export default function SetupProfileForm({
   initialFirstName = "",
   initialLastName = "",
   initialAvatarUrl = "",
+  initialReferredAs = "they",
   isUpdate = false,
 }: {
   initialFirstName?: string;
   initialLastName?: string;
   initialAvatarUrl?: string;
+  initialReferredAs?: "he" | "she" | "they";
   isUpdate?: boolean;
 }) {
   const router = useRouter();
   const [firstName, setFirstName] = useState(initialFirstName);
   const [lastName, setLastName] = useState(initialLastName);
+  const [referredAs, setReferredAs] = useState<"he" | "she" | "they">(initialReferredAs);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string>(initialAvatarUrl);
   const [errors, setErrors] = useState<{ firstName?: string; lastName?: string; photo?: string; form?: string }>({});
@@ -78,6 +81,7 @@ export default function SetupProfileForm({
       first_name: firstName.trim(),
       last_name: lastName.trim(),
       avatar_url: avatarUrl || null,
+      referred_as: referredAs,
     }, { onConflict: "id" });
 
     if (error) {
@@ -194,6 +198,43 @@ export default function SetupProfileForm({
             style={{ ...inputStyle, borderColor: errors.lastName ? "#c0392b" : "#D6EAF4" }}
           />
           {errors.lastName && <p style={{ color: "#c0392b", fontSize: "0.8rem", marginTop: "4px" }}>{errors.lastName}</p>}
+        </div>
+      </div>
+
+      {/* How should your page read */}
+      <div className="mb-6">
+        <label className="block mb-1" style={{ fontSize: "0.85rem", fontWeight: 600, color: "#333" }}>
+          How should your page read?
+        </label>
+        <p style={{ fontSize: "0.78rem", color: "#999", marginBottom: "10px", lineHeight: "1.5" }}>
+          Your memorial will say things like &ldquo;in his words&rdquo; or &ldquo;in her words&rdquo;. Choose whichever fits.
+        </p>
+        <div style={{ display: "flex", gap: "8px" }}>
+          {(["he", "she", "they"] as const).map((val) => {
+            const label = val === "he" ? "He / His" : val === "she" ? "She / Her" : "They / Their";
+            const selected = referredAs === val;
+            return (
+              <button
+                key={val}
+                type="button"
+                onClick={() => setReferredAs(val)}
+                style={{
+                  flex: 1,
+                  padding: "10px 0",
+                  borderRadius: "8px",
+                  border: selected ? "2px solid #1B4F6B" : "1px solid #D6EAF4",
+                  backgroundColor: selected ? "#EEF7FC" : "#fff",
+                  color: selected ? "#1B4F6B" : "#666",
+                  fontWeight: selected ? 700 : 400,
+                  fontSize: "0.875rem",
+                  cursor: "pointer",
+                  transition: "all 0.12s",
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
       </div>
 

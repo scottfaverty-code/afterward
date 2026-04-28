@@ -198,6 +198,7 @@ export async function POST() {
     last_name: "Mitchell",
     avatar_url: `${appUrl}/images/eleanor-mitchell.png`,
     memorial_slug: DEMO_SLUG,
+    referred_as: "she",
     page_is_public: true,
     has_seen_dashboard: true,
   }, { onConflict: "id" });

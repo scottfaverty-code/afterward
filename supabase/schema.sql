@@ -89,6 +89,7 @@ create table if not exists public.profiles (
   has_seen_dashboard  boolean not null default false,
   page_is_public      boolean not null default false,
   memorial_slug       text unique,
+  referred_as         text not null default 'they',
   created_at          timestamptz not null default now()
 );
 
