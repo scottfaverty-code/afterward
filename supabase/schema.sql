@@ -90,6 +90,8 @@ create table if not exists public.profiles (
   page_is_public      boolean not null default false,
   memorial_slug       text unique,
   referred_as         text not null default 'they',
+  birth_year          integer,
+  death_year          integer,
   created_at          timestamptz not null default now()
 );
 

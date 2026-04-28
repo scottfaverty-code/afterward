@@ -235,6 +235,8 @@ export async function POST() {
     avatar_url: `${appUrl}/images/patrick-faverty.jpg`,
     memorial_slug: MEMORIAL_SLUG,
     referred_as: "he",
+    birth_year: 1949,
+    death_year: 2025,
     page_is_public: true,
     has_seen_dashboard: true,
   }, { onConflict: "id" });

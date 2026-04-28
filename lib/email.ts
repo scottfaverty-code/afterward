@@ -118,6 +118,60 @@ export function passwordResetEmail(resetLink: string): { subject: string; html: 
   };
 }
 
+export function passingNotificationEmail(
+  fullName: string,
+  deathYear: number,
+  reporterName: string | null,
+  memorialUrl: string,
+): { subject: string; html: string } {
+  return {
+    subject: `Passing reported: ${fullName}`,
+    html: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background:#EEF7FC;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#EEF7FC;padding:48px 24px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+        <tr><td style="background:linear-gradient(135deg,#0f2d3d,#1B4F6B);padding:32px 40px;text-align:center;">
+          <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:1.5rem;color:#ffffff;letter-spacing:0.04em;">Afterword</p>
+        </td></tr>
+        <tr><td style="padding:40px 40px 32px;">
+          <h1 style="margin:0 0 16px;font-family:Georgia,'Times New Roman',serif;font-size:1.4rem;color:#1B4F6B;line-height:1.3;">A passing has been reported</h1>
+          <table cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 24px;">
+            <tr><td style="padding:10px 0;border-bottom:1px solid #E5E5E5;">
+              <p style="margin:0 0 2px;font-size:0.82rem;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.06em;">Name</p>
+              <p style="margin:0;font-size:0.95rem;color:#1A1A1A;">${fullName}</p>
+            </td></tr>
+            <tr><td style="padding:10px 0;border-bottom:1px solid #E5E5E5;">
+              <p style="margin:0 0 2px;font-size:0.82rem;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.06em;">Year of passing</p>
+              <p style="margin:0;font-size:0.95rem;color:#1A1A1A;">${deathYear}</p>
+            </td></tr>
+            <tr><td style="padding:10px 0;border-bottom:1px solid #E5E5E5;">
+              <p style="margin:0 0 2px;font-size:0.82rem;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.06em;">Reported by</p>
+              <p style="margin:0;font-size:0.95rem;color:#1A1A1A;">${reporterName ?? "Not given"}</p>
+            </td></tr>
+            <tr><td style="padding:10px 0;">
+              <p style="margin:0 0 2px;font-size:0.82rem;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.06em;">Memorial page</p>
+              <p style="margin:0;font-size:0.95rem;"><a href="${memorialUrl}" style="color:#2E7DA3;">${memorialUrl}</a></p>
+            </td></tr>
+          </table>
+          <p style="margin:0;font-size:0.85rem;color:#666;line-height:1.7;">
+            The page has been updated automatically. No action is required unless you would like to follow up with the family.
+          </p>
+        </td></tr>
+        <tr><td style="padding:24px 40px;border-top:1px solid #E5E5E5;text-align:center;">
+          <p style="margin:0;font-size:0.78rem;color:#999;">Afterword · <a href="https://www.myafterword.co" style="color:#2E7DA3;">myafterword.co</a></p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`,
+  };
+}
+
 export function purchaseConfirmationEmail(customerEmail: string, firstName?: string): { subject: string; html: string } {
   const name = firstName ?? "there";
   return {

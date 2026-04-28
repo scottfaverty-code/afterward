@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { SECTIONS } from "@/lib/sections";
 import GuestbookForm from "./GuestbookForm";
+import ReportPassingForm from "./ReportPassingForm";
 
 type Pronouns = { subj: string; obj: string; poss: string };
 
@@ -38,6 +39,8 @@ type Profile = {
   page_is_public: boolean;
   memorial_slug: string | null;
   referred_as: string | null;
+  birth_year: number | null;
+  death_year: number | null;
 };
 
 type GuestbookEntry = {
@@ -57,12 +60,11 @@ export default async function MemorialPage({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, first_name, last_name, avatar_url, page_is_public, memorial_slug, referred_as")
+    .select("id, first_name, last_name, avatar_url, page_is_public, memorial_slug, referred_as, birth_year, death_year")
     .eq("memorial_slug", slug)
     .maybeSingle();
 
-  // Fallback: if the above failed (e.g. referred_as column not yet migrated),
-  // retry without it so existing pages never 404 due to a missing column.
+  // Fallback: retry without newer columns if the query fails (missing migration).
   let resolvedProfile = profile;
   if (!resolvedProfile) {
     const { data: fallback } = await supabase
@@ -70,7 +72,9 @@ export default async function MemorialPage({
       .select("id, first_name, last_name, avatar_url, page_is_public, memorial_slug")
       .eq("memorial_slug", slug)
       .maybeSingle();
-    resolvedProfile = fallback ? { ...fallback, referred_as: null } : null;
+    resolvedProfile = fallback
+      ? { ...fallback, referred_as: null, birth_year: null, death_year: null }
+      : null;
   }
 
   if (!resolvedProfile) notFound();
@@ -122,6 +126,13 @@ export default async function MemorialPage({
   const initial = p.first_name?.[0]?.toUpperCase() ?? "?";
   const pr = getPronouns(p.referred_as ?? "they");
 
+  const yearsDisplay = (() => {
+    if (p.birth_year && p.death_year) return `${p.birth_year} to ${p.death_year}`;
+    if (p.birth_year) return `b. ${p.birth_year}`;
+    if (p.death_year) return `Passed ${p.death_year}`;
+    return null;
+  })();
+
   return (
     <div style={{ backgroundColor: "#FAFAFA", minHeight: "100vh" }}>
       {/* Header */}
@@ -154,6 +165,11 @@ export default async function MemorialPage({
         </div>
 
         <h1 className="font-serif mb-1" style={{ fontSize: "1.6rem" }}>{fullName}</h1>
+        {yearsDisplay && (
+          <div style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.65)", marginBottom: "4px" }}>
+            {yearsDisplay}
+          </div>
+        )}
         <div style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.5)" }}>
           Afterword, Written in {pr.poss} own words
         </div>
@@ -266,6 +282,10 @@ export default async function MemorialPage({
           </h2>
 
           <GuestbookForm memorialSlug={slug} />
+
+          {!p.death_year && (
+            <ReportPassingForm slug={slug} firstName={firstName} />
+          )}
 
           {guestbook.length > 0 && (
             <div className="mt-6 flex flex-col gap-3">

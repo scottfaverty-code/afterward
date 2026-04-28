@@ -6,6 +6,7 @@ import SeedDemoButton from "./SeedDemoButton";
 import ManageAdmins from "./ManageAdmins";
 import UserLookup from "./UserLookup";
 import LaunchChecklist from "./LaunchChecklist";
+import FeatureRoadmap from "./FeatureRoadmap";
 
 type Order = Parameters<typeof AdminOrdersTable>[0]["orders"][number];
 type AdminRow = Parameters<typeof ManageAdmins>[0]["initialAdmins"][number];
@@ -24,6 +25,7 @@ interface Props {
 const TABS = [
   { id: "orders", label: "Orders" },
   { id: "launch", label: "Launch checklist" },
+  { id: "roadmap", label: "Roadmap" },
 ];
 
 export default function AdminShell({ stats, orders, appUrl, role, adminsList, currentUserEmail }: Props) {
@@ -163,6 +165,26 @@ export default function AdminShell({ stats, orders, appUrl, role, adminsList, cu
             Click any item to mark it done. Checks are saved in this browser.
           </p>
           <LaunchChecklist />
+        </div>
+      )}
+
+      {/* Roadmap tab */}
+      {activeTab === "roadmap" && (
+        <div
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: "16px",
+            boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+            padding: "28px 32px",
+          }}
+        >
+          <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "#1A1A1A", marginBottom: 4 }}>
+            Feature roadmap
+          </h2>
+          <p style={{ fontSize: "0.78rem", color: "#999", marginBottom: 28 }}>
+            A record of what&rsquo;s shipped and a place to track what&rsquo;s next. Ideas are saved in this browser.
+          </p>
+          <FeatureRoadmap />
         </div>
       )}
     </div>

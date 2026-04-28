@@ -9,18 +9,21 @@ export default function SetupProfileForm({
   initialLastName = "",
   initialAvatarUrl = "",
   initialReferredAs = "they",
+  initialBirthYear = "",
   isUpdate = false,
 }: {
   initialFirstName?: string;
   initialLastName?: string;
   initialAvatarUrl?: string;
   initialReferredAs?: "he" | "she" | "they";
+  initialBirthYear?: string;
   isUpdate?: boolean;
 }) {
   const router = useRouter();
   const [firstName, setFirstName] = useState(initialFirstName);
   const [lastName, setLastName] = useState(initialLastName);
   const [referredAs, setReferredAs] = useState<"he" | "she" | "they">(initialReferredAs);
+  const [birthYear, setBirthYear] = useState(initialBirthYear);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string>(initialAvatarUrl);
   const [errors, setErrors] = useState<{ firstName?: string; lastName?: string; photo?: string; form?: string }>({});
@@ -103,12 +106,19 @@ export default function SetupProfileForm({
 
     // On initial setup, assign a clean name-based slug.
     // On updates we never change it — their QR plaque may already be in use.
+    const parsedBirthYear = parseInt(birthYear, 10);
+    const currentYear = new Date().getFullYear();
+    const validBirthYear = !isNaN(parsedBirthYear) && parsedBirthYear >= 1900 && parsedBirthYear <= currentYear
+      ? parsedBirthYear
+      : null;
+
     const profileData: Record<string, unknown> = {
       id: user.id,
       first_name: firstName.trim(),
       last_name: lastName.trim(),
       avatar_url: avatarUrl || null,
       referred_as: referredAs,
+      ...(validBirthYear !== null ? { birth_year: validBirthYear } : {}),
     };
 
     if (!isUpdate) {
@@ -269,6 +279,25 @@ export default function SetupProfileForm({
             );
           })}
         </div>
+      </div>
+
+      {/* Birth year */}
+      <div className="mb-6">
+        <label className="block mb-1" style={{ fontSize: "0.85rem", fontWeight: 600, color: "#333" }}>
+          Year of birth <span style={{ fontSize: "0.78rem", fontWeight: 400, color: "#aaa" }}>(optional)</span>
+        </label>
+        <p style={{ fontSize: "0.78rem", color: "#999", marginBottom: "10px", lineHeight: "1.5" }}>
+          Shown on your memorial page as part of your life dates.
+        </p>
+        <input
+          type="number"
+          value={birthYear}
+          onChange={(e) => setBirthYear(e.target.value)}
+          placeholder={`e.g. ${new Date().getFullYear() - 50}`}
+          min="1900"
+          max={new Date().getFullYear()}
+          style={{ ...inputStyle, maxWidth: "180px" }}
+        />
       </div>
 
       {errors.form && (

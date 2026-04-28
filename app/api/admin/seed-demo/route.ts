@@ -235,6 +235,8 @@ export async function POST() {
     avatar_url: `${appUrl}/images/patrick-william.png`,
     memorial_slug: DEMO_SLUG,
     referred_as: "he",
+    birth_year: 1953,
+    death_year: 2024,
     page_is_public: true,
     has_seen_dashboard: true,
   }, { onConflict: "id" });
