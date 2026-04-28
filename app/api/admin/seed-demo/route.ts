@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-// One-time route to seed the Patrick Williams demo memorial.
+// One-time route to seed the Jonathan Williams demo memorial.
 // Protected: only scott.faverty@gmail.com can trigger it.
 // Hit POST /api/admin/seed-demo to run.
 
 const DEMO_EMAIL = "patrick.william.demo@myafterword.co";
-const DEMO_SLUG = "patrick-william";
+const DEMO_SLUG = "jonathan-williams";
 
 const ANSWERS: { section_slug: string; question_id: string; answer_text: string }[] = [
   // Your Roots
@@ -230,7 +230,7 @@ export async function POST() {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.myafterword.co";
   await admin.from("profiles").upsert({
     id: userId,
-    first_name: "Patrick",
+    first_name: "Jonathan",
     last_name: "Williams",
     avatar_url: `${appUrl}/images/patrick-william.png`,
     memorial_slug: DEMO_SLUG,

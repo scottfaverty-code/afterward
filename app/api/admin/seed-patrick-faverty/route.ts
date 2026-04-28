@@ -26,17 +26,17 @@ I've thought about that moment more than makes any logical sense. I think it was
   },
   {
     section_slug: "your-roots",
-    question_id: "roots-q3",
-    answer_text: `We were modest by every measure, money, ambition, footprint in the world. My parents, my younger sister Diane, and me in a two-bedroom house on Elm Street. My father worked; my mother kept the house and raised us and made sure we said grace and did our homework. We weren't a family that talked much about feelings, but we were a family that showed up. Supper at the table every night. Church on Sundays. Road trips to visit my grandparents in the summer.
-
-It was the kind of family that was easy to take for granted when you were young and that you'd give almost anything to have back once you're older. I was lucky in ways I only understand now.`,
-  },
-  {
-    section_slug: "your-roots",
     question_id: "roots-q4",
     answer_text: `My mother, without question. Dorothy was a schoolteacher before she married my father, and even after she stopped teaching in a classroom, she never stopped teaching at home. She read to me every night until I was old enough to be embarrassed about it, and then I pretended to be embarrassed but was secretly glad she kept going. She had a deep, unshakeable belief that education was the thing that made a life larger, and I absorbed that belief so completely that by the time I was a teenager I couldn't have told you where her conviction ended and mine began.
 
 My father, Robert, was a quieter influence but a steady one. He worked hard, came home tired, never complained. He had a kind of dignity about ordinary work that I've tried to carry with me. And there was my fourth-grade teacher, Mrs. Hartman, who kept me after school one day not because I was in trouble but because she'd noticed I liked to read and wanted to give me a stack of books she thought I'd love. That gesture changed things for me. I didn't forget it. I don't think I ever will.`,
+  },
+  {
+    section_slug: "your-roots",
+    question_id: "roots-q3",
+    answer_text: `We were modest by every measure: money, ambition, footprint in the world. My parents, my younger sister Diane, and me in a two-bedroom house on Elm Street. My father worked; my mother kept the house and raised us and made sure we said grace and did our homework. We weren't a family that talked much about feelings, but we were a family that showed up. Supper at the table every night. Church on Sundays. Road trips to visit my grandparents in the summer.
+
+It was the kind of family that was easy to take for granted when you were young and that you'd give almost anything to have back once you're older. I was lucky in ways I only understand now.`,
   },
 
   // The Life You Built
@@ -49,19 +49,19 @@ People ask which role I loved most, and the honest answer is teaching. There's n
   },
   {
     section_slug: "the-life-you-built",
-    question_id: "built-q2",
-    answer_text: `Leaving Indiana was the first one. I was seventeen and headed to Scottsdale with my family and it felt enormous at the time. The second was choosing teaching as a career. In 1971, my father gently pointed out that teachers didn't make much money, as if this were information I might not have come across. He wasn't wrong, but I'd decided the thing I wanted most was to do work that felt like it mattered. I've never once wished I'd chosen differently.
-
-The third risk was asking Carol to marry me after knowing her for nine months. We were twenty-three years old. Everyone said we were rushing. We were, a little, but I knew. Some things you just know.`,
-  },
-  {
-    section_slug: "the-life-you-built",
     question_id: "built-q3",
     answer_text: `Losing Carol. She was diagnosed with breast cancer in 2001, and after two years of fighting with more grace than I'll ever be able to adequately describe, she died in the spring of 2003. She was fifty-three years old.
 
 I don't have a clean answer for how I got through it. I went to work because work was familiar and familiar felt like solid ground. I leaned on Michael and Karen and David more than I probably should have, they had their own grief and I sometimes forgot that. I walked a great deal, which sounds trivial but wasn't. And I had friends and colleagues who showed up in all the small ways that turn out to be the large ways. One of my assistant principals brought dinner to the house every Friday for a year. She never made a fuss about it. Just left it at the door. I've never forgotten that.
 
 What I didn't do was pretend I was fine when I wasn't. I think that was the right choice. Grief is not a problem to be solved. It's a passage to be moved through.`,
+  },
+  {
+    section_slug: "the-life-you-built",
+    question_id: "built-q2",
+    answer_text: `Leaving Indiana was the first one. I was seventeen and headed to Scottsdale with my family and it felt enormous at the time. The second was choosing teaching as a career. In 1971, my father gently pointed out that teachers didn't make much money, as if this were information I might not have come across. He wasn't wrong, but I'd decided the thing I wanted most was to do work that felt like it mattered. I've never once wished I'd chosen differently.
+
+The third risk was asking Carol to marry me after knowing her for nine months. We were twenty-three years old. Everyone said we were rushing. We were, a little, but I knew. Some things you just know.`,
   },
   {
     section_slug: "the-life-you-built",
@@ -75,16 +75,9 @@ I've come to believe that's one of the gifts of age, you can recognize the golde
   {
     section_slug: "the-people-who-matter",
     question_id: "people-q1",
-    answer_text: `Carol loved me most, and the way she showed it was through her full attention. She remembered things, small things I'd mentioned in passing, concerns I'd voiced weeks before, details about the people in my life that I'd only described once. She held the whole of me in her mind in a way that made me feel, always, that I was seen. Not managed. Not accommodated. Seen.
+    answer_text: `My three children, Michael, Karen, and David. And my seven grandchildren, each of them extraordinary in ways I couldn't have predicted. What I want them to know is simply this: you were never background in my life. You were the whole point of it. Every career decision I made, every late night I worked, every year I poured into other people's children, it was all undergirded by the knowledge that I was coming home to you. Whatever I managed to build out there in the world, it was nothing compared to what we built together.
 
-After Carol, my three children, Michael, Karen, and David. Each of them has shown their love differently, which is right, because each of them is different. But the constancy of it, the way it's simply always been there regardless of distance or time, that's the thing I notice most now. That kind of love is not nothing. It is, in fact, everything.`,
-  },
-  {
-    section_slug: "the-people-who-matter",
-    question_id: "people-q2",
-    answer_text: `There was a man named Gerald Oakes who was my cooperating teacher when I was student teaching in 1970. He'd been in the classroom for over twenty years and had every reason to be burned out, but he wasn't. He watched me teach my first full lesson, I was terrible, I was nervous, I rushed through everything, and afterward he sat with me for an hour and went through every moment of it. Not harshly. Methodically. Lovingly, even. He treated my development as something worth investing in.
-
-I never went back to thank him properly. He retired not long after and I lost track of him. I've thought about that for fifty years. If I could say one thing to him now it would be this: you changed the direction of my life that afternoon, and I spent forty years trying to do for other young teachers what you did for me.`,
+And I want them to know that Carol would be so proud. She would have had something specific and wonderful to say to each of them, the kind of precise, loving observation that she always had. I've tried to stand in for that when I could, but I've never been as good at it as she was.`,
   },
   {
     section_slug: "the-people-who-matter",
@@ -95,40 +88,37 @@ My mother shaped who I became professionally. Mrs. Hartman shaped why. And the s
   },
   {
     section_slug: "the-people-who-matter",
+    question_id: "people-q2",
+    answer_text: `Yes. There was a man named Gerald Oakes who was my cooperating teacher when I was student teaching in 1970. He'd been in the classroom for over twenty years and had every reason to be burned out, but he wasn't. He watched me teach my first full lesson, I was terrible, I was nervous, I rushed through everything, and afterward he sat with me for an hour and went through every moment of it. Not harshly. Methodically. Lovingly, even. He treated my development as something worth investing in. I never went back to thank him properly. He retired not long after and I lost track of him. I've thought about that for fifty years.`,
+  },
+  {
+    section_slug: "the-people-who-matter",
     question_id: "people-q4",
-    answer_text: `Michael, Karen, David, I have spent my whole life proud of who you are. Not what you've accomplished, though you've accomplished more than you know. Who you are. The kindness you show your own children. The integrity you bring to your work. The way you still call each other, still show up for each other, still take care of things the way your mother would have wanted. She would be overwhelmed with love for you. I am overwhelmed with love for you.
-
-You were never background in my life. You were the whole point of it. Every career decision I made, every late night I worked, every year I poured into other people's children, it was all undergirded by the knowledge that I was coming home to you. Whatever I managed to build out there in the world, it was nothing compared to what we built together.`,
+    answer_text: `I hope they say I was someone who showed up. Not always perfectly, not always on time, not always with the right words, but there. I hope they say I was someone who took people seriously, who didn't rush past what someone was trying to tell me, who remembered the things that mattered to the people I loved. I hope, most of all, that the people who knew me well feel certain they were loved. Not assumed. Told.`,
   },
 
   // What You Believe
   {
     section_slug: "what-you-believe",
     question_id: "believe-q1",
-    answer_text: `That urgency is mostly an illusion. At twenty-five I was always in a hurry, hurrying toward the next job, the next milestone, the next version of the life I thought I was supposed to be building. I rarely sat still long enough to notice what I already had.
-
-I'd tell the twenty-five-year-old version of myself: slow down. The life is in the ordinary days, not the extraordinary ones. Pay attention to ordinary Tuesdays. That's where most of your life actually happens.`,
-  },
-  {
-    section_slug: "what-you-believe",
-    question_id: "believe-q2",
-    answer_text: `That almost everyone is doing their best with what they have, even when their best looks like failure or stubbornness or cruelty from the outside. I spent forty years working with children, and what strikes me most is how much of who a child becomes is determined by things they had no say in, the family they were born into, the neighborhood they grew up in, the teachers they happened to get.
-
-I have enormous compassion for people because of that. Every difficult person I've met had a story that would make their difficulty make sense. I stopped expecting people to be different from what their circumstances made them, and started trying to understand the circumstances instead. That shift changed everything about how I did my job.`,
+    answer_text: `That urgency is mostly an illusion. At twenty-five I was always in a hurry, hurrying toward the next job, the next milestone, the next version of the life I thought I was supposed to be building. I rarely sat still long enough to notice what I already had. I'd tell the twenty-five-year-old version of myself: slow down. The life is in the ordinary days, not the extraordinary ones. Pay attention to ordinary Tuesdays. That's where most of your life actually happens.`,
   },
   {
     section_slug: "what-you-believe",
     question_id: "believe-q3",
-    answer_text: `Do work that means something to you. Love people with your full attention. Be honest without being unkind. Forgive more readily than feels comfortable. Spend time outside. Read books. Keep your word. Show up for people when things are hard, not just when things are easy.
-
-And understand that none of this is achievable all the time, the goal is direction, not perfection. A life aimed at these things, even imperfectly, is a life well aimed.`,
+    answer_text: `Do work that means something to you. Love people with your full attention. Be honest without being unkind. Forgive more readily than feels comfortable. Spend time outside. Read books. Keep your word. Show up for people when things are hard, not just when things are easy. And understand that none of this is achievable all the time. The goal is direction, not perfection.`,
+  },
+  {
+    section_slug: "what-you-believe",
+    question_id: "believe-q2",
+    answer_text: `That almost everyone is doing their best with what they have, even when their best looks like failure or stubbornness or cruelty from the outside. I spent forty years working with children, and what strikes me most is how much of who a child becomes is determined by things they had no say in, the family they were born into, the neighborhood they grew up in, the teachers they happened to get. I have enormous compassion for people because of that. Every difficult person I've met had a story that would make their difficulty make sense.`,
   },
   {
     section_slug: "what-you-believe",
     question_id: "believe-q4",
-    answer_text: `Teaching, in its broadest sense. Not the job, the act. The deliberate passing of something of value from one person to another. It could be knowledge, or a skill, or a way of seeing the world, or simply the belief that someone is worth believing in.
+    answer_text: `What matters: the people you love and whether they know it. The integrity you bring to your work. Whether you were kind in the small moments when kindness wasn't required.
 
-I've watched that act ripple outward in ways I couldn't have predicted. Teachers I hired who became remarkable. Students who went on to teach others. My own children, who teach their children things they learned, somewhere down the line, from someone I knew. That kind of continuity, the sense that what you do reaches forward in time, is the greatest source of meaning I've found.`,
+What doesn't matter, and I say this having spent real energy on these things: titles, salaries, being right in arguments, how you look in other people's eyes. The scoreboard that follows you out of a room. None of it.`,
   },
 
   // Your Proudest Moments
@@ -144,27 +134,19 @@ And I'm quietly proud that when Carol was sick, I didn't run from it. I was ther
   {
     section_slug: "your-proudest-moments",
     question_id: "proud-q2",
-    answer_text: `The year after Carol died, I went back to work as superintendent of a district dealing with a significant budget crisis. I was running on fumes emotionally, making decisions that affected hundreds of teachers and thousands of students, and trying not to let anyone see how diminished I felt. I don't know if I fully succeeded. But I made the decisions, I showed up to every meeting, I didn't make things worse in my grief.
-
-That year was the hardest professional stretch of my life, and very few people knew what it cost me to get through it. I surprised myself by getting through it at all.`,
+    answer_text: `The year after Carol died, I went back to work as superintendent of a district dealing with a significant budget crisis. I was running on fumes emotionally, making decisions that affected hundreds of teachers and thousands of students, and trying not to let anyone see how diminished I felt. I don't know if I fully succeeded. But I made the decisions, I showed up to every meeting, I didn't make things worse in my grief. That year was the hardest professional stretch of my life, and very few people knew what it cost me to get through it.`,
   },
   {
     section_slug: "your-proudest-moments",
     question_id: "proud-q3",
-    answer_text: `I'd like to think there are students, now in their forties and fifties, who occasionally remember a teacher or a principal or a school system that treated them like they were worth believing in. That's all. I don't need to be named in those conversations. I just hope those experiences happened, that they stuck, that they made someone's life a little larger than it might have been otherwise.
-
-That's the thing I built. It doesn't have a shape you can photograph or a value you can assess. But I believe it's real, and believing that is enough.`,
+    answer_text: `I'd like to think there are students, now in their forties and fifties, who occasionally remember a teacher or a principal or a school system that treated them like they were worth believing in. That's all. I don't need to be named in those conversations. I just hope those experiences happened, that they stuck, that they made someone's life a little larger than it might have been otherwise.`,
   },
 
   // A Letter to Your Family
   {
     section_slug: "a-letter-to-your-family",
     question_id: "letter-q1",
-    answer_text: `Michael, Karen, David,
-
-I have spent my whole life proud of who you are. Not what you've accomplished, though you've accomplished more than you know. Who you are. The kindness you show your own children. The integrity you bring to your work. The way you still call each other, still show up for each other, still take care of things the way your mother would have wanted.
-
-She would be overwhelmed with love for you. I am overwhelmed with love for you.
+    answer_text: `Michael, Karen, David — I have spent my whole life proud of who you are. Not what you've accomplished, though you've accomplished more than you know. Who you are. The kindness you show your own children. The integrity you bring to your work. The way you still call each other, still show up for each other, still take care of things the way your mother would have wanted. She would be overwhelmed with love for you. I am overwhelmed with love for you.
 
 To my grandchildren: your grandfather was a little overwhelmed by you from the very beginning, in the best way. You were all so specific, so yourselves, from the very first moment. Watch out for each other. Read books. Ask questions. Don't be in too much of a hurry.`,
   },
@@ -173,28 +155,24 @@ To my grandchildren: your grandfather was a little overwhelmed by you from the v
     question_id: "letter-q2",
     answer_text: `The belief that teaching, in its broadest sense, the deliberate passing of something of value from one person to another, is among the most important things a human being can do. You don't have to be a teacher by profession to do this. You can teach with the way you live, with the questions you ask, with the patience you show. Carry that forward.
 
-And carry forward the conviction that ordinary life, done with care, is enough. More than enough. The world will tell you otherwise. Don't believe it.`,
+And carry forward the conviction that ordinary life, done with care, is enough. More than enough.`,
   },
   {
     section_slug: "a-letter-to-your-family",
     question_id: "letter-q3",
-    answer_text: `I felt lucky. Despite losing Carol when I didn't want to lose her, despite the hard years and the mistakes and the long stretches of ordinary days that blurred together, lucky. I got to do work I believed in. I got to raise three people I admire. I got to be loved by someone worth being loved by. I got to watch seven small people come into the world and become themselves.
-
-If that isn't a full life, I don't know what is. I want you to know that I knew it was full, even when it was hard. I want you to know I was grateful.`,
+    answer_text: `I felt lucky. Despite losing Carol when I didn't want to lose her, despite the hard years and the mistakes and the long stretches of ordinary days that blurred together, lucky. I got to do work I believed in. I got to raise three people I admire. I got to be loved by someone worth being loved by. I got to watch seven small people come into the world and become themselves. If that isn't a full life, I don't know what is.`,
   },
 
   // How You Want to Be Remembered
   {
     section_slug: "how-you-want-to-be-remembered",
     question_id: "remember-q1",
-    answer_text: `As someone who took other people's children as seriously as his own. As a husband who loved well. As a father who was present. As a man who meant what he said.
-
-I'd like them to understand that I believed, genuinely and without reservation, that every person is worth believing in. That I tried to act on that belief every day, in every classroom and every meeting and every conversation that mattered. And that the belief never left me, not even in the hard years, not even at the end.`,
+    answer_text: `As someone who took other people's children as seriously as his own. As a husband who loved well. As a father who was present. As a man who meant what he said.`,
   },
   {
     section_slug: "how-you-want-to-be-remembered",
     question_id: "remember-q2",
-    answer_text: `The thing I most want you to know is that a quiet, ordinary life, one without fame or fortune or a name anyone outside your community would recognize, can be a life that mattered enormously. That you don't need to be extraordinary to leave something real behind. You just need to show up, pay attention, and love the people in front of you.
+    answer_text: `Warmth, I hope. And perhaps something like reassurance, the feeling that a person can live a quiet, ordinary life and have it amount to something real. That you don't need to be famous or extraordinary to matter. You just need to show up, pay attention, and love the people in front of you.
 
 That's the whole thing, as best as I can figure. That was always the whole thing.`,
   },

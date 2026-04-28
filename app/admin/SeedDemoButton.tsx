@@ -60,7 +60,7 @@ export default function SeedDemoButton({ appUrl }: { appUrl: string }) {
       <span style={{ fontSize: "0.75rem", color: "#999", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>
         Demo memorials:
       </span>
-      <SeedButton label="Seed Patrick Williams" endpoint="/api/admin/seed-demo" slug="patrick-william" appUrl={appUrl} />
+      <SeedButton label="Seed Jonathan Williams" endpoint="/api/admin/seed-demo" slug="jonathan-williams" appUrl={appUrl} />
       <SeedButton label="Seed Eleanor Mitchell" endpoint="/api/admin/seed-eleanor" slug="eleanor-mitchell" appUrl={appUrl} />
       <SeedButton label="Seed Patrick Faverty" endpoint="/api/admin/seed-patrick-faverty" slug="patrick-faverty" appUrl={appUrl} />
     </div>
