@@ -59,11 +59,23 @@ export default async function MemorialPage({
     .from("profiles")
     .select("id, first_name, last_name, avatar_url, page_is_public, memorial_slug, referred_as")
     .eq("memorial_slug", slug)
-    .single();
+    .maybeSingle();
 
-  if (!profile) notFound();
+  // Fallback: if the above failed (e.g. referred_as column not yet migrated),
+  // retry without it so existing pages never 404 due to a missing column.
+  let resolvedProfile = profile;
+  if (!resolvedProfile) {
+    const { data: fallback } = await supabase
+      .from("profiles")
+      .select("id, first_name, last_name, avatar_url, page_is_public, memorial_slug")
+      .eq("memorial_slug", slug)
+      .maybeSingle();
+    resolvedProfile = fallback ? { ...fallback, referred_as: null } : null;
+  }
 
-  const p = profile as Profile;
+  if (!resolvedProfile) notFound();
+
+  const p = resolvedProfile as Profile;
 
   if (!p.page_is_public) {
     return (
