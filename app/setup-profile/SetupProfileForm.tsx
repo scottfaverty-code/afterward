@@ -45,6 +45,31 @@ export default function SetupProfileForm({
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
+  // Converts "John O'Brien-Smith" → "john-obrien-smith"
+  function nameToSlug(first: string, last: string): string {
+    return `${first}-${last}`
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+  }
+
+  // Finds the first available slug: john-smith, john-smith-2, john-smith-3 ...
+  async function resolveSlug(supabase: ReturnType<typeof createClient>, userId: string, first: string, last: string): Promise<string> {
+    const base = nameToSlug(first, last) || "user";
+    for (let i = 1; i <= 99; i++) {
+      const candidate = i === 1 ? base : `${base}-${i}`;
+      const { data } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("memorial_slug", candidate)
+        .neq("id", userId)
+        .maybeSingle();
+      if (!data) return candidate;
+    }
+    // Extremely unlikely fallback
+    return `${base}-${Math.random().toString(36).substring(2, 6)}`;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const errs: typeof errors = {};
@@ -76,13 +101,21 @@ export default function SetupProfileForm({
       avatarUrl = urlData.publicUrl;
     }
 
-    const { error } = await supabase.from("profiles").upsert({
+    // On initial setup, assign a clean name-based slug.
+    // On updates we never change it — their QR plaque may already be in use.
+    const profileData: Record<string, unknown> = {
       id: user.id,
       first_name: firstName.trim(),
       last_name: lastName.trim(),
       avatar_url: avatarUrl || null,
       referred_as: referredAs,
-    }, { onConflict: "id" });
+    };
+
+    if (!isUpdate) {
+      profileData.memorial_slug = await resolveSlug(supabase, user.id, firstName.trim(), lastName.trim());
+    }
+
+    const { error } = await supabase.from("profiles").upsert(profileData, { onConflict: "id" });
 
     if (error) {
       setErrors({ form: "Something went wrong. Please try again." });
