@@ -1,10 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/server";
 import { getStripe } from "@/lib/stripe";
+import { getResend, FROM_ADDRESS, REPLY_TO, passwordSetupEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
+    // Require an authenticated session — the welcome page CTA passes the user
+    // through /auth/callback (magic link) before they reach this form, so by
+    // the time they submit, a real session cookie should be present.
+    const supabase = await createClient();
+    const { data: { user: sessionUser } } = await supabase.auth.getUser();
+
+    if (!sessionUser?.email) {
+      return NextResponse.json({ error: "Session expired. Please use your setup link again." }, { status: 401 });
+    }
+
     const body = await req.json();
     const { session_id, delivery_type, recipient_name, contact_name, address_line_1, address_line_2, city, state_province, postal_code, country, attorney_note } = body;
 
@@ -12,33 +23,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing session_id" }, { status: 400 });
     }
 
-    // Look up user via Stripe session
+    // Verify the authenticated user's email matches the Stripe session.
+    // This is the IDOR guard — only the actual purchaser can save an address.
     const stripe = getStripe();
     const session = await stripe.checkout.sessions.retrieve(session_id);
     const customerEmail = session.customer_details?.email ?? session.customer_email ?? "";
 
-    if (!customerEmail) {
-      return NextResponse.json({ error: "Could not find customer email" }, { status: 400 });
+    if (!customerEmail || sessionUser.email.toLowerCase() !== customerEmail.toLowerCase()) {
+      console.error("Email mismatch: session user", sessionUser.email, "vs Stripe", customerEmail);
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
     const admin = createAdminClient();
 
-    // Find the user by email
-    const { data: { users }, error: listError } = await admin.auth.admin.listUsers({ perPage: 1000 });
-    if (listError) {
-      console.error("List users error:", listError);
-      return NextResponse.json({ error: "Failed to look up user" }, { status: 500 });
-    }
-    const user = users?.find((u) => u.email === customerEmail);
-
-    if (!user) {
-      console.error("User not found for email:", customerEmail);
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
     // Save shipping address
     const { error: addressError } = await admin.from("shipping_addresses").upsert({
-      user_id: user.id,
+      user_id: sessionUser.id,
       delivery_type,
       recipient_name,
       contact_name: delivery_type === "estate_attorney" ? contact_name : null,
@@ -57,21 +57,29 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Failed to save address" }, { status: 500 });
     }
 
-    // Confirm the user's email so password reset email can be sent
-    await admin.auth.admin.updateUserById(user.id, { email_confirm: true });
+    // Send password setup email via Resend
+    const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.myafterword.co";
+    try {
+      const { data: linkData, error: linkErr } = await admin.auth.admin.generateLink({
+        type: "recovery",
+        email: customerEmail,
+        options: { redirectTo: `${siteUrl}/setup-account` },
+      });
 
-    // Send password setup email using the public client (actually sends the email)
-    const publicClient = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-
-    const { error: emailError } = await publicClient.auth.resetPasswordForEmail(customerEmail, {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/setup-account`,
-    });
-
-    if (emailError) {
-      console.error("Email send error:", emailError);
+      if (!linkErr && linkData?.properties?.action_link) {
+        const resend = getResend();
+        const { subject, html } = passwordSetupEmail(linkData.properties.action_link);
+        await resend.emails.send({
+          from: FROM_ADDRESS,
+          replyTo: REPLY_TO,
+          to: customerEmail,
+          subject,
+          html,
+        });
+      }
+    } catch (emailErr) {
+      // Non-fatal — address is saved, email failure logged but doesn't block
+      console.error("Password setup email error:", emailErr);
     }
 
     return NextResponse.json({ success: true });

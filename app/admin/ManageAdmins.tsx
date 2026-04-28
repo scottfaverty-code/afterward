@@ -142,7 +142,7 @@ export default function ManageAdmins({ initialAdmins, currentUserEmail }: Props)
                   </span>
                 </td>
                 <td style={{ padding: "12px 12px", color: "#999", fontSize: "0.78rem" }}>
-                  {a.added_by ?? "—"}
+                  {a.added_by ?? "-"}
                 </td>
                 <td style={{ padding: "12px 12px", color: "#999", fontSize: "0.78rem", whiteSpace: "nowrap" }}>
                   {new Date(a.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}

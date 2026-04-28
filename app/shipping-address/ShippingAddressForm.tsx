@@ -92,7 +92,14 @@ export default function ShippingAddressForm({ isUpdate = false, sessionId }: { i
       });
 
       if (!res.ok) {
-        setErrors({ form: "Something went wrong. Please try again." });
+        if (res.status === 401) {
+          // Session expired or magic link was not followed — show a clear recovery path
+          setErrors({
+            form: "Your session has expired. Go back to your email and click the setup link again, or use the forgot password page to get a new one.",
+          });
+        } else {
+          setErrors({ form: "Something went wrong. Please try again." });
+        }
         setLoading(false);
         return;
       }

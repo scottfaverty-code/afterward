@@ -41,6 +41,8 @@ export default function QuestionnaireClient({
     }
   }, [answers, currentIndex]);
 
+  const MAX_ANSWER_LENGTH = 50_000;
+
   const saveAnswer = useCallback(async (questionId: string, text: string, isSkipped: boolean) => {
     setSaveStatus("saving");
     const supabase = createClient();
@@ -51,7 +53,7 @@ export default function QuestionnaireClient({
       user_id: user.id,
       section_slug: section.slug,
       question_id: questionId,
-      answer_text: text || null,
+      answer_text: text ? text.slice(0, MAX_ANSWER_LENGTH) : null,
       skipped: isSkipped,
       updated_at: new Date().toISOString(),
     }, { onConflict: "user_id,question_id" });
@@ -61,7 +63,8 @@ export default function QuestionnaireClient({
   }, [section.slug]);
 
   function handleTextChange(value: string) {
-    setAnswers((prev) => ({ ...prev, [currentQuestion.id]: value }));
+    const trimmed = value.slice(0, MAX_ANSWER_LENGTH);
+    setAnswers((prev) => ({ ...prev, [currentQuestion.id]: trimmed }));
     setSaveStatus("idle");
 
     if (saveTimer.current) clearTimeout(saveTimer.current);

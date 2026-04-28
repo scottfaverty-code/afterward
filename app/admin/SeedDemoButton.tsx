@@ -62,6 +62,7 @@ export default function SeedDemoButton({ appUrl }: { appUrl: string }) {
       </span>
       <SeedButton label="Seed Patrick Williams" endpoint="/api/admin/seed-demo" slug="patrick-william" appUrl={appUrl} />
       <SeedButton label="Seed Eleanor Mitchell" endpoint="/api/admin/seed-eleanor" slug="eleanor-mitchell" appUrl={appUrl} />
+      <SeedButton label="Seed Patrick Faverty" endpoint="/api/admin/seed-patrick-faverty" slug="patrick-faverty" appUrl={appUrl} />
     </div>
   );
 }

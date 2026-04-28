@@ -380,7 +380,7 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
             {orders.map((order) => {
               const status = localStatuses[order.id] ?? order.plaque_status;
               const statusStyle = STATUS_COLORS[status] ?? STATUS_COLORS.pending;
-              const fullName = [order.profile?.first_name, order.profile?.last_name].filter(Boolean).join(" ") || "—";
+              const fullName = [order.profile?.first_name, order.profile?.last_name].filter(Boolean).join(" ") || "-";
               const trackingUrl = trackingInputs[order.id] ?? order.plaque_tracking_url ?? "";
               const hasSlug = !!order.profile?.memorial_slug;
 
@@ -407,7 +407,7 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
                         style={{ cursor: "pointer" }}
                       />
                     ) : (
-                      <span title="No memorial slug, cannot generate QR" style={{ color: "#ddd", fontSize: "0.75rem" }}>—</span>
+                      <span title="No memorial slug, cannot generate QR" style={{ color: "#ddd", fontSize: "0.75rem" }}>-</span>
                     )}
                   </td>
 
@@ -424,7 +424,7 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
                   {/* Email */}
                   <td style={{ padding: "14px 16px", color: "#555" }}>
                     <a href={`mailto:${order.email}`} style={{ color: "#1B4F6B" }}>
-                      {order.email ?? "—"}
+                      {order.email ?? "-"}
                     </a>
                     {order.stripe_session_id && (
                       <div style={{ marginTop: "3px" }}>
@@ -514,7 +514,7 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
                         {order.profile.page_is_public ? "Public ↗" : "Private ↗"}
                       </a>
                     ) : (
-                      <span style={{ color: "#ccc" }}>—</span>
+                      <span style={{ color: "#ccc" }}>-</span>
                     )}
                   </td>
 

@@ -178,7 +178,7 @@ export default function GiftPage() {
                         Harold James Faverty
                       </div>
                       <div style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.6)", marginBottom: "10px" }}>
-                        June 4, 1946 &ndash; written at age 78
+                        Born June 4, 1946, written at age 78
                       </div>
                       <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.5)", fontStyle: "italic" }}>
                         Father, grandfather, retired schoolteacher
@@ -537,7 +537,7 @@ export default function GiftPage() {
                     </div>
                     <div className="font-serif" style={{ fontSize: "1.1rem", marginBottom: "3px" }}>Harold James Faverty</div>
                     <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.5)", marginBottom: "3px" }}>
-                      June 4, 1946 &ndash; still adding to this page
+                      Born June 4, 1946, still adding to this page
                     </div>
                     <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.4)", fontStyle: "italic" }}>
                       Father, Grandfather &amp; Retired Schoolteacher

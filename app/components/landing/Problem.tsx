@@ -88,7 +88,7 @@ export default function Problem() {
                 className="font-serif mb-1"
                 style={{ fontSize: "1.1rem", color: "#1A1A1A", fontWeight: 700 }}
               >
-                Margaret Anne Williams, 1944&ndash;2024
+                Margaret Anne Williams, 1944 to 2024
               </div>
               <div
                 className="mb-4"

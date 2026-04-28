@@ -53,7 +53,7 @@ export function passwordSetupEmail(setupLink: string): { subject: string; html: 
         <!-- Footer -->
         <tr><td style="padding:24px 40px;border-top:1px solid #E5E5E5;text-align:center;">
           <p style="margin:0;font-size:0.78rem;color:#999;line-height:1.6;">
-            Afterword &mdash; <a href="https://www.myafterword.co" style="color:#2E7DA3;text-decoration:none;">myafterword.co</a><br>
+            Afterword · <a href="https://www.myafterword.co" style="color:#2E7DA3;text-decoration:none;">myafterword.co</a><br>
             Questions? Reply to this email or write to <a href="mailto:scott@myafterword.co" style="color:#2E7DA3;">scott@myafterword.co</a>
           </p>
         </td></tr>
@@ -106,7 +106,7 @@ export function passwordResetEmail(resetLink: string): { subject: string; html: 
         <!-- Footer -->
         <tr><td style="padding:24px 40px;border-top:1px solid #E5E5E5;text-align:center;">
           <p style="margin:0;font-size:0.78rem;color:#999;line-height:1.6;">
-            Afterword &mdash; <a href="https://www.myafterword.co" style="color:#2E7DA3;text-decoration:none;">myafterword.co</a>
+            Afterword · <a href="https://www.myafterword.co" style="color:#2E7DA3;text-decoration:none;">myafterword.co</a>
           </p>
         </td></tr>
 
@@ -173,7 +173,7 @@ export function purchaseConfirmationEmail(customerEmail: string, firstName?: str
         <!-- Footer -->
         <tr><td style="padding:24px 40px;border-top:1px solid #E5E5E5;text-align:center;">
           <p style="margin:0;font-size:0.78rem;color:#999;line-height:1.6;">
-            Afterword &mdash; <a href="https://www.myafterword.co" style="color:#2E7DA3;text-decoration:none;">myafterword.co</a><br>
+            Afterword · <a href="https://www.myafterword.co" style="color:#2E7DA3;text-decoration:none;">myafterword.co</a><br>
             ${customerEmail}
           </p>
         </td></tr>

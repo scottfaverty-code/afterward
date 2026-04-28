@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { getStripe } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getResend, FROM_ADDRESS, REPLY_TO, purchaseConfirmationEmail } from "@/lib/email";
@@ -16,6 +15,11 @@ export default async function WelcomePage({
   }
 
   let customerEmail = "";
+  // Magic link that logs the user in and lands them at the shipping address page.
+  // Using the auth callback means a real session cookie is set before they fill
+  // in the form — so the shipping address API can verify identity via session,
+  // not just via a guessable session_id in the URL.
+  let shippingLink = `/shipping-address?session_id=${session_id}`; // fallback for dev
 
   try {
     const stripe = getStripe();
@@ -61,15 +65,21 @@ export default async function WelcomePage({
           plaque_status: "pending",
         });
 
-        // Generate a unique memorial slug from email prefix + random suffix
-        const emailPrefix = customerEmail.split("@")[0].toLowerCase().replace(/[^a-z0-9]/g, "");
-        const randomSuffix = Math.random().toString(36).substring(2, 7);
-        const memorialSlug = `${emailPrefix}-${randomSuffix}`;
-
-        // Create profile row with slug
-        await admin
-          .from("profiles")
-          .upsert({ id: userId, memorial_slug: memorialSlug }, { onConflict: "id", ignoreDuplicates: true });
+        // Generate a unique memorial slug from email prefix + random suffix.
+        // Retry up to 5 times on the rare chance of a collision.
+        const emailPrefix = customerEmail.split("@")[0].toLowerCase().replace(/[^a-z0-9]/g, "") || "user";
+        let memorialSlug = "";
+        for (let attempt = 0; attempt < 5; attempt++) {
+          const randomSuffix = Math.random().toString(36).substring(2, 8); // 6 chars = 2.2B combinations
+          const candidate = `${emailPrefix}-${randomSuffix}`;
+          const { error: slugError } = await admin
+            .from("profiles")
+            .upsert({ id: userId, memorial_slug: candidate }, { onConflict: "id", ignoreDuplicates: true });
+          if (!slugError) {
+            memorialSlug = candidate;
+            break;
+          }
+        }
 
         // Send purchase confirmation email via Resend
         try {
@@ -85,6 +95,25 @@ export default async function WelcomePage({
         } catch {
           // Non-fatal — purchase is recorded, email failure shouldn't block the flow
         }
+      }
+
+      // Generate a magic link so the CTA button logs the user in as it navigates
+      // to the shipping address page. Done outside the !existingPurchase block so
+      // it still works on repeat visits (e.g. customer refreshes the welcome page).
+      // Encode the next path so the ? in ?session_id= doesn't break query parsing.
+      const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.myafterword.co";
+      const nextPath = encodeURIComponent(`/shipping-address?session_id=${session_id}`);
+      try {
+        const { data: linkData } = await admin.auth.admin.generateLink({
+          type: "magiclink",
+          email: customerEmail,
+          options: { redirectTo: `${siteUrl}/auth/callback?next=${nextPath}` },
+        });
+        if (linkData?.properties?.action_link) {
+          shippingLink = linkData.properties.action_link;
+        }
+      } catch {
+        // Non-fatal — falls back to direct link (unauthenticated)
       }
     }
   } catch {
@@ -154,13 +183,14 @@ export default async function WelcomePage({
           </p>
         </div>
 
-        {/* CTA */}
-        <Link
-          href={`/shipping-address?session_id=${session_id}`}
+        {/* CTA — href is a Supabase magic link that sets a session cookie before
+             landing at /shipping-address. Falls back to a direct link in dev. */}
+        <a
+          href={shippingLink}
           className="btn-primary-lg block text-center w-full mb-3"
         >
           Next: where should we send your plaque? &rarr;
-        </Link>
+        </a>
 
         <p className="text-center" style={{ fontSize: "0.8rem", color: "#999" }}>
           Takes 60 seconds, then you&apos;ll set up your account.

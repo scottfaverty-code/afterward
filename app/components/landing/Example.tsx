@@ -6,7 +6,7 @@ const demos = [
   {
     slug: "patrick-william",
     name: "Patrick Williams",
-    years: "1949 –",
+    years: "b. 1949",
     tagline: "Educator. Father. Husband.",
     photo: "/images/patrick-william.png",
     pronoun: "his",
@@ -33,7 +33,7 @@ const demos = [
   {
     slug: "eleanor-mitchell",
     name: "Eleanor Mitchell",
-    years: "1945 –",
+    years: "b. 1945",
     tagline: "Mother. Neighbor. The warm house.",
     photo: "/images/eleanor-mitchell.png",
     pronoun: "her",

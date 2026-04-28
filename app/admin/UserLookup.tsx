@@ -41,6 +41,9 @@ export default function UserLookup() {
   const [result, setResult] = useState<UserInfo | null>(null);
   const [generatingLink, setGeneratingLink] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   async function lookup(e: React.FormEvent) {
     e.preventDefault();
@@ -48,6 +51,8 @@ export default function UserLookup() {
     setLoading(true);
     setResult(null);
     setCopied(false);
+    setConfirmDelete(false);
+    setDeleteError(null);
     try {
       const res = await fetch("/api/admin/user-lookup", {
         method: "POST",
@@ -88,6 +93,33 @@ export default function UserLookup() {
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
     });
+  }
+
+  async function handleDelete() {
+    if (!result?.id) return;
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      const res = await fetch("/api/admin/delete-user", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: result.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setDeleteError(data.error ?? "Failed to delete user");
+        setDeleting(false);
+        return;
+      }
+      // Success — clear the result and reset state
+      setResult(null);
+      setEmail("");
+      setConfirmDelete(false);
+    } catch {
+      setDeleteError("Something went wrong. Please try again.");
+    } finally {
+      setDeleting(false);
+    }
   }
 
   const pill = (label: string, ok: boolean) => (
@@ -256,7 +288,7 @@ export default function UserLookup() {
                 <strong>Confirmation email not received.</strong>{" "}
                 {result.hasPassword
                   ? "Generate a magic link below. It bypasses email confirmation and takes them straight to their dashboard."
-                  : "This user hasn't set a password yet. Generate a magic link below — it will log them in and take them to the password setup page first, then into their dashboard."}
+                  : "This user hasn't set a password yet. Generate a magic link below. It will log them in and take them to the password setup page first, then into their dashboard."}
               </div>
             )}
 
@@ -354,6 +386,85 @@ export default function UserLookup() {
                 </div>
               </div>
             )}
+
+            {/* Danger zone */}
+            <div style={{ marginTop: "20px", paddingTop: "16px", borderTop: "1px solid #F0F0F0" }}>
+              <div style={{ fontSize: "0.78rem", fontWeight: 600, color: "#999", marginBottom: "10px", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                Danger zone
+              </div>
+
+              {!confirmDelete ? (
+                <button
+                  onClick={() => { setConfirmDelete(true); setDeleteError(null); }}
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "8px",
+                    backgroundColor: "#fff",
+                    color: "#c0392b",
+                    border: "1px solid #c0392b",
+                    fontWeight: 600,
+                    fontSize: "0.82rem",
+                    cursor: "pointer",
+                  }}
+                >
+                  Delete account
+                </button>
+              ) : (
+                <div
+                  style={{
+                    backgroundColor: "#FFF5F5",
+                    border: "1px solid #f5c6cb",
+                    borderRadius: "10px",
+                    padding: "14px 16px",
+                  }}
+                >
+                  <p style={{ fontSize: "0.85rem", color: "#7B1D1D", fontWeight: 600, marginBottom: "6px" }}>
+                    Permanently delete {result.email}?
+                  </p>
+                  <p style={{ fontSize: "0.8rem", color: "#9B2C2C", lineHeight: "1.55", marginBottom: "12px" }}>
+                    This will delete their profile, story answers, and shipping address. Their purchase record is kept for your financial records. <strong>This cannot be undone.</strong>
+                  </p>
+                  {deleteError && (
+                    <p style={{ fontSize: "0.8rem", color: "#c0392b", marginBottom: "10px" }}>{deleteError}</p>
+                  )}
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    <button
+                      onClick={handleDelete}
+                      disabled={deleting}
+                      style={{
+                        padding: "8px 16px",
+                        borderRadius: "8px",
+                        backgroundColor: "#c0392b",
+                        color: "#fff",
+                        border: "none",
+                        fontWeight: 600,
+                        fontSize: "0.82rem",
+                        cursor: deleting ? "not-allowed" : "pointer",
+                        opacity: deleting ? 0.6 : 1,
+                      }}
+                    >
+                      {deleting ? "Deleting…" : "Yes, delete permanently"}
+                    </button>
+                    <button
+                      onClick={() => { setConfirmDelete(false); setDeleteError(null); }}
+                      disabled={deleting}
+                      style={{
+                        padding: "8px 16px",
+                        borderRadius: "8px",
+                        backgroundColor: "#fff",
+                        color: "#666",
+                        border: "1px solid #E5E5E5",
+                        fontWeight: 600,
+                        fontSize: "0.82rem",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

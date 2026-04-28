@@ -14,7 +14,9 @@ export default function GuestbookForm({ memorialSlug }: { memorialSlug: string }
     e.preventDefault();
     const errs: typeof errors = {};
     if (!name.trim()) errs.name = "Name is required";
+    if (name.trim().length > 100) errs.name = "Name must be 100 characters or fewer";
     if (!message.trim()) errs.message = "Message is required";
+    if (message.trim().length > 1000) errs.message = "Message must be 1,000 characters or fewer";
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
 
@@ -22,8 +24,8 @@ export default function GuestbookForm({ memorialSlug }: { memorialSlug: string }
     const supabase = createClient();
     await supabase.from("guestbook_entries").insert({
       memorial_slug: memorialSlug,
-      author_name: name.trim(),
-      message: message.trim(),
+      author_name: name.trim().slice(0, 100),
+      message: message.trim().slice(0, 1000),
     });
     setSubmitted(true);
     setLoading(false);
@@ -61,6 +63,7 @@ export default function GuestbookForm({ memorialSlug }: { memorialSlug: string }
           value={name}
           onChange={(e) => { setName(e.target.value); setErrors((x) => ({ ...x, name: undefined })); }}
           placeholder="Your name"
+          maxLength={100}
           style={{ ...inputStyle, borderColor: errors.name ? "#c0392b" : "#D6EAF4" }}
         />
         {errors.name && <p style={{ color: "#c0392b", fontSize: "0.78rem", marginTop: "3px" }}>{errors.name}</p>}
@@ -71,6 +74,7 @@ export default function GuestbookForm({ memorialSlug }: { memorialSlug: string }
           onChange={(e) => { setMessage(e.target.value); setErrors((x) => ({ ...x, message: undefined })); }}
           placeholder="Leave a message or memory..."
           rows={3}
+          maxLength={1000}
           style={{ ...inputStyle, resize: "vertical", borderColor: errors.message ? "#c0392b" : "#D6EAF4" }}
         />
         {errors.message && <p style={{ color: "#c0392b", fontSize: "0.78rem", marginTop: "3px" }}>{errors.message}</p>}

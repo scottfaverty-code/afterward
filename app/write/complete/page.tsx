@@ -61,10 +61,9 @@ export default async function WriteCompletePage() {
               >
                 <span style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.9)" }}>✓</span>
               </div>
-              <span
-                style={{ fontSize: "1rem", color: "rgba(255,255,255,0.85)" }}
-                dangerouslySetInnerHTML={{ __html: item }}
-              />
+              <span style={{ fontSize: "1rem", color: "rgba(255,255,255,0.85)" }}>
+                {item}
+              </span>
             </div>
           ))}
         </div>
