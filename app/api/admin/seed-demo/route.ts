@@ -20,7 +20,7 @@ Lowell wasn't a place that asked much of you, and maybe that was part of its cha
   {
     section_slug: "your-roots",
     question_id: "roots-q2",
-    answer_text: `I must have been three or four. It was winter, and my mother was ironing in the kitchen with the radio on, some big band music, I think. I remember the hiss of steam and the way the kitchen windows had fogged over completely. I'd drawn something in the condensation with my finger, probably just scribbles, and she came and looked at it and said, "Oh Patrick, you made a masterpiece." I didn't know what that word meant, but I knew from her tone it was something good.
+    answer_text: `I must have been three or four. It was winter, and my mother was ironing in the kitchen with the radio on, some big band music, I think. I remember the hiss of steam and the way the kitchen windows had fogged over completely. I'd drawn something in the condensation with my finger, probably just scribbles, and she came and looked at it and said, "Oh Jonathan, you made a masterpiece." I didn't know what that word meant, but I knew from her tone it was something good.
 
 I've thought about that moment more than makes any logical sense. I think it was the first time I understood that someone could make something out of nothing and have it matter to another person.`,
   },
