@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-// One-time route to seed the Jonathan Williams demo memorial.
+// Route to seed the Jonathan Williams demo memorial (born 1953, died 2024).
 // Protected: only scott.faverty@gmail.com can trigger it.
 // Hit POST /api/admin/seed-demo to run.
 

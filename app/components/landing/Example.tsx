@@ -4,14 +4,14 @@ import AfterwordQR from "@/app/components/AfterwordQR";
 
 const demos = [
   {
-    slug: "patrick-william",
-    name: "Patrick Williams",
-    years: "b. 1949",
+    slug: "jonathan-williams",
+    name: "Jonathan Williams",
+    years: "1953 to 2024",
     tagline: "Educator. Father. Husband.",
     photo: "/images/patrick-william.png",
     pronoun: "his",
     description:
-      "Patrick spent forty years as an educator in Arizona, teacher, principal, superintendent. He wrote his Afterword page himself, in his own words, while he still could.",
+      "Jonathan spent forty years as an educator in Arizona, teacher, principal, superintendent. He wrote his Afterword page himself, in his own words, while he still could.",
     quotes: [
       {
         label: "His Roots",
@@ -33,7 +33,7 @@ const demos = [
   {
     slug: "eleanor-mitchell",
     name: "Eleanor Mitchell",
-    years: "b. 1945",
+    years: "1945 to 2024",
     tagline: "Mother. Neighbor. The warm house.",
     photo: "/images/eleanor-mitchell.png",
     pronoun: "her",
@@ -158,7 +158,7 @@ export default function Example() {
               {/* QR + link */}
               <div style={{ borderTop: "1px solid #E5E5E5", padding: "16px", textAlign: "center" }}>
                 <div style={{ fontSize: "0.7rem", color: "#999", marginBottom: "10px", letterSpacing: "0.06em", textTransform: "uppercase" }}>
-                  Scan to visit {demo.pronoun === "his" ? "Patrick\u2019s" : "Eleanor\u2019s"} page
+                  Scan to visit {demo.name.split(" ")[0]}&apos;s page
                 </div>
                 <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
                   <AfterwordQR url={`https://www.myafterword.co/memorial/${demo.slug}`} size={140} />

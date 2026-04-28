@@ -102,7 +102,7 @@ export default function Hero() {
                 </div>
                 <div className="font-serif text-lg mb-0.5">Eleanor Mitchell</div>
                 <div style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.55)" }}>
-                  b. 1945
+                  1945 to 2024
                 </div>
                 <div style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.4)", fontStyle: "italic" }}>
                   Mother. Neighbor. The warm house.
