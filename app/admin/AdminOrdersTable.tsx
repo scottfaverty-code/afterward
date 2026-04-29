@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import JSZip from "jszip";
+import { generateStyledSVG, downloadText } from "@/lib/qr-download";
 
 type Order = {
   id: string;
@@ -68,79 +69,6 @@ async function fetchEPS(slug: string, name: string): Promise<string> {
   return res.text();
 }
 
-/**
- * Generate a stylized SVG client-side using qr-code-styling —
- * matches the AfterwordQR component exactly (rounded dots, blue gradient,
- * extra-rounded corners) then injects the "AFTERWORD" wordmark below.
- *
- * The QR is generated at 344px so the wordmark fits within a ~2"×2" square
- * canvas (344px QR + 36px wordmark zone = 380px total, ~square ratio).
- */
-async function generateStyledSVG(url: string): Promise<string> {
-  const QRCodeStyling = (await import("qr-code-styling")).default;
-
-  // QR slightly smaller than full canvas so wordmark fits within 2"×2"
-  const qrSize = 344;
-  const wordmarkZone = 36;
-  const totalH = qrSize + wordmarkZone; // 380
-
-  const qr = new QRCodeStyling({
-    width: qrSize,
-    height: qrSize,
-    type: "svg",
-    data: url,
-    margin: 10,
-    qrOptions: { errorCorrectionLevel: "M" },
-    dotsOptions: {
-      type: "extra-rounded",
-      gradient: {
-        type: "radial",
-        rotation: 0,
-        colorStops: [
-          { offset: 0, color: "#2E7DA3" },
-          { offset: 1, color: "#0f2d3d" },
-        ],
-      },
-    },
-    cornersSquareOptions: { type: "extra-rounded", color: "#1B4F6B" },
-    cornersDotOptions: { type: "dot", color: "#2E7DA3" },
-    backgroundOptions: { color: "#ffffff" },
-  });
-
-  const blob = await qr.getRawData("svg");
-  if (!blob) throw new Error("qr-code-styling returned no data");
-  const svgText = await (blob as Blob).text();
-
-  // Fix BOTH height and viewBox so the wordmark isn't clipped
-  const expanded = svgText
-    .replace(/height="[\d.]+"/,  `height="${totalH}"`)
-    .replace(/viewBox="0 0 [\d.]+ [\d.]+"/,  `viewBox="0 0 ${qrSize} ${totalH}"`)
-    .replace(
-      "</svg>",
-      `<text ` +
-        `x="${qrSize / 2}" ` +
-        `y="${qrSize + 24}" ` +
-        `font-family="Georgia, 'Times New Roman', serif" ` +
-        `font-size="11" ` +
-        `letter-spacing="8" ` +
-        `text-anchor="middle" ` +
-        `fill="#1B4F6B"` +
-      `>AFTERWORD</text>\n</svg>`,
-    );
-
-  return expanded;
-}
-
-/** Trigger a browser download for a text blob */
-function downloadText(content: string, filename: string, mimeType: string) {
-  const blob = new Blob([content], { type: mimeType });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; appUrl: string }) {
   const [updating, setUpdating] = useState<string | null>(null);

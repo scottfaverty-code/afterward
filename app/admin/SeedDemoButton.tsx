@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { generateStyledSVG, downloadText } from "@/lib/qr-download";
 
 const MANAGED_MEMORIALS = [
   { label: "Jonathan Williams", endpoint: "/api/admin/seed-demo",            slug: "jonathan-williams",  name: "Jonathan Williams" },
@@ -8,48 +9,81 @@ const MANAGED_MEMORIALS = [
   { label: "Patrick Faverty",   endpoint: "/api/admin/seed-patrick-faverty", slug: "patrick-faverty",    name: "Patrick Faverty"   },
 ];
 
-function QRDownloadLinks({ slug, name }: { slug: string; name: string }) {
+const linkStyle: React.CSSProperties = {
+  fontSize: "0.72rem",
+  padding: "4px 10px",
+  borderRadius: 6,
+  border: "1px solid #D6EAF4",
+  color: "#2E7DA3",
+  textDecoration: "none",
+  backgroundColor: "#EEF7FC",
+  fontWeight: 600,
+  whiteSpace: "nowrap",
+  cursor: "pointer",
+  background: "#EEF7FC",
+};
+
+function QRDownloadButtons({
+  slug,
+  name,
+  appUrl,
+}: {
+  slug: string;
+  name: string;
+  appUrl: string;
+}) {
+  const [svgState, setSvgState] = useState<"idle" | "working">("idle");
+  const [epsState, setEpsState] = useState<"idle" | "working">("idle");
+
+  async function handleSVG() {
+    if (svgState === "working") return;
+    setSvgState("working");
+    try {
+      const url = `${appUrl}/memorial/${slug}`;
+      const svg = await generateStyledSVG(url);
+      downloadText(svg, `afterword-qr-${slug}.svg`, "image/svg+xml");
+    } catch (e) {
+      console.error("SVG generation failed", e);
+    } finally {
+      setSvgState("idle");
+    }
+  }
+
+  async function handleEPS() {
+    if (epsState === "working") return;
+    setEpsState("working");
+    try {
+      const params = new URLSearchParams({ slug, name, format: "eps" });
+      const res = await fetch(`/api/admin/qr-eps?${params}`);
+      if (!res.ok) throw new Error(`EPS fetch failed: ${res.status}`);
+      const text = await res.text();
+      downloadText(text, `afterword-qr-${slug}.eps`, "application/postscript");
+    } catch (e) {
+      console.error("EPS generation failed", e);
+    } finally {
+      setEpsState("idle");
+    }
+  }
+
   return (
     <span style={{ display: "inline-flex", gap: 6 }}>
-      <a
-        href={`/api/admin/qr-eps?slug=${slug}&name=${encodeURIComponent(name)}&format=svg`}
-        download
-        style={{
-          fontSize: "0.72rem",
-          padding: "4px 10px",
-          borderRadius: 6,
-          border: "1px solid #D6EAF4",
-          color: "#2E7DA3",
-          textDecoration: "none",
-          backgroundColor: "#EEF7FC",
-          fontWeight: 600,
-          whiteSpace: "nowrap",
-        }}
-      >
-        SVG
-      </a>
-      <a
-        href={`/api/admin/qr-eps?slug=${slug}&name=${encodeURIComponent(name)}&format=eps`}
-        download
-        style={{
-          fontSize: "0.72rem",
-          padding: "4px 10px",
-          borderRadius: 6,
-          border: "1px solid #D6EAF4",
-          color: "#2E7DA3",
-          textDecoration: "none",
-          backgroundColor: "#EEF7FC",
-          fontWeight: 600,
-          whiteSpace: "nowrap",
-        }}
-      >
-        EPS
-      </a>
+      <button onClick={handleSVG} disabled={svgState === "working"} style={linkStyle}>
+        {svgState === "working" ? "…" : "SVG"}
+      </button>
+      <button onClick={handleEPS} disabled={epsState === "working"} style={linkStyle}>
+        {epsState === "working" ? "…" : "EPS"}
+      </button>
     </span>
   );
 }
 
-function SeedRow({ label, endpoint, slug, name, appUrl }: {
+function SeedRow({
+  label,
+  endpoint,
+  slug,
+  name,
+  appUrl,
+}: {
   label: string;
   endpoint: string;
   slug: string;
@@ -71,7 +105,6 @@ function SeedRow({ label, endpoint, slug, name, appUrl }: {
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-      {/* Seed button */}
       <button
         onClick={handleSeed}
         disabled={status === "loading" || status === "done"}
@@ -94,7 +127,6 @@ function SeedRow({ label, endpoint, slug, name, appUrl }: {
         {status === "error" && "✗ Error, try again"}
       </button>
 
-      {/* View link */}
       <a
         href={`${appUrl}/memorial/${slug}`}
         target="_blank"
@@ -104,9 +136,8 @@ function SeedRow({ label, endpoint, slug, name, appUrl }: {
         View →
       </a>
 
-      {/* QR downloads */}
       <span style={{ fontSize: "0.72rem", color: "#bbb", marginLeft: 2 }}>QR:</span>
-      <QRDownloadLinks slug={slug} name={name} />
+      <QRDownloadButtons slug={slug} name={name} appUrl={appUrl} />
     </div>
   );
 }

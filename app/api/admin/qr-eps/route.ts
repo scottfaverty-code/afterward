@@ -40,18 +40,26 @@ function buildSVG(url: string, modules: boolean[][], label: string): string {
 }
 
 /**
- * Builds a clean EPS file from a QR matrix.
- * Each module is rendered as a filled PostScript rectangle.
+ * Builds a styled EPS file from a QR matrix.
+ *
+ * Each module is rendered as a rounded square using the PostScript `arcto`
+ * operator, matching the "extra-rounded" dot style of the Afterword QR
+ * component. Corner radius is ~38% of the module pitch so adjacent modules
+ * stay visually separated.
+ *
  * The output is print/engrave-ready at any scale.
  */
 function buildEPS(url: string, modules: boolean[][], label: string): string {
-  const count = modules.length; // e.g. 33 for a typical QR
-  const quietZone = 4; // modules of white border
+  const count = modules.length;
+  const quietZone = 4;
   const totalModules = count + quietZone * 2;
 
-  // Work in points. 72pt = 1 inch. We target ~2 inches square (144pt).
-  const ptPerModule = 144 / totalModules;
+  // Target ~2 inches square (144pt). Scale up for cleaner rendering.
+  const ptPerModule = 288 / totalModules; // ~4pt per module at 2"
   const size = Math.round(totalModules * ptPerModule);
+
+  // Corner radius: 38% of module pitch gives clearly rounded squares.
+  const r = ptPerModule * 0.38;
 
   const lines: string[] = [];
 
@@ -65,11 +73,26 @@ function buildEPS(url: string, modules: boolean[][], label: string): string {
   lines.push(`% URL encoded in this QR: ${url}`);
   lines.push(`% Label: ${label}`);
   lines.push(``);
+  lines.push(`% ---- Procedure: rounded square ----`);
+  lines.push(`% Stack on entry: x y w h r`);
+  lines.push(`% Draws a filled rounded rectangle using arcto.`);
+  lines.push(`% arcto pushes 4 tangent-point coords; we discard them with pop.`);
+  lines.push(`/rrect {`);
+  lines.push(`  /rv exch def /h exch def /w exch def /y0 exch def /x0 exch def`);
+  lines.push(`  newpath`);
+  lines.push(`  x0 rv add  y0  moveto`);
+  lines.push(`  x0 w add   y0          x0 w add  y0 h add  rv arcto  4 {pop} repeat`);
+  lines.push(`  x0 w add   y0 h add    x0        y0 h add  rv arcto  4 {pop} repeat`);
+  lines.push(`  x0         y0 h add    x0        y0        rv arcto  4 {pop} repeat`);
+  lines.push(`  x0         y0          x0 w add  y0        rv arcto  4 {pop} repeat`);
+  lines.push(`  closepath fill`);
+  lines.push(`} def`);
+  lines.push(``);
   lines.push(`% White background`);
   lines.push(`1 setgray`);
   lines.push(`0 0 ${size} ${size} rectfill`);
   lines.push(``);
-  lines.push(`% QR modules (black)`);
+  lines.push(`% QR modules — rounded squares, black`);
   lines.push(`0 setgray`);
   lines.push(``);
 
@@ -78,10 +101,10 @@ function buildEPS(url: string, modules: boolean[][], label: string): string {
   for (let row = 0; row < count; row++) {
     for (let col = 0; col < count; col++) {
       if (modules[row][col]) {
-        // EPS coordinate origin is bottom-left; QR matrix origin is top-left
+        // EPS origin is bottom-left; QR matrix origin is top-left
         const x = (col + quietZone) * mp;
         const y = (count - 1 - row + quietZone) * mp;
-        lines.push(`${x.toFixed(3)} ${y.toFixed(3)} ${mp.toFixed(3)} ${mp.toFixed(3)} rectfill`);
+        lines.push(`${x.toFixed(3)} ${y.toFixed(3)} ${mp.toFixed(3)} ${mp.toFixed(3)} ${r.toFixed(3)} rrect`);
       }
     }
   }
