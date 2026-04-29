@@ -34,12 +34,12 @@ export async function GET(
     return NextResponse.redirect(appUrl, { status: 307 });
   }
 
-  // Log the visit — non-blocking, errors are swallowed
-  admin
-    .from("qr_visits")
-    .insert({ campaign_code: code })
-    .then(() => {})
-    .catch(() => {});
+  // Log the visit — fire-and-forget, never blocks the redirect.
+  // Wrapping in Promise.resolve() because Supabase returns PromiseLike,
+  // which lacks .catch(). The outer void suppresses the unhandled-promise lint.
+  void Promise.resolve(
+    admin.from("qr_visits").insert({ campaign_code: code })
+  ).catch(() => {});
 
   const destination = `${appUrl}/memorial/${campaign.memorial_slug}`;
   return NextResponse.redirect(destination, { status: 307 });
