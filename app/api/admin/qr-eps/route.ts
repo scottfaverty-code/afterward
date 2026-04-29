@@ -130,7 +130,10 @@ export async function GET(req: NextRequest) {
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.myafterword.co";
-  const url = `${appUrl}/memorial/${slug}`;
+  // Allow callers to pass an explicit URL (e.g. tracking redirect /r/abc123).
+  // Fall back to the standard memorial URL.
+  const explicitUrl = searchParams.get("url");
+  const url = explicitUrl ?? `${appUrl}/memorial/${slug}`;
 
   // Generate QR matrix
   const qr = QRCode.create(url, { errorCorrectionLevel: "H" });

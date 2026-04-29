@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { SECTIONS } from "@/lib/sections";
 import GuestbookForm from "./GuestbookForm";
 import ReportPassingForm from "./ReportPassingForm";
+import Nav from "@/app/components/Nav";
 
 type Pronouns = { subj: string; obj: string; poss: string };
 
@@ -135,6 +136,8 @@ export default async function MemorialPage({
 
   return (
     <div style={{ backgroundColor: "#FAFAFA", minHeight: "100vh" }}>
+      <Nav />
+
       {/* Header */}
       <div
         className="text-center text-white px-6 py-10"

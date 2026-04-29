@@ -7,6 +7,7 @@ import ManageAdmins from "./ManageAdmins";
 import UserLookup from "./UserLookup";
 import LaunchChecklist from "./LaunchChecklist";
 import FeatureRoadmap from "./FeatureRoadmap";
+import QRCampaigns from "./QRCampaigns";
 
 type Order = Parameters<typeof AdminOrdersTable>[0]["orders"][number];
 type AdminRow = Parameters<typeof ManageAdmins>[0]["initialAdmins"][number];
@@ -26,6 +27,7 @@ const TABS = [
   { id: "orders", label: "Orders" },
   { id: "launch", label: "Launch checklist" },
   { id: "roadmap", label: "Roadmap" },
+  { id: "qr", label: "QR campaigns" },
 ];
 
 export default function AdminShell({ stats, orders, appUrl, role, adminsList, currentUserEmail }: Props) {
@@ -165,6 +167,23 @@ export default function AdminShell({ stats, orders, appUrl, role, adminsList, cu
             Click any item to mark it done. Checks are saved in this browser.
           </p>
           <LaunchChecklist />
+        </div>
+      )}
+
+      {/* QR campaigns tab */}
+      {activeTab === "qr" && (
+        <div
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: "16px",
+            boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+            padding: "28px 32px",
+          }}
+        >
+          <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "#1A1A1A", marginBottom: 4 }}>
+            QR campaigns
+          </h2>
+          <QRCampaigns appUrl={appUrl} />
         </div>
       )}
 
