@@ -171,7 +171,15 @@ export default async function MemorialPage({
           </div>
         )}
         <div style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.5)" }}>
-          Afterword, Written in {pr.poss} own words
+          <a
+            href="https://www.myafterword.co"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "inherit", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.25)" }}
+          >
+            Afterword
+          </a>
+          , written in {pr.poss} own words
         </div>
       </div>
 
@@ -308,6 +316,31 @@ export default async function MemorialPage({
               ))}
             </div>
           )}
+        </div>
+
+        {/* Subtle Afterword attribution */}
+        <div style={{ textAlign: "center", padding: "40px 0 0", borderTop: "1px solid #E8E8E8", marginTop: "40px" }}>
+          <p style={{ fontSize: "0.8rem", color: "#bbb", lineHeight: "1.8", margin: 0 }}>
+            {firstName} wrote this page {pr.poss === "their" ? "themselves" : pr.subj === "he" ? "himself" : "herself"}.{" "}
+            <a
+              href="https://www.myafterword.co"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#999", textDecoration: "none", borderBottom: "1px solid #ddd" }}
+            >
+              Afterword
+            </a>
+            {" "}is a place to tell your own story, in your own words,{" "}
+            <a
+              href="https://www.myafterword.co"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#999", textDecoration: "none", borderBottom: "1px solid #ddd" }}
+            >
+              before it can only be told by others
+            </a>
+            .
+          </p>
         </div>
       </div>
     </div>
