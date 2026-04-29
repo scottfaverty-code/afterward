@@ -68,7 +68,7 @@ I'm also glad I asked Cynthia to dinner on her birthday in 2016. She was working
   {
     section_slug: "the-life-you-built",
     question_id: "built-q4",
-    answer_text: `Rancho Oso. The summer camp on the Santa Ynez River near Santa Barbara, the most beautiful valley I had ever seen. Scott had just been born, we were young and full of plans, and the ranch itself was extraordinary: 310 acres, horses, a lodge, the river running through it. It was a dream of a place to begin a family. It didn't work out the way we hoped, but the place was magic, and Scott's first year happened there. For that alone I'd go back.
+    answer_text: `Rancho Oso. The summer camp on the Santa Ynez River near Santa Barbara, the most beautiful valley I had ever seen. We were young and full of plans, and the ranch itself was extraordinary: 310 acres, horses, a lodge, the river running through it. It was a dream of a place to begin a family. It didn't work out the way we hoped, but the place was magic. For that alone I'd go back.
 
 I'd also go back to January of 1994 at McDowell Elementary in Petaluma. I'd been away for a week at my doctoral residency. When I returned and walked into my office, it was completely full, floor to ceiling, with blue and white balloons in the school colors. The teachers came out of the lunch room and applauded and shook my hands and hugged me. That was the moment I knew I had found my place in leadership. It's the clearest memory I have of feeling exactly right for a job.`,
   },
