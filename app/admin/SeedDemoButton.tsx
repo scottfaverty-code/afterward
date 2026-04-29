@@ -2,10 +2,58 @@
 
 import { useState } from "react";
 
-function SeedButton({ label, endpoint, slug, appUrl }: {
+const MANAGED_MEMORIALS = [
+  { label: "Jonathan Williams", endpoint: "/api/admin/seed-demo",            slug: "jonathan-williams",  name: "Jonathan Williams" },
+  { label: "Eleanor Mitchell",  endpoint: "/api/admin/seed-eleanor",         slug: "eleanor-mitchell",   name: "Eleanor Mitchell"  },
+  { label: "Patrick Faverty",   endpoint: "/api/admin/seed-patrick-faverty", slug: "patrick-faverty",    name: "Patrick Faverty"   },
+];
+
+function QRDownloadLinks({ slug, name }: { slug: string; name: string }) {
+  return (
+    <span style={{ display: "inline-flex", gap: 6 }}>
+      <a
+        href={`/api/admin/qr-eps?slug=${slug}&name=${encodeURIComponent(name)}&format=svg`}
+        download
+        style={{
+          fontSize: "0.72rem",
+          padding: "4px 10px",
+          borderRadius: 6,
+          border: "1px solid #D6EAF4",
+          color: "#2E7DA3",
+          textDecoration: "none",
+          backgroundColor: "#EEF7FC",
+          fontWeight: 600,
+          whiteSpace: "nowrap",
+        }}
+      >
+        SVG
+      </a>
+      <a
+        href={`/api/admin/qr-eps?slug=${slug}&name=${encodeURIComponent(name)}&format=eps`}
+        download
+        style={{
+          fontSize: "0.72rem",
+          padding: "4px 10px",
+          borderRadius: 6,
+          border: "1px solid #D6EAF4",
+          color: "#2E7DA3",
+          textDecoration: "none",
+          backgroundColor: "#EEF7FC",
+          fontWeight: 600,
+          whiteSpace: "nowrap",
+        }}
+      >
+        EPS
+      </a>
+    </span>
+  );
+}
+
+function SeedRow({ label, endpoint, slug, name, appUrl }: {
   label: string;
   endpoint: string;
   slug: string;
+  name: string;
   appUrl: string;
 }) {
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
@@ -22,12 +70,13 @@ function SeedButton({ label, endpoint, slug, appUrl }: {
   }
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+      {/* Seed button */}
       <button
         onClick={handleSeed}
         disabled={status === "loading" || status === "done"}
         style={{
-          padding: "8px 16px",
+          padding: "7px 14px",
           fontSize: "0.8rem",
           fontWeight: 600,
           borderRadius: "8px",
@@ -39,30 +88,38 @@ function SeedButton({ label, endpoint, slug, appUrl }: {
           whiteSpace: "nowrap",
         }}
       >
-        {status === "idle" && label}
+        {status === "idle" && `Seed ${label}`}
         {status === "loading" && "Seeding…"}
         {status === "done" && "✓ Seeded"}
         {status === "error" && "✗ Error, try again"}
       </button>
-      {status === "done" && (
-        <a href={`${appUrl}/memorial/${slug}`} target="_blank" rel="noopener noreferrer"
-          style={{ fontSize: "0.8rem", color: "#1B4F6B" }}>
-          View →
-        </a>
-      )}
+
+      {/* View link */}
+      <a
+        href={`${appUrl}/memorial/${slug}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ fontSize: "0.78rem", color: "#1B4F6B", whiteSpace: "nowrap" }}
+      >
+        View →
+      </a>
+
+      {/* QR downloads */}
+      <span style={{ fontSize: "0.72rem", color: "#bbb", marginLeft: 2 }}>QR:</span>
+      <QRDownloadLinks slug={slug} name={name} />
     </div>
   );
 }
 
 export default function SeedDemoButton({ appUrl }: { appUrl: string }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <span style={{ fontSize: "0.75rem", color: "#999", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>
-        Demo memorials:
+        Managed memorials
       </span>
-      <SeedButton label="Seed Jonathan Williams" endpoint="/api/admin/seed-demo" slug="jonathan-williams" appUrl={appUrl} />
-      <SeedButton label="Seed Eleanor Mitchell" endpoint="/api/admin/seed-eleanor" slug="eleanor-mitchell" appUrl={appUrl} />
-      <SeedButton label="Seed Patrick Faverty" endpoint="/api/admin/seed-patrick-faverty" slug="patrick-faverty" appUrl={appUrl} />
+      {MANAGED_MEMORIALS.map((m) => (
+        <SeedRow key={m.slug} appUrl={appUrl} {...m} />
+      ))}
     </div>
   );
 }
