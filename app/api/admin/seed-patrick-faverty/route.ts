@@ -196,7 +196,7 @@ And as a Hoosier. I was born in Indiana, I planted those trees on Highway 41, an
     question_id: "remember-q2",
     answer_text: `I hope they smile. "And in the end, it's not the years in your life that count. It's the life in your years." I tried to pack in a lot of life. The Ibapah reservation and lunch with the Governor of Utah. The elephant at the Indiana State Fair. The Porsche on the track at Laguna Seca. Three hours with Kirk Douglas. The balloons in the office at McDowell. The wine bar that got defrauded. Sitting in a hot tub in the San Bernardino mountains watching it snow until I couldn't see the stars anymore. Swimming in the Neptune Pool at Hearst Castle. The harvest at Denis's vineyard in Paso Robles. The wedding on the beach at San Simeon.
 
-That is not a sad life. That is a full one. And I'm not done yet.`,
+That is not a sad life. That is a full one.`,
   },
 ];
 
