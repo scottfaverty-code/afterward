@@ -10,11 +10,13 @@ export type BlogPost = {
 import fearOfBeingForgotten from "@/content/blog/fear-of-being-forgotten";
 import yourStoryShouldntWait from "@/content/blog/your-story-shouldnt-wait";
 import rememberedVsReduced from "@/content/blog/remembered-vs-reduced";
+import yourLoveStoryDeservesToLast from "@/content/blog/your-love-story-deserves-to-last";
 
 const posts: BlogPost[] = [
   fearOfBeingForgotten,
   yourStoryShouldntWait,
   rememberedVsReduced,
+  yourLoveStoryDeservesToLast,
 ];
 
 // Sorted newest first
