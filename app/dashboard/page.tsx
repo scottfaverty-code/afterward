@@ -5,6 +5,7 @@ import DashboardHeader from "./DashboardHeader";
 import ProfileNudge from "./ProfileNudge";
 import AfterwordQR from "@/app/components/AfterwordQR";
 import PublishToggle from "./PublishToggle";
+import ExportPDFButton from "./ExportPDFButton";
 
 type Profile = {
   id: string;
@@ -212,6 +213,16 @@ export default async function DashboardPage() {
                   );
                 })}
               </div>
+
+              {/* PDF export */}
+              {completedCount > 0 && (
+                <div className="mt-5 pt-5" style={{ borderTop: "1px solid #F0F0F0" }}>
+                  <p className="mb-2" style={{ fontSize: "0.78rem", color: "#999" }}>
+                    Save a copy of your Afterword to keep or share.
+                  </p>
+                  <ExportPDFButton />
+                </div>
+              )}
             </div>
 
             {/* Page preview card */}
