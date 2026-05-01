@@ -11,12 +11,14 @@ import fearOfBeingForgotten from "@/content/blog/fear-of-being-forgotten";
 import yourStoryShouldntWait from "@/content/blog/your-story-shouldnt-wait";
 import rememberedVsReduced from "@/content/blog/remembered-vs-reduced";
 import yourLoveStoryDeservesToLast from "@/content/blog/your-love-story-deserves-to-last";
+import legacyIsntAboutPerfection from "@/content/blog/legacy-isnt-about-perfection";
 
 const posts: BlogPost[] = [
   fearOfBeingForgotten,
   yourStoryShouldntWait,
   rememberedVsReduced,
   yourLoveStoryDeservesToLast,
+  legacyIsntAboutPerfection,
 ];
 
 // Sorted newest first
