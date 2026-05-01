@@ -70,7 +70,11 @@ export async function GET() {
     avatarBase64,
   });
 
-  const buffer = await renderToBuffer(pdfElement);
+  // Cast needed: createElement returns FunctionComponentElement but
+  // renderToBuffer's overloads expect ReactElement<DocumentProps> directly.
+  // Runtime behaviour is correct — this is a type-only mismatch.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const buffer = await renderToBuffer(pdfElement as any);
 
   const fullName = [profile.first_name, profile.last_name]
     .filter(Boolean)
