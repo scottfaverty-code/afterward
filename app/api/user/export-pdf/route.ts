@@ -82,7 +82,7 @@ export async function GET() {
     .toLowerCase()
     .replace(/[^a-z0-9-]/g, "") || "afterword";
 
-  return new NextResponse(buffer, {
+  return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="afterword-${fullName}.pdf"`,
