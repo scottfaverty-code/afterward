@@ -46,8 +46,9 @@ const SHIPPED: ShippedFeature[] = [
 // Constants
 // ---------------------------------------------------------------------------
 
-const STORAGE_KEY = "afterword-roadmap-v1";
-const SEEDED_KEY  = "afterword-roadmap-seeded-v1";
+const STORAGE_KEY  = "afterword-roadmap-v1";
+const SEEDED_KEY   = "afterword-roadmap-seeded-v1";
+const SEEDED_KEY_V2 = "afterword-roadmap-seeded-v2";
 
 // ---------------------------------------------------------------------------
 // Default roadmap items (seeded once on first load)
@@ -169,6 +170,33 @@ const DEFAULT_ITEMS: Omit<RoadmapItem, "id">[] = [
     createdAt: "2026-05-02T00:14:00.000Z",
   },
 
+];
+
+// Default items added in v2 seed pass
+const DEFAULT_ITEMS_V2: Omit<RoadmapItem, "id">[] = [
+  // ── FAQ & Support ────────────────────────────────────────────────────────
+  {
+    title: "Pre-purchase FAQ page (/faq)",
+    notes: "Statically written page targeting the 10–12 questions a prospect has before buying. The real objections aren't about features — they're about trust and permanence:\n\n• What happens to my Afterword after I die?\n• Can I edit it after I publish?\n• Who can see it? Can I keep it private?\n• What if the company shuts down?\n• Is this just an obituary?\n• Can I do this for someone who has already passed?\n• What does the QR plaque look like, and where would I put it?\n• Is $199 one-time or a subscription?\n• What if I'm not a good writer?\n\nMost important to get right: the shutdown question. Prospects in the legacy space are rightly worried about permanence. Answer it directly — PDF export always available, 12 months notice minimum.\n\nLink from homepage footer, pricing section, and checkout flow. Write the copy first, then build the page around it.\n\nTimeline: now — high conversion value, low build effort.",
+    status: "idea",
+    category: "Marketing",
+    createdAt: "2026-05-02T00:17:00.000Z",
+  },
+  {
+    title: "Post-purchase support page (/support)",
+    notes: "Answers the questions a new owner has while building their Afterword:\n\n• How do I write something worth reading?\n• What if I skip a question — can I come back?\n• How do I invite family to see the page?\n• How do I change my photo?\n• When will my plaque arrive?\n• Can I give someone else access to help me write?\n\nDifferent tone to the FAQ — warmer, more coaching than objection-handling. The audience is already a customer; they just need confidence.\n\nSearchable list format is a reasonable starting point. Long-term, contextual inline help inside the dashboard (question mark tooltips) is better than a separate page.\n\nTimeline: Q3 2026 — after launch, once real support questions are coming in and patterns emerge.",
+    status: "idea",
+    category: "UX",
+    createdAt: "2026-05-02T00:18:00.000Z",
+  },
+  {
+    title: "Contextual inline help inside the writing flow",
+    notes: "Small question mark tooltips or expandable hints inside the dashboard and section writing pages. Answers the question before the user has to go looking for it.\n\nExamples:\n• On the section list: 'Can I come back and edit this? Yes — your answers save automatically and you can edit any time.'\n• On the publish toggle: 'Who can see this? Only people with the exact link, until you share it.'\n• On the contribution nudge: 'What is this? You can invite someone you know to add a memory to your page.'\n\nHigher effort than a static support page but meaningfully reduces support emails and friction at key moments.\n\nTimeline: Q4 2026.",
+    status: "idea",
+    category: "UX",
+    createdAt: "2026-05-02T00:19:00.000Z",
+  },
+
   // ── 2028+ ─────────────────────────────────────────────────────────────────
   {
     title: "Geographic archive — Legacy Tourism platform",
@@ -251,26 +279,35 @@ export default function FeatureRoadmap() {
 
   const titleInputRef = useRef<HTMLInputElement>(null);
 
-  // Load from localStorage — seed defaults once if not yet seeded
+  // Load from localStorage — seed defaults once per version
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      const alreadySeeded = localStorage.getItem(SEEDED_KEY);
+      const seededV1 = localStorage.getItem(SEEDED_KEY);
+      const seededV2 = localStorage.getItem(SEEDED_KEY_V2);
 
-      if (!alreadySeeded) {
-        // Seed default items, merging with any existing items
-        const existing: RoadmapItem[] = stored ? JSON.parse(stored) : [];
-        const seeded: RoadmapItem[] = DEFAULT_ITEMS.map((item) => ({
+      let current: RoadmapItem[] = stored ? JSON.parse(stored) : [];
+
+      function seedBatch(batch: Omit<RoadmapItem, "id">[]) {
+        const newItems: RoadmapItem[] = batch.map((item) => ({
           ...item,
           id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6) + Math.random().toString(36).slice(2, 4),
         }));
-        const merged = [...existing, ...seeded];
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-        localStorage.setItem(SEEDED_KEY, "1");
-        setItems(merged);
-      } else if (stored) {
-        setItems(JSON.parse(stored));
+        current = [...current, ...newItems];
       }
+
+      if (!seededV1) {
+        seedBatch(DEFAULT_ITEMS);
+        localStorage.setItem(SEEDED_KEY, "1");
+      }
+
+      if (!seededV2) {
+        seedBatch(DEFAULT_ITEMS_V2);
+        localStorage.setItem(SEEDED_KEY_V2, "1");
+      }
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+      setItems(current);
     } catch {}
   }, []);
 
