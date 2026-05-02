@@ -47,6 +47,144 @@ const SHIPPED: ShippedFeature[] = [
 // ---------------------------------------------------------------------------
 
 const STORAGE_KEY = "afterword-roadmap-v1";
+const SEEDED_KEY  = "afterword-roadmap-seeded-v1";
+
+// ---------------------------------------------------------------------------
+// Default roadmap items (seeded once on first load)
+// ---------------------------------------------------------------------------
+
+const DEFAULT_ITEMS: Omit<RoadmapItem, "id">[] = [
+  // ── Now ──────────────────────────────────────────────────────────────────
+  {
+    title: "Swap Stripe to live keys",
+    notes: "Test keys are in place. Swap to live before launch (target: May 10). Update STRIPE_SECRET_KEY and NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY in Vercel env vars.",
+    status: "building",
+    category: "Infra",
+    createdAt: "2026-05-02T00:00:00.000Z",
+  },
+  {
+    title: "Gift flow — buy an Afterword for someone else",
+    notes: "Identified as the highest-ceiling viral mechanic. Buyer pays, recipient gets an invite link to claim and build their own page. Keeps gifted Afterwords personal — the recipient writes it, not the buyer.\n\nKey decisions: does the buyer see the finished page? (Probably yes, if recipient chooses.) Does the recipient need to pay anything? (No — it's a gift.)\n\nTimeline: now / Q3 2026.",
+    status: "idea",
+    category: "Core",
+    createdAt: "2026-05-02T00:01:00.000Z",
+  },
+  {
+    title: "Open Graph meta tags on memorial pages",
+    notes: "When a memorial URL is shared on WhatsApp, iMessage, Facebook, etc., it should show a rich preview: full name, years, and a short excerpt from their story. Currently shows nothing.\n\nUse Next.js generateMetadata() in app/memorial/[slug]/page.tsx.\n\nTimeline: launch checklist — do before going public.",
+    status: "idea",
+    category: "Core",
+    createdAt: "2026-05-02T00:02:00.000Z",
+  },
+  {
+    title: "Account deletion (GDPR / CCPA)",
+    notes: "Legal exposure. Users must be able to delete their account and all associated data. Needs: profile, story_answers, guestbook_entries, contribution_invites, contributions, purchases.\n\nSupabase cascade deletes handle most of it if foreign keys are set with ON DELETE CASCADE. Need a confirmation flow and email receipt.\n\nTimeline: before launch — legal requirement.",
+    status: "idea",
+    category: "Infra",
+    createdAt: "2026-05-02T00:03:00.000Z",
+  },
+  {
+    title: "Terms of Service + Privacy Policy pages",
+    notes: "Waiting on attorney review. Pages exist in the codebase as placeholders. Need final legal copy inserted and linked from footer, checkout, and signup.\n\nTimeline: before launch.",
+    status: "building",
+    category: "Infra",
+    createdAt: "2026-05-02T00:04:00.000Z",
+  },
+  {
+    title: "Share your page button on dashboard",
+    notes: "Simple but high value. Once a page is published, the owner should be able to copy the memorial URL or share it directly. Currently they have to know to navigate to /memorial/their-slug.\n\nOne button, copy to clipboard, maybe native share sheet on mobile.\n\nTimeline: now — small build, high impact.",
+    status: "idea",
+    category: "UX",
+    createdAt: "2026-05-02T00:05:00.000Z",
+  },
+
+  // ── Q3 2026 ──────────────────────────────────────────────────────────────
+  {
+    title: "Family linking — connect Afterwords post-contribution",
+    notes: "When a contributor builds their own Afterword after contributing to someone else's, offer to link the two pages. No family tree UI — just a soft connection stored as a slug reference.\n\nThe prompt: 'You contributed to [Patrick's] Afterword. Would you like to link your pages? Family members who visit his page will be able to find yours.'\n\nThis is the family network virality mechanic. Each linked page extends the graph.\n\nTimeline: Q3 2026.",
+    status: "idea",
+    category: "Core",
+    createdAt: "2026-05-02T00:06:00.000Z",
+  },
+  {
+    title: "Talk-to-text for writing sections",
+    notes: "Some users — especially older adults — would write more if they could speak instead of type. Browser Web Speech API is free and works without a server. Could add a microphone button to each question textarea.\n\nDecision: free feature if built, not an upsell. It removes friction for the core product.\n\nTimeline: Q3 2026.",
+    status: "idea",
+    category: "UX",
+    createdAt: "2026-05-02T00:07:00.000Z",
+  },
+  {
+    title: "Email / password change UI",
+    notes: "Currently users have no self-serve way to update their email or password. Basic account hygiene — needed before scale.\n\nTimeline: Q3 2026.",
+    status: "idea",
+    category: "UX",
+    createdAt: "2026-05-02T00:08:00.000Z",
+  },
+
+  // ── Q4 2026 ──────────────────────────────────────────────────────────────
+  {
+    title: "'Also in this family' section on memorial pages",
+    notes: "Once family linking exists, show a small card grid at the bottom of memorial pages with linked family members. Each card shows name, relationship, and links to their memorial.\n\nNo family tree to build or maintain — the graph emerges from links.\n\nThis is the public-facing expression of the family network. It makes the memorial richer and gives visitors somewhere to go.\n\nTimeline: Q4 2026, after family linking ships.",
+    status: "idea",
+    category: "Core",
+    createdAt: "2026-05-02T00:09:00.000Z",
+  },
+  {
+    title: "Relationship graph storage",
+    notes: "Technical foundation for family network. When someone accepts a contribution from a user who also has an Afterword, optionally record the user_id linkage as a foreign key.\n\nThis is the graph edge. No UI needed yet — just capture the data so it's queryable later for family linking and Legacy Tourism.\n\nTimeline: Q4 2026.",
+    status: "idea",
+    category: "Infra",
+    createdAt: "2026-05-02T00:10:00.000Z",
+  },
+
+  // ── Q1 2027 ──────────────────────────────────────────────────────────────
+  {
+    title: "Memorial location field",
+    notes: "Optional field on profiles: cemetery name, city, and GPS coordinates. Never required — only for people who want their page geographically anchored.\n\nThis is the data foundation for Legacy Tourism. A cemetery can only surface Afterwords for people buried there if those pages have a location attached.\n\nTimeline: Q1 2027.",
+    status: "idea",
+    category: "Core",
+    createdAt: "2026-05-02T00:11:00.000Z",
+  },
+  {
+    title: "Slug permanence warning",
+    notes: "Memorial slugs like /memorial/patrick-faverty are printed on physical QR plaques. If a slug changes, every plaque that points to it breaks permanently.\n\nAdd a hard warning when someone tries to edit their memorial slug. Ideally make it impossible after the first QR is shipped.\n\nTimeline: Q1 2027 — before Legacy Tourism makes slugs even more critical.",
+    status: "idea",
+    category: "Infra",
+    createdAt: "2026-05-02T00:12:00.000Z",
+  },
+
+  // ── Q2 2027 ──────────────────────────────────────────────────────────────
+  {
+    title: "First cemetery partnership MVP",
+    notes: "One cemetery, treated as a case study. Offer: branded landing page for their cemetery, QR codes on existing grave markers that link to Afterwords of people buried there, simple directory of connected pages.\n\nPrice: $2,400/year ($200/month). Cheap enough to get a yes, meaningful enough to prove the model.\n\nThis is the first step toward Legacy Tourism as a recurring institutional revenue stream.\n\nTimeline: Q2 2027.",
+    status: "idea",
+    category: "Marketing",
+    createdAt: "2026-05-02T00:13:00.000Z",
+  },
+  {
+    title: "Branded cemetery directory page",
+    notes: "A public-facing page for each cemetery partner: /cemetery/[slug]. Shows cemetery name, location, and a grid of Afterwords for people buried there (those who have opted in with a location field).\n\nVisitors arriving at the cemetery scan a marker → read a story → discover related pages → discover Afterword.\n\nTimeline: Q2 2027, alongside first cemetery partnership.",
+    status: "idea",
+    category: "Core",
+    createdAt: "2026-05-02T00:14:00.000Z",
+  },
+
+  // ── 2028+ ─────────────────────────────────────────────────────────────────
+  {
+    title: "Geographic archive — Legacy Tourism platform",
+    notes: "The full vision: a publicly navigable archive of self-authored lives, anchored to real places. Someone visits any cemetery, scans any QR, and can navigate through an entire family's Afterwords. Towns become walkable histories. Cemeteries become living archives.\n\nMonetisation: institutional licensing to cemeteries, municipalities, historical societies, and genealogy platforms. This is the recurring revenue layer on top of the consumer business.\n\nThe family network virality (contributions → links → 'also in this family') is the content engine. Legacy Tourism is the monetisation layer on top of it.\n\nTimeline: 2028+, once family network has meaningful density.",
+    status: "idea",
+    category: "Core",
+    createdAt: "2026-05-02T00:15:00.000Z",
+  },
+  {
+    title: "Institutional API — genealogy platform integration",
+    notes: "At scale, Afterword's archive of self-authored stories is valuable to Ancestry, FindMyPast, MyHeritage, and similar platforms. An API that lets them surface Afterword pages alongside their records.\n\nPer-query or subscription pricing. This is the B2B2C layer — their users discover Afterword through the genealogy platforms they already use.\n\nTimeline: 2028+.",
+    status: "idea",
+    category: "Infra",
+    createdAt: "2026-05-02T00:16:00.000Z",
+  },
+];
 
 const STATUS_CONFIG: Record<Status, { label: string; color: string; bg: string; dot: string }> = {
   idea:     { label: "Idea",     color: "#666",    bg: "#F5F5F5", dot: "#ccc" },
@@ -54,7 +192,7 @@ const STATUS_CONFIG: Record<Status, { label: string; color: string; bg: string; 
   shipped:  { label: "Shipped",  color: "#155724", bg: "#d4edda", dot: "#28a745" },
 };
 
-const CATEGORIES = ["Core", "UX", "Admin", "Infra", "Marketing", "Other"];
+const CATEGORIES = ["Core", "UX", "Admin", "Infra", "Marketing", "Growth", "Legacy Tourism", "Other"];
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -113,11 +251,26 @@ export default function FeatureRoadmap() {
 
   const titleInputRef = useRef<HTMLInputElement>(null);
 
-  // Load from localStorage
+  // Load from localStorage — seed defaults once if not yet seeded
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) setItems(JSON.parse(stored));
+      const alreadySeeded = localStorage.getItem(SEEDED_KEY);
+
+      if (!alreadySeeded) {
+        // Seed default items, merging with any existing items
+        const existing: RoadmapItem[] = stored ? JSON.parse(stored) : [];
+        const seeded: RoadmapItem[] = DEFAULT_ITEMS.map((item) => ({
+          ...item,
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6) + Math.random().toString(36).slice(2, 4),
+        }));
+        const merged = [...existing, ...seeded];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        localStorage.setItem(SEEDED_KEY, "1");
+        setItems(merged);
+      } else if (stored) {
+        setItems(JSON.parse(stored));
+      }
     } catch {}
   }, []);
 
