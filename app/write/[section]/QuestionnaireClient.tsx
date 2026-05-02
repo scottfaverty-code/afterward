@@ -6,6 +6,143 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import type { Section } from "@/lib/sections";
 
+// Inline invite nudge shown after section completion
+function InviteNudge() {
+  const [inviteUrl, setInviteUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+
+  if (dismissed) return null;
+
+  async function handleCreate() {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/user/contributions/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setInviteUrl(data.invite_url);
+        // Auto-copy
+        await navigator.clipboard.writeText(data.invite_url).catch(() => {});
+        setCopied(true);
+        setTimeout(() => setCopied(false), 3000);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleCopy() {
+    if (!inviteUrl) return;
+    await navigator.clipboard.writeText(inviteUrl).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 3000);
+  }
+
+  return (
+    <div
+      style={{
+        marginTop: "20px",
+        padding: "20px",
+        borderRadius: "12px",
+        backgroundColor: "#EEF7FC",
+        border: "1px solid #D6EAF4",
+        position: "relative",
+      }}
+    >
+      <button
+        onClick={() => setDismissed(true)}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "12px",
+          background: "none",
+          border: "none",
+          color: "#bbb",
+          fontSize: "1rem",
+          cursor: "pointer",
+          lineHeight: 1,
+        }}
+        aria-label="Dismiss"
+      >
+        ×
+      </button>
+
+      <p
+        className="font-serif"
+        style={{ fontSize: "1rem", color: "#1B4F6B", lineHeight: "1.5", marginBottom: "8px", paddingRight: "20px" }}
+      >
+        The stories others tell about you are part of your story too.
+      </p>
+      <p style={{ fontSize: "0.82rem", color: "#555", lineHeight: "1.65", marginBottom: "16px" }}>
+        Invite someone who knows you to add a memory. They get a private link — you approve what appears.
+      </p>
+
+      {!inviteUrl ? (
+        <button
+          onClick={handleCreate}
+          disabled={loading}
+          style={{
+            width: "100%",
+            padding: "10px 16px",
+            borderRadius: "8px",
+            border: "none",
+            backgroundColor: "#1B4F6B",
+            color: "#fff",
+            fontSize: "0.85rem",
+            fontWeight: 700,
+            cursor: loading ? "default" : "pointer",
+            opacity: loading ? 0.7 : 1,
+          }}
+        >
+          {loading ? "Creating link…" : "Create an invite link"}
+        </button>
+      ) : (
+        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          <input
+            readOnly
+            value={inviteUrl}
+            style={{
+              flex: 1,
+              fontSize: "0.78rem",
+              padding: "8px 10px",
+              borderRadius: "6px",
+              border: "1px solid #D6EAF4",
+              backgroundColor: "#fff",
+              color: "#555",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          />
+          <button
+            onClick={handleCopy}
+            style={{
+              flexShrink: 0,
+              padding: "8px 14px",
+              borderRadius: "6px",
+              border: "none",
+              backgroundColor: copied ? "#2E7DA3" : "#1B4F6B",
+              color: "#fff",
+              fontSize: "0.8rem",
+              fontWeight: 700,
+              cursor: "pointer",
+              transition: "background-color 0.15s",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {copied ? "Copied ✓" : "Copy"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 interface Props {
   section: Section;
   nextSectionSlug: string | null;
@@ -154,6 +291,8 @@ export default function QuestionnaireClient({
           <Link href="/dashboard" className="block text-center" style={{ fontSize: "0.875rem", color: "#999", textDecoration: "underline" }}>
             Return to my dashboard
           </Link>
+
+          <InviteNudge />
         </div>
       </div>
     );

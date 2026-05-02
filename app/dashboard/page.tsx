@@ -6,6 +6,7 @@ import ProfileNudge from "./ProfileNudge";
 import AfterwordQR from "@/app/components/AfterwordQR";
 import PublishToggle from "./PublishToggle";
 import ExportPDFButton from "./ExportPDFButton";
+import ContributionsCard from "./ContributionsCard";
 
 type Profile = {
   id: string;
@@ -374,6 +375,12 @@ export default async function DashboardPage() {
                 </div>
               )}
             </div>
+
+
+            {/* Contributions card */}
+            {memorialSlug && (
+              <ContributionsCard />
+            )}
           </div>
         </div>
 

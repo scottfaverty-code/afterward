@@ -122,6 +122,22 @@ export default async function MemorialPage({
 
   const guestbook = (rawGuestbook ?? []) as GuestbookEntry[];
 
+  // Load approved contributions
+  type ContributionRow = {
+    id: string;
+    contributor_name: string;
+    contributor_relationship: string;
+    memory_text: string;
+    created_at: string;
+  };
+  const { data: rawContributions } = await supabase
+    .from("contributions")
+    .select("id, contributor_name, contributor_relationship, memory_text, created_at")
+    .eq("memorial_slug", slug)
+    .eq("status", "approved")
+    .order("created_at", { ascending: true });
+  const contributions = (rawContributions ?? []) as ContributionRow[];
+
   const fullName = [p.first_name, p.last_name].filter(Boolean).join(" ");
   const firstName = p.first_name ?? fullName ?? "them";
   const initial = p.first_name?.[0]?.toUpperCase() ?? "?";
@@ -320,6 +336,61 @@ export default async function MemorialPage({
             </div>
           )}
         </div>
+
+        {/* Memories from contributors */}
+        {contributions.length > 0 && (
+          <div className="mt-10 mb-6">
+            <div
+              className="mb-5"
+              style={{ borderBottom: "2px solid #D6EAF4", paddingBottom: "14px" }}
+            >
+              <div
+                style={{
+                  fontSize: "0.7rem",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.12em",
+                  color: "#2E7DA3",
+                  marginBottom: "4px",
+                }}
+              >
+                {firstName}&rsquo;s story
+              </div>
+              <h2 className="font-serif" style={{ fontSize: "1.4rem", color: "#1B4F6B" }}>
+                Memories from those who knew {firstName}
+              </h2>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {contributions.map((c) => (
+                <div
+                  key={c.id}
+                  style={{
+                    backgroundColor: "#fff",
+                    borderRadius: "12px",
+                    padding: "24px 28px",
+                    boxShadow: "0 1px 8px rgba(0,0,0,0.05)",
+                    borderLeft: "4px solid #D6EAF4",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: "0.95rem",
+                      color: "#1A1A1A",
+                      lineHeight: "1.8",
+                      fontStyle: "italic",
+                      marginBottom: "14px",
+                    }}
+                  >
+                    &ldquo;{c.memory_text}&rdquo;
+                  </p>
+                  <div style={{ fontSize: "0.82rem", color: "#999" }}>
+                    — {c.contributor_name}, {c.contributor_relationship}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Subtle Afterword attribution */}
         <div style={{ textAlign: "center", padding: "40px 0 0", borderTop: "1px solid #E8E8E8", marginTop: "40px" }}>
