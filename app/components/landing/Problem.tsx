@@ -88,22 +88,40 @@ export default function Problem() {
                 className="font-serif mb-1"
                 style={{ fontSize: "1.1rem", color: "#1A1A1A", fontWeight: 700 }}
               >
-                Margaret Anne Williams, 1944 to 2024
+                Margaret Anne Williams
               </div>
               <div
                 className="mb-4"
                 style={{ fontSize: "0.85rem", color: "#999" }}
               >
-                Passed away peacefully on December 4, 2024
+                March 12, 1944 &ndash; December 4, 2024
               </div>
               <p className="mb-3" style={{ fontSize: "0.9rem", color: "#555", lineHeight: "1.7" }}>
-                Margaret was a loving wife, mother, and grandmother. She enjoyed gardening,
-                cooking for her family, and attending church. She is survived by her husband
-                of 47 years, three children, and seven grandchildren.
+                Margaret Anne Williams, 80, of Cedar Falls, Iowa, passed away peacefully on
+                December 4, 2024, at Mercy Medical Center, surrounded by her loving family.
+              </p>
+              <p className="mb-3" style={{ fontSize: "0.9rem", color: "#555", lineHeight: "1.7" }}>
+                She was born on March 12, 1944, in Waterloo, Iowa, to Harold and Ruth
+                (née Carlson) Becker. She graduated from East High School in 1962 and
+                married Robert James Williams on June 14, 1964, at First Lutheran Church —
+                a partnership of 47 years that lasted until his passing in 2011.
+              </p>
+              <p className="mb-3" style={{ fontSize: "0.9rem", color: "#555", lineHeight: "1.7" }}>
+                Margaret devoted herself to raising her family and was a faithful member
+                of St. Andrew&apos;s Lutheran Church, where she sang in the choir for over
+                30 years. She was an active member of the Cedar Falls Garden Club and
+                volunteered regularly at the county food pantry.
+              </p>
+              <p className="mb-3" style={{ fontSize: "0.9rem", color: "#555", lineHeight: "1.7" }}>
+                She is survived by her children: David Williams of Cedar Falls, Susan (Mark)
+                Henderson of Des Moines, and Karen (Todd) Albright of Minneapolis; seven
+                grandchildren; and her sister, Patricia Becker of Waterloo. She was preceded
+                in death by her husband, Robert, and her parents.
               </p>
               <p className="mb-5" style={{ fontSize: "0.9rem", color: "#555", lineHeight: "1.7" }}>
-                A memorial service will be held on December 10th. In lieu of flowers,
-                donations may be made to the local food bank.
+                A memorial service will be held Saturday, December 10th, at 11:00 a.m.
+                at St. Andrew&apos;s Lutheran Church. In lieu of flowers, donations may be
+                made to the Cedar Falls Area Food Pantry.
               </p>
               <div
                 className="inline-block rounded px-3 py-1.5"
