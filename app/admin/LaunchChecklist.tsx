@@ -27,6 +27,12 @@ const SECTIONS: ChecklistSection[] = [
         tag: "external",
       },
       {
+        id: "stripe-webhook",
+        label: "Register Stripe webhook + set STRIPE_WEBHOOK_SECRET",
+        note: "In Stripe Dashboard → Developers → Webhooks, add endpoint https://www.myafterword.co/api/webhooks/stripe. Subscribe to checkout.session.completed and charge.dispute.created. Copy the signing secret (whsec_...) into Vercel as STRIPE_WEBHOOK_SECRET. Without this, purchases made before the redirect completes won't be recorded.",
+        tag: "external",
+      },
+      {
         id: "tos",
         label: "Terms of Service page live",
         note: "Required before taking real payments. Waiting on attorney draft.",
