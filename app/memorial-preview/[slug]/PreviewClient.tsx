@@ -6,6 +6,7 @@ type Section = {
   slug: string;
   label: string;
   shortLabel: string;
+  intro: string | null;
   answers: string[];
   isLetter?: boolean;
 };
@@ -347,6 +348,29 @@ export default function PreviewClient({
             >
               {section.label}
             </div>
+
+            {/* Section intro */}
+            {section.intro && (
+              <div
+                style={{
+                  borderLeft: "3px solid #D6EAF4",
+                  paddingLeft: "20px",
+                  marginBottom: "36px",
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: "0.95rem",
+                    fontStyle: "italic",
+                    color: "#5a8fa8",
+                    lineHeight: 1.75,
+                    margin: 0,
+                  }}
+                >
+                  {section.intro}
+                </p>
+              </div>
+            )}
 
             {section.isLetter ? (
               /* Letter treatment */
