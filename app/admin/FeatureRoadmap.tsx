@@ -46,9 +46,10 @@ const SHIPPED: ShippedFeature[] = [
 // Constants
 // ---------------------------------------------------------------------------
 
-const STORAGE_KEY  = "afterword-roadmap-v1";
-const SEEDED_KEY   = "afterword-roadmap-seeded-v1";
+const STORAGE_KEY   = "afterword-roadmap-v1";
+const SEEDED_KEY    = "afterword-roadmap-seeded-v1";
 const SEEDED_KEY_V2 = "afterword-roadmap-seeded-v2";
+const SEEDED_KEY_V3 = "afterword-roadmap-seeded-v3";
 
 // ---------------------------------------------------------------------------
 // Default roadmap items (seeded once on first load)
@@ -214,6 +215,46 @@ const DEFAULT_ITEMS_V2: Omit<RoadmapItem, "id">[] = [
   },
 ];
 
+// Default items added in v3 seed pass — posthumous memorial mode
+const DEFAULT_ITEMS_V3: Omit<RoadmapItem, "id">[] = [
+  // ── Posthumous Memorial Mode ──────────────────────────────────────────────
+  {
+    title: "Posthumous memorial mode — purchase intent branching",
+    notes: "The current product assumes the purchaser IS the subject. But a meaningful segment of buyers will be purchasing for someone who has already died — a spouse, parent, or grandparent.\n\nThese are different products with different emotional contexts, different question sets, and a completely different setup flow. The branching decision needs to happen early — ideally at checkout or the very first setup screen:\n\n'Who is this Afterword for?'\n→ Myself — I'm writing my own story\n→ Someone who has passed — I'm creating a memorial for them\n\nThis flag (e.g. is_posthumous boolean on profiles) controls everything downstream: question framing, setup flow, contributor invite copy, and eventual page display.\n\nTimeline: Q3 2026 — this is a second revenue stream on the same infrastructure. High priority.",
+    status: "idea",
+    category: "Core",
+    createdAt: "2026-05-04T00:00:00.000Z",
+  },
+  {
+    title: "Posthumous question set — third-person, biography-first",
+    notes: "The current seven guided sections are written in the first person and require the subject to answer them. For a posthumous memorial, the purchaser (a family member) answers on behalf of the deceased — or leaves sections open for contributors to fill.\n\nThe question set needs to be redesigned for this mode:\n\n• 'Where did [Name] grow up? What do you know about their early life?' (vs. 'Where did you grow up?')\n• 'How would you describe the life they built — their work, their relationships, their defining choices?'\n• 'What do you know about what they believed? What mattered most to them?'\n• 'What moment are you most proud of them for?'\n• 'What do you want the world to know about them?'\n• 'What do you want people to feel when they leave this page?'\n\nThe letter section ('A letter to your family') likely becomes 'A letter from the family' — written by the purchaser to future visitors.\n\nThe purchaser's contribution seeds the page; contributors fill it out. Neither source needs to be complete for the page to be meaningful.\n\nTimeline: Q3 2026, ships with purchase intent branching.",
+    status: "idea",
+    category: "Core",
+    createdAt: "2026-05-04T00:01:00.000Z",
+  },
+  {
+    title: "Contributor-first setup flow for posthumous memorials",
+    notes: "For a living author, the contribution nudge is a nice-to-have — the primary product is the author's own writing. For a posthumous memorial, contributions ARE the product. The purchaser may write very little; the page is built by everyone who loved the person.\n\nThe setup flow should reflect this:\n\n1. Enter the person's name, dates, and photo\n2. Answer a few seed questions (optional — but prompts the purchaser to share what they know)\n3. Immediately: 'Now invite the people who knew [Name] — their memories will become part of this page'\n4. Generate and share a contributor invite link — right here, step 3, not buried in the dashboard\n\nThe contributor invite UI should also surface how many people have been invited and how many have submitted. For a posthumous memorial, watching contributions come in IS the emotional experience of building the page.\n\nTimeline: Q3 2026.",
+    status: "idea",
+    category: "UX",
+    createdAt: "2026-05-04T00:02:00.000Z",
+  },
+  {
+    title: "Posthumous contributor invite — reframed copy and email",
+    notes: "The current contributor invite says: 'You've been invited to add a memory to [Name]'s Afterword. [Name] is building their life story and wants your voice in it.'\n\nFor a posthumous memorial, that copy is wrong in two ways: the subject didn't invite them (a family member did), and the framing is wrong. The contributor knows the person has passed.\n\nThe posthumous framing:\n\n• Subject line: '[Family member]'s family is building a memorial for them — and wants your memories'\n• Body: '[Name] passed on [date]. Their [daughter/son/spouse] is creating a permanent page where the people who knew them can contribute memories that will live alongside their story. You're invited to share yours.'\n• CTA: 'Share a memory of [Name]'\n\nThe 10% discount mechanic still applies and still works — if anything, the emotional context makes it more likely they'll start their own Afterword after contributing to someone else's.\n\nTimeline: Q3 2026, ships with contributor-first setup flow.",
+    status: "idea",
+    category: "Core",
+    createdAt: "2026-05-04T00:03:00.000Z",
+  },
+  {
+    title: "Posthumous memorial page display — tribute-first layout",
+    notes: "The current memorial page is structured around the author's own sections, with contributions shown at the bottom. For a posthumous memorial where contributions are the primary content, that hierarchy should flip or at least be balanced differently.\n\nConsiderations:\n\n• If the purchaser has answered seed questions, lead with those ('In [Name]'s family's words...')\n• Contributions are shown with equal weight — not as an afterthought at the bottom\n• The guestbook becomes even more prominent — a place for condolences and memories from people who weren't invited to contribute formally\n• The 'Report a Passing' feature is unnecessary — the page was created knowing the person has passed. The death year should be set at setup.\n• The page attribution ('This page was created by [Name]'s family in their memory') replaces 'written in their own words'\n\nThis may not require a completely separate page template — just conditional rendering based on the is_posthumous flag and who authored the content.\n\nTimeline: Q3/Q4 2026.",
+    status: "idea",
+    category: "Core",
+    createdAt: "2026-05-04T00:04:00.000Z",
+  },
+];
+
 const STATUS_CONFIG: Record<Status, { label: string; color: string; bg: string; dot: string }> = {
   idea:     { label: "Idea",     color: "#666",    bg: "#F5F5F5", dot: "#ccc" },
   building: { label: "Building", color: "#C9932A", bg: "#FDF3DC", dot: "#C9932A" },
@@ -285,6 +326,7 @@ export default function FeatureRoadmap() {
       const stored = localStorage.getItem(STORAGE_KEY);
       const seededV1 = localStorage.getItem(SEEDED_KEY);
       const seededV2 = localStorage.getItem(SEEDED_KEY_V2);
+      const seededV3 = localStorage.getItem(SEEDED_KEY_V3);
 
       let current: RoadmapItem[] = stored ? JSON.parse(stored) : [];
 
@@ -304,6 +346,11 @@ export default function FeatureRoadmap() {
       if (!seededV2) {
         seedBatch(DEFAULT_ITEMS_V2);
         localStorage.setItem(SEEDED_KEY_V2, "1");
+      }
+
+      if (!seededV3) {
+        seedBatch(DEFAULT_ITEMS_V3);
+        localStorage.setItem(SEEDED_KEY_V3, "1");
       }
 
       localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
