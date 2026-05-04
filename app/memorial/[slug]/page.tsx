@@ -1,9 +1,87 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { SECTIONS } from "@/lib/sections";
 import GuestbookForm from "./GuestbookForm";
 import ReportPassingForm from "./ReportPassingForm";
 import Nav from "@/app/components/Nav";
+
+// ---------------------------------------------------------------------------
+// Open Graph / Twitter metadata
+// Runs independently of the page render — Next.js deduplicates the Supabase
+// query automatically via the request cache.
+// ---------------------------------------------------------------------------
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const supabase = await createClient();
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("first_name, last_name, avatar_url, page_is_public, birth_year, death_year, referred_as")
+    .eq("memorial_slug", slug)
+    .maybeSingle();
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.myafterword.co";
+
+  // Private or missing pages — return generic metadata
+  if (!profile || !profile.page_is_public) {
+    return {
+      title: "Afterword",
+      description: "A permanent page for your story, written in your own words.",
+    };
+  }
+
+  const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(" ");
+
+  const years =
+    profile.birth_year && profile.death_year
+      ? ` (${profile.birth_year}–${profile.death_year})`
+      : profile.birth_year
+      ? ` (b. ${profile.birth_year})`
+      : "";
+
+  const poss =
+    profile.referred_as === "he" ? "his"
+    : profile.referred_as === "she" ? "her"
+    : "their";
+
+  const title = `${fullName}${years} · Afterword`;
+  const description = `${fullName}'s life story, written in ${poss} own words.`;
+  const pageUrl = `${appUrl}/memorial/${slug}`;
+
+  // Resolve avatar to an absolute URL
+  const rawAvatar = profile.avatar_url ?? null;
+  const imageUrl = rawAvatar
+    ? rawAvatar.startsWith("http")
+      ? rawAvatar
+      : `${appUrl}${rawAvatar}`
+    : null;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: pageUrl,
+      siteName: "Afterword",
+      type: "profile",
+      ...(imageUrl
+        ? { images: [{ url: imageUrl, width: 800, height: 800, alt: fullName }] }
+        : {}),
+    },
+    twitter: {
+      card: imageUrl ? "summary" : "summary",
+      title,
+      description,
+      ...(imageUrl ? { images: [imageUrl] } : {}),
+    },
+  };
+}
 
 type Pronouns = { subj: string; obj: string; poss: string };
 
