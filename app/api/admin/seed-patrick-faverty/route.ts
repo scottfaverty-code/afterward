@@ -232,7 +232,7 @@ export async function POST() {
     id: userId,
     first_name: "Patrick",
     last_name: "Faverty",
-    avatar_url: `${appUrl}/images/patrick-faverty.jpg`,
+    avatar_url: `${appUrl}/images/patrick-faverty-2.png`,
     memorial_slug: MEMORIAL_SLUG,
     referred_as: "he",
     birth_year: 1949,
