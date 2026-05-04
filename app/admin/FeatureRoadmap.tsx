@@ -51,6 +51,7 @@ const SEEDED_KEY    = "afterword-roadmap-seeded-v1";
 const SEEDED_KEY_V2 = "afterword-roadmap-seeded-v2";
 const SEEDED_KEY_V3 = "afterword-roadmap-seeded-v3";
 const SEEDED_KEY_V4 = "afterword-roadmap-seeded-v4";
+const SEEDED_KEY_V5 = "afterword-roadmap-seeded-v5";
 
 // ---------------------------------------------------------------------------
 // Default roadmap items (seeded once on first load)
@@ -257,34 +258,39 @@ const DEFAULT_ITEMS_V3: Omit<RoadmapItem, "id">[] = [
 ];
 
 // Default items added in v4 seed pass — obituary export + Legacy.com
-const DEFAULT_ITEMS_V4: Omit<RoadmapItem, "id">[] = [
+// NOTE: The framing in this batch was corrected in v5. These items are superseded
+// by the v5 items below. Delete v4 items from the roadmap UI.
+const DEFAULT_ITEMS_V4: Omit<RoadmapItem, "id">[] = [];
+
+// Default items added in v5 seed pass — corrected obituary + trusted contact model
+const DEFAULT_ITEMS_V5: Omit<RoadmapItem, "id">[] = [
   {
-    title: "Abridged obituary export with QR code",
-    notes: "An Afterword contains far more than a traditional obituary — but families still need a traditional obituary for newspapers, funeral programs, and memorial services. This feature generates one automatically from the Afterword content.\n\nWhat it produces:\n• A formatted, print-ready obituary in the conventional structure: full name, birth and death dates, birthplace, survivors, life summary, and service details\n• Drawn from the Afterword sections — roots, life built, people who matter, proudest moments\n• A QR code at the bottom: 'Read [Name]'s full Afterword at myafterword.co/memorial/[slug]'\n• PDF export (already exists in the codebase) and a clean print stylesheet\n\nThe QR code is the key: every obituary printed in a newspaper, pinned to a funeral home board, or inserted into a church bulletin becomes a distribution point for the full memorial page. People scan it, read the full story, and discover Afterword.\n\nGeneration options:\n• AI-assisted: feed the section answers to Claude/GPT with an obituary prompt, let it draft the abridged version, let the user edit and approve\n• Manual: give the user an editable text area pre-populated with the key facts, they write it themselves\n\nThe AI-assisted approach is the right call — grieving families have neither the time nor the emotional bandwidth to write an obituary from scratch.\n\nTimeline: Q3 2026. High value — ships with or shortly after posthumous memorial mode.",
+    title: "Trusted contact designation ('Afterword Executor')",
+    notes: "Every living Afterword author should be able to name one person — a spouse, adult child, close friend, or executor — who will have elevated access to their page when the time comes.\n\nThis person is not a contributor and not a co-author. They are a designated steward. Their role activates on death.\n\nWhat they can do once elevated access is granted:\n• Generate and download the obituary PDF with QR code\n• Set the page to public (if the author hadn't already)\n• Add or confirm the death year\n• Submit the obituary to Legacy.com (when that integration exists)\n• Invite additional contributors on the author's behalf\n\nHow elevated access is triggered:\n• The trusted contact uses a private link + confirmation code (set by the author at designation time)\n• OR a family member reports a passing via the existing 'Report a Passing' form — Scott confirms manually and elevates the trusted contact\n• The author could also pre-set 'publish after I pass' as an instruction tied to this contact\n\nThe designation UI:\n• A single field in the dashboard: 'Trusted contact email' + optional note ('This is my daughter Sarah')\n• On save, that person receives an email: '[Name] has named you as their Afterword contact. When the time comes, you will be able to manage their memorial page. No action needed right now.'\n• They don't need an account. The access is link-based.\n\nThis feature answers one of the most important questions a prospect has: 'What happens after I die — who takes care of it?' The trusted contact is the answer.\n\nTimeline: Q3 2026. Ships with or before the obituary generation feature.",
     status: "idea",
     category: "Core",
-    createdAt: "2026-05-04T01:00:00.000Z",
+    createdAt: "2026-05-04T02:00:00.000Z",
   },
   {
-    title: "Legacy.com partnership — obituary distribution",
-    notes: "Legacy.com is the largest obituary platform in the world, powering the obituary sections of 1,500+ newspapers including USA Today, the Los Angeles Times, and hundreds of regional papers. When a family publishes an obituary anywhere, it almost certainly flows through Legacy.com.\n\nThe opportunity:\nAfterword generates the obituary (see: abridged obituary export). Legacy.com distributes it. The published obituary contains a QR code linking to the full Afterword memorial page. Every scan is a new visitor discovering Afterword through the most emotionally resonant context imaginable.\n\nWhat to explore:\n• Legacy.com has a publisher/funeral home API — research whether it's accessible to a third-party integration or requires a funeral home relationship\n• An Afterword user (or funeral home using Afterword) could submit the abridged obituary directly to Legacy.com from within the dashboard\n• Revenue model: charge as an add-on ($25–$50 to publish to Legacy.com + affiliated newspapers), or position it as a premium tier feature\n\nThe partnership pitch to Legacy.com:\nAfterword sends them richer, more complete obituaries than anything they currently receive. Each one links back to a permanent memorial page with full life story, photos, and a guestbook. Their readers spend more time on the content. They carry a differentiated product. Win-win.\n\nRisk: Legacy.com might see Afterword as a competitor in the memorial page space (they have Tributes.com). The pitch needs to position Afterword as a content creator, not a competitor — they own distribution, we own the story.\n\nTimeline: Q4 2026 for initial outreach and API research. Integration Q1 2027 if partnership terms are favorable.",
-    status: "idea",
-    category: "Marketing",
-    createdAt: "2026-05-04T01:01:00.000Z",
-  },
-  {
-    title: "Funeral home channel partnership",
-    notes: "Funeral homes are the intermediary for almost every posthumous memorial purchase. They handle the obituary, the service program, and increasingly the digital memorial — and families trust them to recommend products at the most vulnerable moment.\n\nThe Afterword funeral home offering:\n• Funeral homes recommend Afterword as part of their service package — 'Would the family like a permanent memorial page with QR code for the grave marker?'\n• The funeral home either purchases on behalf of the family (and is reimbursed) or directs families to Afterword directly\n• Optional: a funeral home dashboard to manage pages for multiple families (admin view)\n• Revenue share: give funeral homes 15–20% for every referral that converts, or a flat wholesale price they mark up\n\nThis channel is particularly powerful combined with Legacy.com: funeral home uses Afterword → submits obituary to Legacy.com with Afterword QR code → families scan and discover → some start their own Afterword.\n\nFuneral homes already recommend grief counselors, florists, caterers, and monuments. Afterword fits naturally in that stack.\n\nFirst step: identify 2–3 independent funeral homes willing to pilot the referral model. Requires no API, no integration — just an agreement and a referral link.\n\nTimeline: Q1 2027 for pilot outreach. Formal channel program Q2 2027.",
-    status: "idea",
-    category: "Marketing",
-    createdAt: "2026-05-04T01:02:00.000Z",
-  },
-  {
-    title: "AI-assisted obituary drafting from Afterword content",
-    notes: "The technical implementation behind the abridged obituary export.\n\nInput: the user's Afterword answers across all sections — roots, life built, people who matter, beliefs, proudest moments, how to be remembered, letter to family. Plus structured data: name, birth/death dates, location, referred_as.\n\nPrompt design:\n• Ask the model to write a conventional obituary (300–400 words) in the third person\n• Instruct it to preserve the subject's voice and specific details from the sections — no generic filler\n• Include a structured survivors paragraph if the user has named family members in the 'people who matter' section\n• End with a note about the full Afterword page being available via QR code\n\nUI flow:\n1. User clicks 'Generate obituary' from the dashboard\n2. Afterword calls the AI API with the prompt + their content\n3. A draft appears in an editable textarea — they can revise freely\n4. 'Download as PDF' produces the final formatted document with QR code\n5. Optional: 'Publish to Legacy.com' (if that partnership exists)\n\nModel choice: Claude Haiku or GPT-4o-mini for cost efficiency — obituaries are short, structured, and don't require frontier reasoning. Cost per generation should be under $0.01.\n\nThis is the most important piece of the obituary feature. A family that just lost someone cannot write an obituary from scratch. A one-click draft they can polish in 10 minutes is an enormous act of service.\n\nTimeline: Q3 2026.",
+    title: "Obituary generation from existing Afterword (living authors)",
+    notes: "The author has already written their complete life story. This feature generates a conventional, print-ready obituary from that content — ready for the trusted contact to publish when the time comes.\n\nThis is not for posthumous purchases. The author wrote everything themselves. The obituary is a condensed, third-person version of what they already said, reformatted for newspaper submission.\n\nWhat the trusted contact sees when they activate:\n1. '[Name]'s Afterword is ready. Here is their obituary, generated from their own words.'\n2. A 300–400 word obituary in conventional format: full name, dates, life summary drawn from their sections, named family members from 'people who matter', and a closing line\n3. A QR code at the bottom linking to the full Afterword memorial page\n4. An editable textarea — they can adjust anything before downloading\n5. 'Download as PDF' — print-ready for newspapers, funeral programs, church bulletins\n\nThe QR code is the product's quiet masterstroke: every printed obituary becomes a permanent pointer back to the full, self-authored story. People who knew the person scan it and find everything they wrote. People who didn't know them discover Afterword.\n\nAI generation flow:\n• Input: all section answers + name, dates, referred_as\n• Prompt: write a conventional obituary (third person, ~350 words), preserving specific details and voice, not generic filler. End with 'Read [Name]'s full life story at [url].'\n• Model: Claude Haiku or equivalent — short, structured output, cost < $0.01 per generation\n• The author can also generate and review this themselves in advance — 'preview your obituary' — and save an approved draft for the trusted contact to use\n\nTimeline: Q3 2026.",
     status: "idea",
     category: "Core",
-    createdAt: "2026-05-04T01:03:00.000Z",
+    createdAt: "2026-05-04T02:01:00.000Z",
+  },
+  {
+    title: "Legacy.com integration — submit obituary directly from Afterword",
+    notes: "Legacy.com powers the obituary sections of 1,500+ newspapers. When a family submits an obituary, it almost always flows through Legacy.com. If Afterword can submit directly from the trusted contact's dashboard, it removes the last remaining step between the Afterword and the world.\n\nThe flow:\n1. Trusted contact generates the obituary PDF inside Afterword\n2. They review and approve it\n3. 'Publish to Legacy.com' button — enters the Legacy.com submission fields pre-populated from Afterword data\n4. Obituary publishes to Legacy.com and affiliated newspapers\n5. The QR code in the obituary links back to the full Afterword memorial page\n\nEvery scan of that QR code is a grieving family member or old friend discovering that this person wrote their own story — and that they could too.\n\nLegacy.com technical path:\n• They have a publisher API primarily accessible to funeral homes and newspaper partners — research whether a third-party integration is possible, or whether Afterword needs a funeral home relationship as the access point\n• Alternative: a pre-filled form flow that opens Legacy.com's submission page with data passed via URL params, so the trusted contact just reviews and clicks submit — no API required\n\nThe partnership pitch:\nAfterword sends them the richest obituaries they've ever received — self-authored, fully detailed, with a permanent memorial page behind every QR code. Their readers engage more deeply. Their platform carries something no competitor offers.\n\nRisk: Legacy.com owns Tributes.com (a basic memorial page product). Position Afterword as a content creator, not a competitor — we own the story, they own the distribution.\n\nTimeline: Q4 2026 outreach + API research. Q1 2027 integration if terms are workable.",
+    status: "idea",
+    category: "Marketing",
+    createdAt: "2026-05-04T02:02:00.000Z",
+  },
+  {
+    title: "Funeral home channel — referral and co-branded obituary flow",
+    notes: "Funeral homes are in the room when families are most likely to say yes to an Afterword. They handle the obituary, the service program, and increasingly the digital memorial.\n\nBut importantly: the Afterword pitch to funeral homes is not 'help families build memorial pages.' It's 'when a family has an Afterword, we make your job easier — here's the obituary, pre-written, with the QR code ready to go.'\n\nThe funeral home integration:\n• Funeral home refers living clients to Afterword ('Many families find it meaningful to write their own story while they can')\n• When a client passes, the funeral home contacts the trusted contact — who already has the obituary ready in Afterword\n• The funeral home submits it to Legacy.com through their existing workflow; the QR code is already embedded\n• Revenue share: 15–20% referral fee for living-author purchases driven by funeral home recommendation\n\nFirst step requires no technology: identify 2–3 independent funeral homes willing to pilot a referral link. Measure conversion. Then build co-branded tooling around what works.\n\nTimeline: Q1 2027 pilot. Formal channel program Q2 2027.",
+    status: "idea",
+    category: "Marketing",
+    createdAt: "2026-05-04T02:03:00.000Z",
   },
 ];
 
@@ -361,6 +367,7 @@ export default function FeatureRoadmap() {
       const seededV2 = localStorage.getItem(SEEDED_KEY_V2);
       const seededV3 = localStorage.getItem(SEEDED_KEY_V3);
       const seededV4 = localStorage.getItem(SEEDED_KEY_V4);
+      const seededV5 = localStorage.getItem(SEEDED_KEY_V5);
 
       let current: RoadmapItem[] = stored ? JSON.parse(stored) : [];
 
@@ -388,8 +395,13 @@ export default function FeatureRoadmap() {
       }
 
       if (!seededV4) {
-        seedBatch(DEFAULT_ITEMS_V4);
+        seedBatch(DEFAULT_ITEMS_V4); // empty array — v4 framing was corrected in v5
         localStorage.setItem(SEEDED_KEY_V4, "1");
+      }
+
+      if (!seededV5) {
+        seedBatch(DEFAULT_ITEMS_V5);
+        localStorage.setItem(SEEDED_KEY_V5, "1");
       }
 
       localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
