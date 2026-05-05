@@ -121,6 +121,28 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     return;
   }
 
+  // ---- Resolve contributor attribution from promo code metadata ------
+  // If the customer used a MEMORY-XXXXXX code, trace it back to the
+  // contribution_invite so we can record which author referred them.
+  let referredByUserId: string | null = null;
+  let sourceInviteId: string | null = null;
+
+  const sourcePromoCode = session.metadata?.source_promo_code ?? null;
+  if (sourcePromoCode) {
+    const { data: contribution } = await admin
+      .from("contributions")
+      .select("invite_id, contribution_invites(owner_user_id)")
+      .eq("discount_code", sourcePromoCode)
+      .maybeSingle();
+
+    if (contribution) {
+      sourceInviteId = contribution.invite_id ?? null;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const invite = (contribution as any).contribution_invites;
+      referredByUserId = invite?.owner_user_id ?? null;
+    }
+  }
+
   // ---- Insert purchase -----------------------------------------------
   const { error: purchaseError } = await admin.from("purchases").insert({
     user_id: userId,
@@ -128,11 +150,17 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     stripe_session_id: session.id,
     amount_paid: session.amount_total ?? 19999,
     plaque_status: "pending",
+    ...(referredByUserId ? { referred_by_user_id: referredByUserId } : {}),
+    ...(sourceInviteId ? { source_invite_id: sourceInviteId } : {}),
   });
 
   if (purchaseError) {
     console.error("[webhook] Failed to insert purchase:", purchaseError.message);
     throw purchaseError;
+  }
+
+  if (referredByUserId) {
+    console.log(`[webhook] Attribution recorded — referred by user: ${referredByUserId}`);
   }
 
   // ---- Generate unique memorial slug ---------------------------------

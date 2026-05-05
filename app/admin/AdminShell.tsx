@@ -8,6 +8,8 @@ import UserLookup from "./UserLookup";
 import LaunchChecklist from "./LaunchChecklist";
 import FeatureRoadmap from "./FeatureRoadmap";
 import QRCampaigns from "./QRCampaigns";
+import CreateBetaAccount from "./CreateBetaAccount";
+import BetaAttribution from "./BetaAttribution";
 
 type Order = Parameters<typeof AdminOrdersTable>[0]["orders"][number];
 type AdminRow = Parameters<typeof ManageAdmins>[0]["initialAdmins"][number];
@@ -25,6 +27,7 @@ interface Props {
 
 const TABS = [
   { id: "orders", label: "Orders" },
+  { id: "beta", label: "Beta program" },
   { id: "launch", label: "Launch checklist" },
   { id: "roadmap", label: "Roadmap" },
   { id: "qr", label: "QR campaigns" },
@@ -147,6 +150,32 @@ export default function AdminShell({ stats, orders, appUrl, role, adminsList, cu
               />
             </div>
           )}
+        </div>
+      )}
+
+      {/* Beta program tab */}
+      {activeTab === "beta" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          <div
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: "16px",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+              padding: "28px 32px",
+            }}
+          >
+            <CreateBetaAccount />
+          </div>
+          <div
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: "16px",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+              padding: "28px 32px",
+            }}
+          >
+            <BetaAttribution />
+          </div>
         </div>
       )}
 

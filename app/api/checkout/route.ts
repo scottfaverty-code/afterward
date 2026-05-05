@@ -44,6 +44,9 @@ export async function POST(req: NextRequest) {
     ],
     // Apply pre-validated discount, or allow manual code entry if none provided
     ...(discounts ? { discounts } : { allow_promotion_codes: true }),
+    // Store the promo code string in metadata so the webhook can attribute
+    // this purchase back to the contributor invite chain that generated it
+    metadata: promoCodeStr ? { source_promo_code: promoCodeStr } : {},
     success_url: `${appUrl}/welcome?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${appUrl}/#pricing`,
   });
