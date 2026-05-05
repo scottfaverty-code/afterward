@@ -51,7 +51,12 @@ export async function POST(req: NextRequest) {
   // ------------------------------------------------------------------
   try {
     if (event.type === "checkout.session.completed") {
-      await handleCheckoutSessionCompleted(event.data.object as Stripe.Checkout.Session);
+      const session = event.data.object as Stripe.Checkout.Session;
+      if (session.metadata?.type === "plaque_only") {
+        await handlePlaqueOnlySession(session);
+      } else {
+        await handleCheckoutSessionCompleted(session);
+      }
     } else if (event.type === "charge.dispute.created") {
       await handleDisputeCreated(event.data.object as Stripe.Dispute);
     }
@@ -196,6 +201,33 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
   }
 
   console.log("[webhook] Purchase recorded via webhook for:", customerEmail);
+}
+
+// ------------------------------------------------------------------
+// plaque_only session — update plaque_status to pending
+// ------------------------------------------------------------------
+async function handlePlaqueOnlySession(session: Stripe.Checkout.Session) {
+  if (session.payment_status !== "paid") return;
+
+  const userId = session.metadata?.user_id;
+  if (!userId) {
+    console.error("[webhook/plaque] No user_id in session metadata:", session.id);
+    return;
+  }
+
+  const admin = createAdminClient();
+  const { error } = await admin
+    .from("purchases")
+    .update({ plaque_status: "pending" })
+    .eq("user_id", userId)
+    .eq("plaque_status", "not_included");
+
+  if (error) {
+    console.error("[webhook/plaque] Failed to update plaque_status:", error.message);
+    throw error;
+  }
+
+  console.log("[webhook/plaque] Plaque status updated to pending for user:", userId);
 }
 
 // ------------------------------------------------------------------

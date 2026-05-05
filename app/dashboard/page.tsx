@@ -7,6 +7,7 @@ import AfterwordQR from "@/app/components/AfterwordQR";
 import PublishToggle from "./PublishToggle";
 import ExportPDFButton from "./ExportPDFButton";
 import ContributionsCard from "./ContributionsCard";
+import BuyPlaqueButton from "./BuyPlaqueButton";
 
 type Profile = {
   id: string;
@@ -64,7 +65,12 @@ const SECTION_QUESTIONS: Record<string, string[]> = {
   "how-you-want-to-be-remembered": ["remember-q1", "remember-q2"],
 };
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ plaque_ordered?: string }>;
+}) {
+  const { plaque_ordered } = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -290,7 +296,34 @@ export default async function DashboardPage() {
                 Your QR plaque
               </h3>
 
-              {addressDeferred || !shippingAddress ? (
+              {/* Beta / digital-only — plaque upsell */}
+              {purchase?.plaque_status === "not_included" ? (
+                plaque_ordered ? (
+                  <div className="rounded-xl p-4" style={{ backgroundColor: "#d4edda", borderLeft: "4px solid #155724" }}>
+                    <div className="font-bold mb-1" style={{ fontSize: "0.9rem", color: "#155724" }}>
+                      Plaque ordered — thank you!
+                    </div>
+                    <p style={{ fontSize: "0.8rem", color: "#555", lineHeight: "1.6", margin: 0 }}>
+                      We&apos;ll ship your QR plaque within 10 business days once we have your shipping address.
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <p style={{ fontSize: "0.85rem", color: "#666", lineHeight: "1.65", marginBottom: 16 }}>
+                      Your Afterword is digital — your story, your page, everything included. Want a physical QR plaque to display at home or place at a memorial site?
+                    </p>
+                    <div
+                      className="rounded-xl p-4 mb-4"
+                      style={{ backgroundColor: "#EEF7FC", border: "1px solid #D6EAF4" }}
+                    >
+                      <div style={{ fontSize: "0.82rem", color: "#1B4F6B", lineHeight: 1.6 }}>
+                        <strong>Weatherproof QR plaque</strong> — links permanently to your Afterword page. Ships within 10 business days.
+                      </div>
+                    </div>
+                    <BuyPlaqueButton />
+                  </div>
+                )
+              ) : addressDeferred || !shippingAddress ? (
                 <div
                   className="rounded-xl p-4"
                   style={{ backgroundColor: "#FDF3DC", borderLeft: "4px solid #C9932A" }}

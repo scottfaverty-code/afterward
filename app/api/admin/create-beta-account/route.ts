@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
       email,
       stripe_session_id: `beta-${userId}-${Date.now()}`,
       amount_paid: 0,
-      plaque_status: "pending",
+      plaque_status: "not_included",
       is_beta: true,
     });
 
