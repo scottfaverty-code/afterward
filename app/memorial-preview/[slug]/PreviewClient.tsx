@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import GuestbookForm from "@/app/memorial/[slug]/GuestbookForm";
+import ReportPassingForm from "@/app/memorial/[slug]/ReportPassingForm";
 
 type Section = {
   slug: string;
@@ -11,9 +13,17 @@ type Section = {
   isLetter?: boolean;
 };
 
+type Contribution = {
+  id: string;
+  contributor_name: string;
+  contributor_relationship: string;
+  memory_text: string;
+};
+
 type Props = {
   fullName: string;
   firstName: string;
+  poss: string; // "his" | "her" | "their"
   birthYear: number | null;
   deathYear: number | null;
   avatarUrl: string | null;
@@ -21,6 +31,8 @@ type Props = {
   sections: Section[];
   guestbook: { id: string; author_name: string; message: string; created_at: string }[];
   memorialSlug: string;
+  isPreview?: boolean;
+  contributions?: Contribution[];
 };
 
 const NAV_BG = "#1B4F6B";
@@ -29,6 +41,7 @@ const DARK = "#0f2d3d";
 export default function PreviewClient({
   fullName,
   firstName,
+  poss,
   birthYear,
   deathYear,
   avatarUrl,
@@ -36,6 +49,8 @@ export default function PreviewClient({
   sections,
   guestbook,
   memorialSlug,
+  isPreview = false,
+  contributions = [],
 }: Props) {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [navScrolled, setNavScrolled] = useState(false);
@@ -420,6 +435,59 @@ export default function PreviewClient({
           </section>
         ))}
 
+        {/* ── Contributions (approved memories from others) ─────────────── */}
+        {!isPreview && contributions.length > 0 && (
+          <section
+            style={{
+              paddingTop: "96px",
+              borderTop: "1px solid #E8E4DC",
+              marginTop: "96px",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "0.7rem",
+                fontWeight: 700,
+                letterSpacing: "0.16em",
+                textTransform: "uppercase",
+                color: NAV_BG,
+                marginBottom: "16px",
+              }}
+            >
+              Memories from those who knew {firstName}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+              {contributions.map((c) => (
+                <div
+                  key={c.id}
+                  style={{
+                    backgroundColor: "#fff",
+                    borderRadius: "10px",
+                    padding: "28px 32px",
+                    boxShadow: "0 1px 8px rgba(0,0,0,0.05)",
+                    borderLeft: "3px solid #D6EAF4",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: "1rem",
+                      color: "#2a2a2a",
+                      lineHeight: 1.85,
+                      fontStyle: "italic",
+                      marginBottom: "14px",
+                    }}
+                  >
+                    &ldquo;{c.memory_text}&rdquo;
+                  </p>
+                  <div style={{ fontSize: "0.82rem", color: "#999" }}>
+                    — {c.contributor_name}, {c.contributor_relationship}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* ── Guestbook ──────────────────────────────────────────────────── */}
         <section
           id="guestbook"
@@ -450,69 +518,87 @@ export default function PreviewClient({
             Leave a message for {firstName}&rsquo;s family
           </h2>
 
-          {/* Simple guestbook form placeholder */}
-          <div
-            style={{
-              backgroundColor: "#fff",
-              borderRadius: "12px",
-              padding: "32px",
-              marginBottom: "32px",
-              boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
-            }}
-          >
-            <input
-              type="text"
-              placeholder="Your name"
-              disabled
-              style={{
-                width: "100%",
-                border: "1px solid #E8E4DC",
-                borderRadius: "8px",
-                padding: "12px 14px",
-                fontSize: "0.95rem",
-                marginBottom: "12px",
-                backgroundColor: "#FAFAF5",
-                color: "#999",
-                boxSizing: "border-box",
-              }}
-            />
-            <textarea
-              placeholder="Your message…"
-              disabled
-              rows={4}
-              style={{
-                width: "100%",
-                border: "1px solid #E8E4DC",
-                borderRadius: "8px",
-                padding: "12px 14px",
-                fontSize: "0.95rem",
-                backgroundColor: "#FAFAF5",
-                color: "#999",
-                resize: "none",
-                boxSizing: "border-box",
-                marginBottom: "12px",
-                fontFamily: "inherit",
-              }}
-            />
+          {isPreview ? (
+            /* Preview mode — disabled placeholder */
             <div
               style={{
-                display: "inline-block",
-                padding: "10px 24px",
-                borderRadius: "8px",
-                backgroundColor: NAV_BG,
-                color: "#fff",
-                fontSize: "0.85rem",
-                fontWeight: 600,
-                opacity: 0.5,
-                cursor: "default",
+                backgroundColor: "#fff",
+                borderRadius: "12px",
+                padding: "32px",
+                marginBottom: "32px",
+                boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
               }}
             >
-              Leave a message
+              <input
+                type="text"
+                placeholder="Your name"
+                disabled
+                style={{
+                  width: "100%",
+                  border: "1px solid #E8E4DC",
+                  borderRadius: "8px",
+                  padding: "12px 14px",
+                  fontSize: "0.95rem",
+                  marginBottom: "12px",
+                  backgroundColor: "#FAFAF5",
+                  color: "#999",
+                  boxSizing: "border-box",
+                }}
+              />
+              <textarea
+                placeholder="Your message…"
+                disabled
+                rows={4}
+                style={{
+                  width: "100%",
+                  border: "1px solid #E8E4DC",
+                  borderRadius: "8px",
+                  padding: "12px 14px",
+                  fontSize: "0.95rem",
+                  backgroundColor: "#FAFAF5",
+                  color: "#999",
+                  resize: "none",
+                  boxSizing: "border-box",
+                  marginBottom: "12px",
+                  fontFamily: "inherit",
+                }}
+              />
+              <div
+                style={{
+                  display: "inline-block",
+                  padding: "10px 24px",
+                  borderRadius: "8px",
+                  backgroundColor: NAV_BG,
+                  color: "#fff",
+                  fontSize: "0.85rem",
+                  fontWeight: 600,
+                  opacity: 0.5,
+                  cursor: "default",
+                }}
+              >
+                Leave a message
+              </div>
+              <p style={{ fontSize: "0.75rem", color: "#bbb", marginTop: "10px" }}>
+                [Guestbook interactions disabled in preview]
+              </p>
             </div>
-            <p style={{ fontSize: "0.75rem", color: "#bbb", marginTop: "10px" }}>
-              [Guestbook interactions disabled in preview]
-            </p>
-          </div>
+          ) : (
+            /* Live mode — real guestbook form */
+            <div
+              style={{
+                backgroundColor: "#fff",
+                borderRadius: "12px",
+                padding: "32px",
+                marginBottom: "32px",
+                boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
+              }}
+            >
+              <GuestbookForm memorialSlug={memorialSlug} />
+              {!deathYear && (
+                <ReportPassingForm slug={memorialSlug} firstName={firstName} />
+              )}
+            </div>
+          )}
 
           {guestbook.length > 0 && (
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -550,7 +636,7 @@ export default function PreviewClient({
           )}
         </section>
 
-        {/* Footer */}
+        {/* ── Footer attribution ───────────────────────────────────────── */}
         <div
           style={{
             textAlign: "center",
@@ -574,7 +660,7 @@ export default function PreviewClient({
             AFTERWORD
           </a>
           <p style={{ fontSize: "0.75rem", color: "#ccc", marginTop: "6px" }}>
-            {firstName} wrote this page in {firstName === fullName ? "their" : firstName.endsWith("s") ? "his" : "his"} own words.
+            {firstName} wrote this page in {poss} own words.
           </p>
         </div>
       </div>

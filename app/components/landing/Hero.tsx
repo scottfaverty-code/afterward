@@ -35,7 +35,7 @@ export default function Hero() {
               className="inline-block mb-6 rounded-full px-4 py-1.5 text-sm font-semibold"
               style={{ backgroundColor: "#FDF3DC", color: "#C9932A" }}
             >
-              Beta pricing: $150 off for a limited time
+              Beta pricing: $50 off for a limited time
             </div>
 
             <h1

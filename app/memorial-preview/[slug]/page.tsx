@@ -118,6 +118,7 @@ export default async function MemorialPreviewPage({
     <PreviewClient
       fullName={fullName}
       firstName={firstName}
+      poss={pr.poss}
       birthYear={profile.birth_year ?? null}
       deathYear={profile.death_year ?? null}
       avatarUrl={profile.avatar_url ?? null}
@@ -125,6 +126,7 @@ export default async function MemorialPreviewPage({
       sections={sections}
       guestbook={guestbook}
       memorialSlug={slug}
+      isPreview={true}
     />
   );
 }
