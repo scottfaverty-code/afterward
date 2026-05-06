@@ -61,7 +61,7 @@ export default async function WelcomePage({
           user_id: userId,
           email: customerEmail,
           stripe_session_id: session_id,
-          amount_paid: session.amount_total ?? 19999,
+          amount_paid: session.amount_total ?? 14999,
           plaque_status: "pending",
         });
 

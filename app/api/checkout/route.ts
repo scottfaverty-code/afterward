@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       {
         price_data: {
           currency: "usd",
-          unit_amount: 19999,
+          unit_amount: 14999,
           product_data: {
             name: "Afterword: Permanent Memorial Page + QR Plaque",
             description:

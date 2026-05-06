@@ -25,7 +25,7 @@ const faqs = [
   },
   {
     q: "Is this beta pricing going away soon?",
-    a: "Yes. The $199.99 beta price exists while we gather early feedback from our first wave of users. Once the beta period closes, the price returns to $349.99. We won\u2019t retroactively change the price for anyone who purchased at the beta rate.",
+    a: "Yes. The $149.99 beta price exists while we gather early feedback from our first wave of users. Once the beta period closes, the price returns to $199.99. We won\u2019t retroactively change the price for anyone who purchased at the beta rate.",
   },
 ];
 

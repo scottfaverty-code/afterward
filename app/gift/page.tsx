@@ -106,7 +106,7 @@ export default function GiftPage() {
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" }}>
                   <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                    <a href="#pricing" className="btn-primary-lg">Give This Gift: $199.99</a>
+                    <a href="#pricing" className="btn-primary-lg">Give This Gift: $149.99</a>
                     <a
                       href="#example"
                       className="btn-ghost"
@@ -117,7 +117,7 @@ export default function GiftPage() {
                   </div>
                   <p style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.55)" }}>
                     <strong style={{ color: "rgba(255,255,255,0.85)" }}>One-time payment. No subscription. Permanent hosting.</strong>
-                    &nbsp;Regular price <s style={{ color: "rgba(255,255,255,0.4)" }}>$349.99</s> (beta discount saves you $150).
+                    &nbsp;Regular price <s style={{ color: "rgba(255,255,255,0.4)" }}>$199.99</s> (beta discount saves you $50).
                   </p>
                 </div>
               </div>
@@ -941,7 +941,7 @@ export default function GiftPage() {
               {[
                 {
                   title: "One payment. No renewals.",
-                  body: "Your $199.99 covers permanent hosting with no renewal dates, no expiry notices, no annual fees.",
+                  body: "Your $149.99 covers permanent hosting with no renewal dates, no expiry notices, no annual fees.",
                 },
                 {
                   title: "Their data, always theirs.",
@@ -1212,8 +1212,8 @@ export default function GiftPage() {
                 Beta Pricing: Limited Time
               </div>
               <div style={{ textAlign: "center", marginBottom: "28px" }}>
-                <span style={{ fontSize: "3rem", fontWeight: 800, color: "#1B4F6B", letterSpacing: "-0.02em" }}>$199.99</span>
-                <span style={{ fontSize: "1.25rem", color: "#999", textDecoration: "line-through", marginLeft: "10px" }}>$349.99</span>
+                <span style={{ fontSize: "3rem", fontWeight: 800, color: "#1B4F6B", letterSpacing: "-0.02em" }}>$149.99</span>
+                <span style={{ fontSize: "1.25rem", color: "#999", textDecoration: "line-through", marginLeft: "10px" }}>$199.99</span>
                 <div style={{ fontSize: "0.82rem", color: "#666", marginTop: "8px" }}>
                   One-time payment &nbsp;&middot;&nbsp; No subscription &nbsp;&middot;&nbsp; Permanent hosting
                 </div>
@@ -1250,7 +1250,7 @@ export default function GiftPage() {
                 ))}
               </ul>
               <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
-                <CheckoutButton className="btn-primary-lg">Give This Gift: $199.99</CheckoutButton>
+                <CheckoutButton className="btn-primary-lg">Give This Gift: $149.99</CheckoutButton>
               </div>
               <p style={{ textAlign: "center", fontSize: "0.8rem", color: "#999" }}>
                 One-time payment. Secured checkout. Permanent from day one.

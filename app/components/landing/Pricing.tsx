@@ -64,10 +64,10 @@ export default function Pricing() {
               className="font-serif font-bold"
               style={{ fontSize: "3rem", color: "#1B4F6B" }}
             >
-              $199.99
+              $149.99
             </span>
             <span style={{ fontSize: "1.25rem", color: "#999", textDecoration: "line-through" }}>
-              $349.99
+              $199.99
             </span>
           </div>
           <div
@@ -102,7 +102,7 @@ export default function Pricing() {
           </ul>
 
           <CheckoutButton className="btn-primary-lg w-full text-center block">
-            Write Your Story: $199.99
+            Write Your Story: $149.99
           </CheckoutButton>
 
           <p

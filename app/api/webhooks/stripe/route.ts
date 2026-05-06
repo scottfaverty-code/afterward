@@ -153,7 +153,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     user_id: userId,
     email: customerEmail,
     stripe_session_id: session.id,
-    amount_paid: session.amount_total ?? 19999,
+    amount_paid: session.amount_total ?? 14999,
     plaque_status: "pending",
     ...(referredByUserId ? { referred_by_user_id: referredByUserId } : {}),
     ...(sourceInviteId ? { source_invite_id: sourceInviteId } : {}),

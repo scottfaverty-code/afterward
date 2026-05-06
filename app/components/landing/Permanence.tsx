@@ -1,7 +1,7 @@
 const pillars = [
   {
     title: "One payment. No renewals.",
-    body: "Your $199.99 covers hosting with no renewal dates, no expiry notices, no annual fees. We built this to last.",
+    body: "Your $149.99 covers hosting with no renewal dates, no expiry notices, no annual fees. We built this to last.",
   },
   {
     title: "Your data, always yours.",

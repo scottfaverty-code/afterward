@@ -1,7 +1,7 @@
 import Link from "next/link";
 import CheckoutButton from "@/app/components/CheckoutButton";
 
-const FULL_PRICE = 199;
+const FULL_PRICE = 149;
 const DISCOUNT_PCT = 10;
 const DISCOUNTED_PRICE = Math.round(FULL_PRICE * (1 - DISCOUNT_PCT / 100));
 

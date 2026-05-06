@@ -62,7 +62,7 @@ export default function Hero() {
             <div className="flex flex-col gap-4">
               <div className="flex flex-wrap gap-3">
                 <CheckoutButton className="btn-primary-lg">
-                  Write Your Story: $199.99
+                  Write Your Story: $149.99
                 </CheckoutButton>
                 <a href="#example" className="btn-ghost-white">
                   See a real example &rarr;
@@ -72,7 +72,7 @@ export default function Hero() {
                 <strong style={{ color: "rgba(255,255,255,0.9)" }}>
                   One-time payment. No subscription. Permanent hosting.
                 </strong>
-                &nbsp;Regular price <s>$349.99</s> (beta discount saves you $150)
+                &nbsp;Regular price <s>$199.99</s> (beta discount saves you $50)
               </p>
             </div>
           </div>
