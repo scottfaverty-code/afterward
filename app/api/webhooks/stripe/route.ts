@@ -54,6 +54,8 @@ export async function POST(req: NextRequest) {
       const session = event.data.object as Stripe.Checkout.Session;
       if (session.metadata?.type === "plaque_only") {
         await handlePlaqueOnlySession(session);
+      } else if (session.metadata?.type === "replacement_plaque") {
+        await handleReplacementPlaqueSession(session);
       } else {
         await handleCheckoutSessionCompleted(session);
       }
@@ -228,6 +230,32 @@ async function handlePlaqueOnlySession(session: Stripe.Checkout.Session) {
   }
 
   console.log("[webhook/plaque] Plaque status updated to pending for user:", userId);
+}
+
+// ------------------------------------------------------------------
+// replacement_plaque session — reset plaque_status to pending
+// ------------------------------------------------------------------
+async function handleReplacementPlaqueSession(session: Stripe.Checkout.Session) {
+  if (session.payment_status !== "paid") return;
+
+  const userId = session.metadata?.user_id;
+  if (!userId) {
+    console.error("[webhook/replacement] No user_id in session metadata:", session.id);
+    return;
+  }
+
+  const admin = createAdminClient();
+  const { error } = await admin
+    .from("purchases")
+    .update({ plaque_status: "pending" })
+    .eq("user_id", userId);
+
+  if (error) {
+    console.error("[webhook/replacement] Failed to update plaque_status:", error.message);
+    throw error;
+  }
+
+  console.log("[webhook/replacement] Replacement plaque status reset to pending for user:", userId);
 }
 
 // ------------------------------------------------------------------

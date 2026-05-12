@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { createClient } from "@/lib/supabase/server";
 
-// Stripe Price ID for the memory marker add-on / replacement
+// Same physical product — replacement uses the same Stripe price
 const MARKER_PRICE_ID = "price_1TPqQ20pUO33C8KwZBsYN8Ek";
 
 export async function POST() {
@@ -13,19 +13,15 @@ export async function POST() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Confirm they have an account and don't already have a plaque on the way
+  // Confirm they have an Afterword account
   const { data: purchase } = await supabase
     .from("purchases")
-    .select("id, plaque_status")
+    .select("id")
     .eq("user_id", user.id)
     .maybeSingle();
 
   if (!purchase) {
     return NextResponse.json({ error: "No Afterword account found." }, { status: 404 });
-  }
-
-  if (purchase.plaque_status !== "not_included") {
-    return NextResponse.json({ error: "A plaque is already on your account." }, { status: 400 });
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.myafterword.co";
@@ -35,12 +31,11 @@ export async function POST() {
     mode: "payment",
     payment_method_types: ["card"],
     line_items: [{ price: MARKER_PRICE_ID, quantity: 1 }],
-    // Tag this session so the webhook knows it's a plaque-only order
     metadata: {
-      type: "plaque_only",
+      type: "replacement_plaque",
       user_id: user.id,
     },
-    success_url: `${appUrl}/dashboard?plaque_ordered=1`,
+    success_url: `${appUrl}/dashboard?replacement_ordered=1`,
     cancel_url: `${appUrl}/dashboard`,
   });
 

@@ -8,6 +8,7 @@ import PublishToggle from "./PublishToggle";
 import ExportPDFButton from "./ExportPDFButton";
 import ContributionsCard from "./ContributionsCard";
 import BuyPlaqueButton from "./BuyPlaqueButton";
+import ReplacementPlaqueButton from "./ReplacementPlaqueButton";
 
 type Profile = {
   id: string;
@@ -68,9 +69,9 @@ const SECTION_QUESTIONS: Record<string, string[]> = {
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ plaque_ordered?: string }>;
+  searchParams: Promise<{ plaque_ordered?: string; replacement_ordered?: string }>;
 }) {
-  const { plaque_ordered } = await searchParams;
+  const { plaque_ordered, replacement_ordered } = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -405,6 +406,17 @@ export default async function DashboardPage({
                       </div>
                     </div>
                   )}
+
+                  {/* Replacement marker */}
+                  <div className="mt-5 pt-4" style={{ borderTop: "1px solid #F0F0F0" }}>
+                    {replacement_ordered ? (
+                      <p style={{ fontSize: "0.78rem", color: "#155724" }}>
+                        ✓ Replacement on the way — we&apos;ll ship to your address on file within 10 business days.
+                      </p>
+                    ) : (
+                      <ReplacementPlaqueButton />
+                    )}
+                  </div>
                 </div>
               )}
             </div>
