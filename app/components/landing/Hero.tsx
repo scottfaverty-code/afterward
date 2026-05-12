@@ -35,7 +35,7 @@ export default function Hero() {
               className="inline-block mb-6 rounded-full px-4 py-1.5 text-sm font-semibold"
               style={{ backgroundColor: "#FDF3DC", color: "#C9932A" }}
             >
-              Founding member pricing: $50 off
+              Founding author pricing: $50 off
             </div>
 
             <h1
@@ -72,7 +72,7 @@ export default function Hero() {
                 <strong style={{ color: "rgba(255,255,255,0.9)" }}>
                   One-time payment. No subscription. Permanent hosting.
                 </strong>
-                &nbsp;Regular price <s>$199.99</s> (founding member pricing saves you $50)
+                &nbsp;Regular price <s>$199.99</s> (founding author pricing saves you $50)
               </p>
             </div>
           </div>

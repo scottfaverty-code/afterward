@@ -117,7 +117,7 @@ export default function GiftPage() {
                   </div>
                   <p style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.55)" }}>
                     <strong style={{ color: "rgba(255,255,255,0.85)" }}>One-time payment. No subscription. Permanent hosting.</strong>
-                    &nbsp;Regular price <s style={{ color: "rgba(255,255,255,0.4)" }}>$199.99</s> (founding member pricing saves you $50).
+                    &nbsp;Regular price <s style={{ color: "rgba(255,255,255,0.4)" }}>$199.99</s> (founding author pricing saves you $50).
                   </p>
                 </div>
               </div>
@@ -1209,7 +1209,7 @@ export default function GiftPage() {
                   width: "100%",
                 }}
               >
-                Founding Member Pricing
+                Founding Author Pricing
               </div>
               <div style={{ textAlign: "center", marginBottom: "28px" }}>
                 <span style={{ fontSize: "3rem", fontWeight: 800, color: "#1B4F6B", letterSpacing: "-0.02em" }}>$149.99</span>

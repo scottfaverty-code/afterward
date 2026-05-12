@@ -202,7 +202,7 @@ export default async function WelcomePage({
           style={{ backgroundColor: "#FDF3DC" }}
         >
           <p style={{ fontSize: "0.875rem", color: "#7A5C1E", lineHeight: "1.7" }}>
-            <strong>A note from Scott:</strong> &ldquo;Thank you for being a founding member. Every person who joins in this early period is helping us build something that genuinely matters. If you have any questions at any point, email me directly at{" "}
+            <strong>A note from Scott:</strong> &ldquo;Thank you for being a founding author. Every person who joins in this early period is helping us build something that genuinely matters. If you have any questions at any point, email me directly at{" "}
             <a href="mailto:scott@myafterword.co" style={{ color: "#C9932A", fontWeight: 600 }}>scott@myafterword.co</a>
             {" "}and I read everything.&rdquo;
           </p>

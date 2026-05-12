@@ -24,8 +24,8 @@ const faqs = [
     a: "Yes. Families can create an Afterword page for someone who has passed using photos, documents, shared memories, and family stories. It won\u2019t be self-authored, but it can still be a permanent, dignified memorial that goes far beyond a standard tribute.",
   },
   {
-    q: "Is this founding member pricing going away soon?",
-    a: "Yes. The $149.99 founding member price is available to our first wave of members. Once we close the founding period, the price returns to $199.99. We\u2019ll never retroactively change the price for anyone who joined as a founding member.",
+    q: "Is this founding author pricing going away soon?",
+    a: "Yes. The $149.99 founding author price is available to our first wave of members. Once we close the founding period, the price returns to $199.99. We\u2019ll never retroactively change the price for anyone who joined as a founding author.",
   },
 ];
 

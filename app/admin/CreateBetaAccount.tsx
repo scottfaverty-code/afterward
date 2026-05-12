@@ -59,10 +59,10 @@ export default function CreateBetaAccount() {
   return (
     <div style={{ maxWidth: 600 }}>
       <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "#1A1A1A", marginBottom: 4 }}>
-        Create founding member account
+        Create founding author account
       </h3>
       <p style={{ fontSize: "0.82rem", color: "#888", lineHeight: 1.55, marginBottom: 20 }}>
-        Creates a free account (no payment required) and generates a magic link you can hand or text to a founding member.
+        Creates a free account (no payment required) and generates a magic link you can hand or text to a founding author.
         Their contributors will still receive the standard 10% discount invite — and those conversions will be attributed back to this account.
       </p>
 
@@ -134,7 +134,7 @@ export default function CreateBetaAccount() {
               alignSelf: "flex-start",
             }}
           >
-            {state === "loading" ? "Creating account…" : "Create founding member account →"}
+            {state === "loading" ? "Creating account…" : "Create founding author account →"}
           </button>
         </div>
       ) : (
@@ -163,7 +163,7 @@ export default function CreateBetaAccount() {
               </div>
               <div>
                 <div style={{ fontSize: "0.875rem", fontWeight: 700, color: "#155724" }}>
-                  Founding member account created
+                  Founding author account created
                 </div>
                 <div style={{ fontSize: "0.78rem", color: "#666" }}>{result?.email}</div>
               </div>
