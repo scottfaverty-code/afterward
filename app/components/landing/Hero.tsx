@@ -35,7 +35,7 @@ export default function Hero() {
               className="inline-block mb-6 rounded-full px-4 py-1.5 text-sm font-semibold"
               style={{ backgroundColor: "#FDF3DC", color: "#C9932A" }}
             >
-              Beta pricing: $50 off for a limited time
+              Founding member pricing: $50 off
             </div>
 
             <h1
@@ -55,7 +55,7 @@ export default function Hero() {
             >
               Afterword is the only memorial you write yourself, while you still can.
               Your story, your voice, your message to the people you love.
-              Permanently hosted. Accessible forever via a QR plaque on your headstone,
+              Permanently hosted. Accessible forever via a memory marker on your headstone,
               urn, or most outdoor surfaces.
             </p>
 
@@ -72,7 +72,7 @@ export default function Hero() {
                 <strong style={{ color: "rgba(255,255,255,0.9)" }}>
                   One-time payment. No subscription. Permanent hosting.
                 </strong>
-                &nbsp;Regular price <s>$199.99</s> (beta discount saves you $50)
+                &nbsp;Regular price <s>$199.99</s> (founding member pricing saves you $50)
               </p>
             </div>
           </div>

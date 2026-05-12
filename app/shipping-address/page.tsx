@@ -24,7 +24,7 @@ export default async function ShippingAddressPage({
           className="font-serif mb-3"
           style={{ fontSize: "1.8rem", color: "#1B4F6B" }}
         >
-          Where should we send your QR plaque?
+          Where should we send your memory marker?
         </h1>
 
         <p className="mb-7" style={{ fontSize: "0.95rem", color: "#666", lineHeight: "1.7" }}>

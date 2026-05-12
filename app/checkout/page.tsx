@@ -90,7 +90,7 @@ export default async function CheckoutPage({
           Start your Afterword
         </h1>
         <p style={{ fontSize: "0.95rem", color: "#666", lineHeight: 1.75, marginBottom: "36px" }}>
-          A permanent page for your story, written in your own words. Includes a physical QR plaque shipped to you.
+          A permanent page for your story, written in your own words. Includes a physical memory marker shipped to you.
         </p>
 
         {/* Pricing card */}
@@ -124,7 +124,7 @@ export default async function CheckoutPage({
             {[
               "Permanent memorial page, hosted for life",
               "Seven guided life story sections",
-              "Physical QR plaque, shipped to your door",
+              "Memory marker, shipped to your door",
               "Public or private — you control access",
               "PDF export of your full Afterword",
               "Invite family to contribute memories",

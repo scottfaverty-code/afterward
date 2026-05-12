@@ -79,7 +79,7 @@ I've thought often about the small sentences that change a child's idea of herse
   {
     section_slug: "the-people-who-matter",
     question_id: "people-q3",
-    answer_text: `Thomas shaped me most. Not by telling me what to think or who to be, he wasn't that kind of person, but by being so consistently himself that I felt free to be consistently myself. He didn't need me to be anything other than what I was. In fifty years of knowing him I never once felt like I was performing. That's a rare gift to give someone. I hope I gave it back.`,
+    answer_text: `My sister Ruth, who has never once in her life made me feel like an imposition. There is something about a sibling who knew you before you had any idea who you were going to be. She remembers the girl I was before I had to be anything in particular. I think that's why, even now, I can pick up the phone and tell her something I wouldn't say to anyone else. She holds the earliest version of me, and she's never used it against me.`,
   },
   {
     section_slug: "the-people-who-matter",

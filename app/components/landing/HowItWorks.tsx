@@ -13,8 +13,8 @@ const steps = [
   },
   {
     num: "3",
-    title: "Your QR plaque arrives by post",
-    body: "A 316 stainless steel plaque, ready to affix to a headstone, memorial stone, urn, or most outdoor surfaces that matter to your family.",
+    title: "Your memory marker arrives by post",
+    body: "A 316 stainless steel memory marker, ready to affix to a headstone, memorial stone, urn, or most outdoor surfaces that matter to your family.",
   },
   {
     num: "4",

@@ -34,9 +34,9 @@ export async function POST(req: NextRequest) {
           currency: "usd",
           unit_amount: 14999,
           product_data: {
-            name: "Afterword: Permanent Memorial Page + QR Plaque",
+            name: "Afterword: Permanent Memorial Page + Memory Marker",
             description:
-              "A self-authored memorial page, permanently hosted. Includes a physical QR plaque shipped to your door.",
+              "A self-authored memorial page, permanently hosted. Includes a physical memory marker shipped to your door.",
           },
         },
         quantity: 1,

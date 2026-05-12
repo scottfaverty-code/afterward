@@ -158,7 +158,7 @@ export default async function WelcomePage({
         <div className="flex flex-col gap-3 mb-7">
           {[
             "Your memorial page is reserved and ready to fill in",
-            "Your QR plaque order has been received, ships within 10 business days",
+            "Your memory marker order has been received, ships within 10 business days",
             "Permanent hosting is active from today, no renewals ever",
           ].map((item) => (
             <div key={item} className="flex items-start gap-3">
@@ -202,7 +202,7 @@ export default async function WelcomePage({
           style={{ backgroundColor: "#FDF3DC" }}
         >
           <p style={{ fontSize: "0.875rem", color: "#7A5C1E", lineHeight: "1.7" }}>
-            <strong>A note from Scott:</strong> &ldquo;Thank you for being an early Afterword customer. Every person who signs up in this beta period is helping us build something that genuinely matters. If you have any questions at any point, email me directly at{" "}
+            <strong>A note from Scott:</strong> &ldquo;Thank you for being a founding member. Every person who joins in this early period is helping us build something that genuinely matters. If you have any questions at any point, email me directly at{" "}
             <a href="mailto:scott@myafterword.co" style={{ color: "#C9932A", fontWeight: 600 }}>scott@myafterword.co</a>
             {" "}and I read everything.&rdquo;
           </p>

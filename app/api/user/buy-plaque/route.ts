@@ -39,9 +39,9 @@ export async function POST() {
           currency: "usd",
           unit_amount: PLAQUE_PRICE_CENTS,
           product_data: {
-            name: "Afterword QR Plaque",
+            name: "Afterword Memory Marker",
             description:
-              "Weatherproof QR plaque that links directly to your Afterword memorial page. Shipped to your door within 10 business days.",
+              "Weatherproof memory marker that links directly to your Afterword memorial page. Shipped to your door within 10 business days.",
           },
         },
         quantity: 1,

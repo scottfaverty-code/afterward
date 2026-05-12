@@ -45,7 +45,7 @@ export default function BuyPlaqueButton() {
         ? "Redirecting to checkout…"
         : state === "error"
         ? "Something went wrong — try again"
-        : "Add my QR plaque — $50 →"}
+        : "Add my memory marker — $50 →"}
     </button>
   );
 }

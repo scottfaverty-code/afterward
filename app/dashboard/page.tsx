@@ -293,31 +293,31 @@ export default async function DashboardPage({
               style={{ backgroundColor: "#fff", boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}
             >
               <h3 className="font-bold mb-3" style={{ fontSize: "1rem", color: "#1A1A1A" }}>
-                Your QR plaque
+                Your memory marker
               </h3>
 
-              {/* Beta / digital-only — plaque upsell */}
+              {/* Founding member / digital-only — marker upsell */}
               {purchase?.plaque_status === "not_included" ? (
                 plaque_ordered ? (
                   <div className="rounded-xl p-4" style={{ backgroundColor: "#d4edda", borderLeft: "4px solid #155724" }}>
                     <div className="font-bold mb-1" style={{ fontSize: "0.9rem", color: "#155724" }}>
-                      Plaque ordered — thank you!
+                      Memory marker ordered — thank you!
                     </div>
                     <p style={{ fontSize: "0.8rem", color: "#555", lineHeight: "1.6", margin: 0 }}>
-                      We&apos;ll ship your QR plaque within 10 business days once we have your shipping address.
+                      We&apos;ll ship your memory marker within 10 business days once we have your shipping address.
                     </p>
                   </div>
                 ) : (
                   <div>
                     <p style={{ fontSize: "0.85rem", color: "#666", lineHeight: "1.65", marginBottom: 16 }}>
-                      Your Afterword is digital — your story, your page, everything included. Want a physical QR plaque to display at home or place at a memorial site?
+                      Your Afterword is digital — your story, your page, everything included. Want a physical memory marker to display at home or place at a memorial site?
                     </p>
                     <div
                       className="rounded-xl p-4 mb-4"
                       style={{ backgroundColor: "#EEF7FC", border: "1px solid #D6EAF4" }}
                     >
                       <div style={{ fontSize: "0.82rem", color: "#1B4F6B", lineHeight: 1.6 }}>
-                        <strong>Weatherproof QR plaque</strong> — links permanently to your Afterword page. Ships within 10 business days.
+                        <strong>Weatherproof memory marker</strong> — links permanently to your Afterword page. Ships within 10 business days.
                       </div>
                     </div>
                     <BuyPlaqueButton />
@@ -332,7 +332,7 @@ export default async function DashboardPage({
                     We still need your shipping address
                   </div>
                   <p className="mb-3" style={{ fontSize: "0.8rem", color: "#666", lineHeight: "1.6" }}>
-                    Your QR plaque can&apos;t ship until we know where to send it. It only takes a minute.
+                    Your memory marker can&apos;t ship until we know where to send it. It only takes a minute.
                   </p>
                   <Link
                     href="/shipping-address"
@@ -368,7 +368,7 @@ export default async function DashboardPage({
                   </div>
 
                   <p style={{ fontSize: "0.85rem", color: "#555", lineHeight: "1.65" }}>
-                    Your weatherproof QR plaque will be shipped to{" "}
+                    Your weatherproof memory marker will be shipped to{" "}
                     <strong>{shippingAddress.recipient_name}</strong> at{" "}
                     <strong>{shippingAddress.city}, {shippingAddress.state_province}</strong>{" "}
                     within 10 business days.

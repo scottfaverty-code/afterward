@@ -101,7 +101,7 @@ export default function GiftPage() {
                 <p style={{ fontSize: "1.1rem", color: "rgba(255,255,255,0.8)", lineHeight: 1.65, marginBottom: "36px", maxWidth: "520px" }}>
                   Afterword is a permanent, self-written memorial page. You give it as a gift.
                   You set it up together. They write their story in their own words, and your family
-                  has it forever, hosted permanently, accessible via a QR plaque on their headstone,
+                  has it forever, hosted permanently, accessible via a memory marker on their headstone,
                   urn, or most outdoor surfaces.
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" }}>
@@ -117,7 +117,7 @@ export default function GiftPage() {
                   </div>
                   <p style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.55)" }}>
                     <strong style={{ color: "rgba(255,255,255,0.85)" }}>One-time payment. No subscription. Permanent hosting.</strong>
-                    &nbsp;Regular price <s style={{ color: "rgba(255,255,255,0.4)" }}>$199.99</s> (beta discount saves you $50).
+                    &nbsp;Regular price <s style={{ color: "rgba(255,255,255,0.4)" }}>$199.99</s> (founding member pricing saves you $50).
                   </p>
                 </div>
               </div>
@@ -399,7 +399,7 @@ export default function GiftPage() {
             </h2>
             <p style={{ textAlign: "center", fontSize: "1.05rem", color: "#666", maxWidth: "580px", margin: "0 auto 56px" }}>
               One purchase covers everything they need: the page where they write their story,
-              the QR plaque shipped to your door, and permanent hosting with no renewals, ever.
+              the memory marker shipped to your door, and permanent hosting with no renewals, ever.
             </p>
             <div
               style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px" }}
@@ -411,8 +411,8 @@ export default function GiftPage() {
                   body: "A permanent, beautifully designed page where they share their autobiography, proudest moments, values, words of wisdom, and a personal message to the people who matter most. Written entirely in their own voice.",
                 },
                 {
-                  title: "Physical QR Plaque, Shipped to You",
-                  body: "A durable, weather-resistant QR plaque that links directly to their Afterword page. Attach it to a headstone, memorial stone, urn, bench, or most outdoor surfaces. Especially meaningful for families who chose cremation.",
+                  title: "Memory Marker, Shipped to You",
+                  body: "A durable, weather-resistant memory marker that links directly to their Afterword page. Attach it to a headstone, memorial stone, urn, bench, or most outdoor surfaces. Especially meaningful for families who chose cremation.",
                 },
                 {
                   title: "Permanent Hosting: No Subscription Required",
@@ -464,13 +464,13 @@ export default function GiftPage() {
                   Not just a name on a stone. The whole person.
                 </h2>
                 <p style={{ fontSize: "1rem", color: "#666", lineHeight: 1.7, marginBottom: "16px" }}>
-                  An Afterword page holds everything a standard obituary leaves out: the childhood
+                  An Afterword page holds everything a standard tribute leaves out: the childhood
                   that shaped them, the defining moments nobody outside the family knows about,
                   the wisdom they earned the hard way, and the things they most want to say
                   while they still can.
                 </p>
                 <p style={{ fontSize: "1rem", color: "#666", lineHeight: 1.7, marginBottom: "16px" }}>
-                  Scan the QR plaque and this is what the family finds. Not a summary.
+                  Scan the memory marker and this is what the family finds. Not a summary.
                   The person themselves, in their own words.
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "28px" }}>
@@ -660,8 +660,8 @@ export default function GiftPage() {
                 },
                 {
                   num: "3",
-                  title: "Their QR plaque arrives by post",
-                  body: "A durable, weather-resistant plaque that links to their page. Affixes to a headstone, urn, memorial bench, or most outdoor surfaces.",
+                  title: "Their memory marker arrives by post",
+                  body: "A durable, weather-resistant memory marker that links to their page. Affixes to a headstone, urn, memorial bench, or most outdoor surfaces.",
                 },
                 {
                   num: "4",
@@ -949,7 +949,7 @@ export default function GiftPage() {
                 },
                 {
                   title: "The QR link never breaks.",
-                  body: "The URL the QR plaque points to is guaranteed to remain active. If anything ever changes, we redirect it.",
+                  body: "The URL the memory marker points to is guaranteed to remain active. If anything ever changes, we redirect it.",
                 },
               ].map((p) => (
                 <div
@@ -999,7 +999,7 @@ export default function GiftPage() {
                 },
                 {
                   featured: false,
-                  quote: "My mother chose cremation. We scattered her ashes at the place she loved most, but I always worried there was nowhere to go, nothing to visit. The QR plaque is on the memorial bench we placed for her. Scan it and she\u2019s right there, in her own words.",
+                  quote: "My mother chose cremation. We scattered her ashes at the place she loved most, but I always worried there was nowhere to go, nothing to visit. The memory marker is on the memorial bench we placed for her. Scan it and she\u2019s right there, in her own words.",
                   initial: "D",
                   name: "David L.",
                   role: "Son, set up Afterword after his mother\u2019s cremation",
@@ -1209,7 +1209,7 @@ export default function GiftPage() {
                   width: "100%",
                 }}
               >
-                Beta Pricing: Limited Time
+                Founding Member Pricing
               </div>
               <div style={{ textAlign: "center", marginBottom: "28px" }}>
                 <span style={{ fontSize: "3rem", fontWeight: 800, color: "#1B4F6B", letterSpacing: "-0.02em" }}>$149.99</span>
@@ -1221,7 +1221,7 @@ export default function GiftPage() {
               <ul style={{ listStyle: "none", marginBottom: "28px" }}>
                 {[
                   ["Permanent hosted memorial page", "written entirely in their own words"],
-                  ["Physical QR plaque", "shipped to your door, weatherproof, attaches to most outdoor surfaces"],
+                  ["Memory marker", "shipped to your door, weatherproof, attaches to most outdoor surfaces"],
                   ["Guided story prompts", "thoughtful questions to draw out the stories that matter"],
                   ["Write, speak, or use AI assistance", "three ways to share their story; they choose"],
                   ["Voice recording", "record answers aloud if typing is difficult or they prefer their natural voice"],
@@ -1291,7 +1291,7 @@ export default function GiftPage() {
                 },
                 {
                   q: "What does \"permanent\" actually mean? What if Afterword shuts down?",
-                  a: "We've built our hosting model specifically to outlast subscription businesses. If Afterword is ever acquired or wound down, we'll provide at minimum 5 years notice and guaranteed data export, so their story is never held hostage. We also guarantee that the URL the QR plaque points to will remain active or be redirected.",
+                  a: "We've built our hosting model specifically to outlast subscription businesses. If Afterword is ever acquired or wound down, we'll provide at minimum 5 years notice and guaranteed data export, so their story is never held hostage. We also guarantee that the URL the memory marker points to will remain active or be redirected.",
                 },
               ].map((item, i) => (
                 <div

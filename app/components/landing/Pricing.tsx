@@ -2,7 +2,7 @@ import CheckoutButton from "@/app/components/CheckoutButton";
 
 const features = [
   { strong: "Permanent hosted memorial page", rest: ": written entirely in your own words" },
-  { strong: "Physical QR plaque", rest: ": shipped to your door, weatherproof, attaches to most outdoor surfaces" },
+  { strong: "Memory marker", rest: ": shipped to your door, weatherproof, attaches to most outdoor surfaces" },
   { strong: "Guided story prompts", rest: ": thoughtful questions to draw out the stories that matter" },
   { strong: "Write, speak, or use AI assistance", rest: ": three ways to share your story; you choose" },
   { strong: "Voice recording", rest: ": record answers aloud if writing is difficult or you prefer your natural voice" },
@@ -55,7 +55,7 @@ export default function Pricing() {
             className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 mb-6"
             style={{ backgroundColor: "#FDF3DC", color: "#C9932A", fontSize: "0.8rem", fontWeight: 700 }}
           >
-            Beta Pricing: Limited Time
+            Founding Member Pricing
           </div>
 
           {/* Price */}

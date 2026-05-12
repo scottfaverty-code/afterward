@@ -5,10 +5,10 @@ import { useState } from "react";
 const faqs = [
   {
     q: 'What does "permanent" actually mean? What if Afterword shuts down one day?',
-    a: "We\u2019ve built our hosting model specifically to outlast subscription businesses. You can export all of your data at any time. If Afterword is ever acquired or wound down, we\u2019ll provide at minimum 5 years notice and guaranteed data export, so your story is never held hostage. We also guarantee that the URL your QR plaque points to will remain active or be redirected.",
+    a: "We\u2019ve built our hosting model specifically to outlast subscription businesses. You can export all of your data at any time. If Afterword is ever acquired or wound down, we\u2019ll provide at minimum 5 years notice and guaranteed data export, so your story is never held hostage. We also guarantee that the URL your memory marker points to will remain active or be redirected.",
   },
   {
-    q: "How does the QR plaque attach to a headstone or urn?",
+    q: "How does the memory marker attach to a headstone or urn?",
     a: "The plaque uses a weatherproof adhesive designed for outdoor stone and ceramic surfaces. It works on headstones, memorial benches, urns, garden stones, and interior surfaces. Detailed attachment instructions are included.",
   },
   {
@@ -21,11 +21,11 @@ const faqs = [
   },
   {
     q: "What if my family member has already passed? Can Afterword still help?",
-    a: "Yes. Families can create an Afterword page for someone who has passed using photos, documents, shared memories, and family stories. It won\u2019t be self-authored, but it can still be a permanent, dignified memorial that goes far beyond a standard obituary.",
+    a: "Yes. Families can create an Afterword page for someone who has passed using photos, documents, shared memories, and family stories. It won\u2019t be self-authored, but it can still be a permanent, dignified memorial that goes far beyond a standard tribute.",
   },
   {
-    q: "Is this beta pricing going away soon?",
-    a: "Yes. The $149.99 beta price exists while we gather early feedback from our first wave of users. Once the beta period closes, the price returns to $199.99. We won\u2019t retroactively change the price for anyone who purchased at the beta rate.",
+    q: "Is this founding member pricing going away soon?",
+    a: "Yes. The $149.99 founding member price is available to our first wave of members. Once we close the founding period, the price returns to $199.99. We\u2019ll never retroactively change the price for anyone who joined as a founding member.",
   },
 ];
 

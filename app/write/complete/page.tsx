@@ -46,7 +46,7 @@ export default async function WriteCompletePage() {
         <div className="flex flex-col gap-4 mb-10 text-left">
           {[
             "Your page is live and saving in real time",
-            "Your QR plaque is on its way, ships within 10 business days",
+            "Your memory marker is on its way, ships within 10 business days",
             "You can return and add to your page at any time",
           ].map((item, i) => (
             <div key={i} className="flex items-start gap-4">

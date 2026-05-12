@@ -209,7 +209,7 @@ export default function ShippingAddressForm({ isUpdate = false, sessionId }: { i
             lineHeight: "1.65",
           }}
         >
-          A thoughtful choice. Your attorney will receive the plaque and can include it with your estate documents for your family to find when the time comes. We&apos;ll include a note in the package explaining what Afterword is and how to use the QR plaque.
+          A thoughtful choice. Your attorney will receive the memory marker and can include it with your estate documents for your family to find when the time comes. We&apos;ll include a note in the package explaining what Afterword is and how to use the memory marker.
         </div>
       )}
 

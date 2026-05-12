@@ -39,7 +39,7 @@ export default function Problem() {
             </h2>
 
             <p className="mb-3" style={{ color: "#666", lineHeight: "1.7" }}>
-              Most people are remembered by a three-paragraph obituary, written in 48 hours
+              Most people are remembered by a three-paragraph tribute, written in 48 hours
               by a grieving family who didn&apos;t have time, or the information, to get it right.
               It lists a name, some dates, and a handful of roles.
             </p>
@@ -82,7 +82,7 @@ export default function Problem() {
                   color: "#999",
                 }}
               >
-                A typical obituary
+                A typical tribute
               </div>
               <div
                 className="font-serif mb-1"

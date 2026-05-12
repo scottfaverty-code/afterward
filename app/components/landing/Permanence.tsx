@@ -9,7 +9,7 @@ const pillars = [
   },
   {
     title: "The QR link stays active.",
-    body: "The URL your QR plaque points to is designed to remain active. If anything ever changes, we\u2019ll redirect it and notify you well in advance.",
+    body: "The URL your memory marker points to is designed to remain active. If anything ever changes, we\u2019ll redirect it and notify you well in advance.",
   },
 ];
 

@@ -18,9 +18,9 @@ const testimonials = [
   {
     initial: "D",
     quote:
-      "\u201cMom had included an Afterword QR plaque in her trust documents. She\u2019d set up her whole page herself, planned exactly where it would go. When we scattered her ashes, we placed the plaque right there. Scan it and she\u2019s telling her own story. It was the most her thing she could have done.\u201d",
+      "\u201cMom had included an Afterword memory marker in her trust documents. She\u2019d set up her whole page herself, planned exactly where it would go. When we scattered her ashes, we placed the marker right there. Scan it and she\u2019s telling her own story. It was the most her thing she could have done.\u201d",
     name: "David L.",
-    role: "Son, found his mother\u2019s QR plaque included in her trust",
+    role: "Son, found his mother\u2019s memory marker included in her trust",
   },
 ];
 

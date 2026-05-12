@@ -5,8 +5,8 @@ export default function WhatYouGet() {
       body: "A permanent, beautifully designed page where you share your autobiography, proudest moments, values, words of wisdom, and a personal message to the people who matter most. Written entirely in your own voice.",
     },
     {
-      title: "Physical QR Plaque, Shipped to You",
-      body: "A 316 stainless steel QR plaque, rated for 30 to 50 years and suitable for coastal climates, that links directly to your Afterword page. Attach it to a headstone, memorial stone, urn, bench, or most outdoor surfaces. Especially meaningful for families who chose cremation.",
+      title: "Memory Marker, Shipped to You",
+      body: "A 316 stainless steel memory marker, rated for 30 to 50 years and suitable for coastal climates, that links directly to your Afterword page. Attach it to a headstone, memorial stone, urn, bench, or most outdoor surfaces. Especially meaningful for families who chose cremation.",
     },
     {
       title: "Permanent Hosting: No Subscription Required",
@@ -27,7 +27,7 @@ export default function WhatYouGet() {
           className="text-center mb-12 mx-auto"
           style={{ color: "#666", maxWidth: "560px", lineHeight: "1.7" }}
         >
-          One purchase covers everything: the digital memorial you write, the QR plaque
+          One purchase covers everything: the digital memorial you write, the memory marker
           shipped to your door, and permanent hosting with no renewals, ever.
         </p>
 
