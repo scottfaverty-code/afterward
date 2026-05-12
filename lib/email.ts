@@ -364,6 +364,85 @@ export function reminderDay14InviteEmail(customerEmail: string, firstName?: stri
 /**
  * Day 30 — final personal note from Scott for users who've barely started.
  */
+/**
+ * Contributor invite — sent on the author's behalf when they enter an email
+ * in the dashboard. The recipient clicks through to /contribute/[token].
+ */
+export function contributorInviteEmail(
+  inviteUrl: string,
+  authorFirstName: string,
+  authorFullName: string,
+  recipientEmail: string,
+): { subject: string; html: string } {
+  return {
+    subject: `${authorFirstName} is writing their life story — they'd love a memory from you`,
+    html: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#EEF7FC;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#EEF7FC;padding:48px 24px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+
+        <!-- Header -->
+        <tr><td style="background:linear-gradient(135deg,#0f2d3d,#1B4F6B);padding:32px 40px;text-align:center;">
+          <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:1.5rem;color:#ffffff;letter-spacing:0.04em;">Afterword</p>
+        </td></tr>
+
+        <!-- Body -->
+        <tr><td style="padding:40px 40px 32px;">
+          <h1 style="margin:0 0 20px;font-family:Georgia,'Times New Roman',serif;font-size:1.5rem;color:#1B4F6B;line-height:1.25;">
+            ${authorFirstName} is writing their life story.
+          </h1>
+          <p style="margin:0 0 16px;font-size:1rem;color:#555;line-height:1.75;">
+            ${authorFullName} is building their Afterword — a permanent page where they tell their own story, in their own words. Their memories. Their values. A message to the people they love.
+          </p>
+          <p style="margin:0 0 16px;font-size:1rem;color:#555;line-height:1.75;">
+            They've asked us to reach out to you personally. There's a memory only you could share — something you saw, something you shared with them, a version of ${authorFirstName} that only you know.
+          </p>
+          <p style="margin:0 0 28px;font-size:1rem;color:#555;line-height:1.75;">
+            It takes just a few minutes. Your words will become part of ${authorFirstName}'s story, permanently.
+          </p>
+
+          <!-- CTA -->
+          <table cellpadding="0" cellspacing="0" style="margin:0 0 28px;">
+            <tr><td style="background:#1B4F6B;border-radius:8px;">
+              <a href="${inviteUrl}" style="display:inline-block;padding:16px 32px;font-size:1rem;font-weight:600;color:#ffffff;text-decoration:none;">Share a memory about ${authorFirstName} &rarr;</a>
+            </td></tr>
+          </table>
+
+          <p style="margin:0;font-size:0.82rem;color:#999;line-height:1.6;">
+            If the button doesn't work, copy and paste this link:<br>
+            <a href="${inviteUrl}" style="color:#2E7DA3;word-break:break-all;">${inviteUrl}</a>
+          </p>
+        </td></tr>
+
+        <!-- What is Afterword -->
+        <tr><td style="padding:24px 40px;background:#EEF7FC;border-top:1px solid #D6EAF4;">
+          <p style="margin:0 0 6px;font-size:0.78rem;font-weight:700;color:#1B4F6B;text-transform:uppercase;letter-spacing:0.08em;">What is Afterword?</p>
+          <p style="margin:0;font-size:0.85rem;color:#555;line-height:1.7;">
+            Afterword is where people write their own story while they still can — in their own voice, on their own terms. The page lives permanently, accessible to family whenever it's needed. <a href="https://www.myafterword.co" style="color:#2E7DA3;text-decoration:none;">Learn more</a>
+          </p>
+        </td></tr>
+
+        <!-- Footer -->
+        <tr><td style="padding:24px 40px;border-top:1px solid #E5E5E5;text-align:center;">
+          <p style="margin:0;font-size:0.75rem;color:#bbb;line-height:1.6;">
+            You received this because ${authorFirstName} personally invited you.<br>
+            If this wasn't meant for you, you can safely ignore it.<br><br>
+            Afterword · <a href="https://www.myafterword.co" style="color:#2E7DA3;text-decoration:none;">myafterword.co</a>
+          </p>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`,
+  };
+}
+
 export function reminderDay30Email(customerEmail: string, firstName?: string): { subject: string; html: string } {
   const name = firstName ?? "there";
   const loginUrl = "https://www.myafterword.co/login";

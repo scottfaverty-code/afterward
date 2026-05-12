@@ -16,6 +16,7 @@ type Invite = {
   id: string;
   token: string;
   label: string | null;
+  email: string | null;
   used_at: string | null;
   created_at: string;
 };
@@ -24,13 +25,16 @@ export default function ContributionsCard() {
   const [invites, setInvites] = useState<Invite[]>([]);
   const [contributions, setContributions] = useState<Contribution[]>([]);
   const [loading, setLoading] = useState(true);
-  const [creating, setCreating] = useState(false);
-  const [copiedToken, setCopiedToken] = useState<string | null>(null);
-  const [approving, setApproving] = useState<string | null>(null);
 
-  const appUrl = typeof window !== "undefined"
-    ? window.location.origin
-    : "https://www.myafterword.co";
+  // Form state
+  const [emailInput, setEmailInput] = useState("");
+  const [labelInput, setLabelInput] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState("");
+  const [recentlySent, setRecentlySent] = useState<string | null>(null); // email just sent
+
+  // Approval state
+  const [approving, setApproving] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const res = await fetch("/api/user/contributions/invite");
@@ -43,25 +47,31 @@ export default function ContributionsCard() {
 
   useEffect(() => { load(); }, [load]);
 
-  async function handleCreateInvite() {
-    setCreating(true);
-    const res = await fetch("/api/user/contributions/invite", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
-    const data = await res.json();
-    if (res.ok) {
-      setInvites((prev) => [data.invite, ...prev]);
-      // Auto-copy the link
-      await navigator.clipboard.writeText(data.invite_url).catch(() => {});
-      setCopiedToken(data.invite.token);
-      setTimeout(() => setCopiedToken(null), 3000);
-    }
-    setCreating(false);
-  }
+  async function handleSendInvite() {
+    const email = emailInput.trim().toLowerCase();
+    if (!email || !email.includes("@")) return;
+    setSending(true);
+    setSendError("");
 
-  async function copyLink(token: string) {
-    const url = `${appUrl}/contribute/${token}`;
-    await navigator.clipboard.writeText(url).catch(() => {});
-    setCopiedToken(token);
-    setTimeout(() => setCopiedToken(null), 3000);
+    const res = await fetch("/api/user/contributions/invite", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, label: labelInput.trim() || null }),
+    });
+    const data = await res.json() as { invite?: Invite; error?: string };
+
+    if (!res.ok || !data.invite) {
+      setSendError(data.error ?? "Something went wrong — please try again.");
+      setSending(false);
+      return;
+    }
+
+    setInvites((prev) => [data.invite!, ...prev]);
+    setRecentlySent(email);
+    setEmailInput("");
+    setLabelInput("");
+    setSending(false);
+    setTimeout(() => setRecentlySent(null), 4000);
   }
 
   async function handleApprove(id: string, status: "approved" | "rejected") {
@@ -83,13 +93,14 @@ export default function ContributionsCard() {
       className="rounded-2xl p-6 col-span-2"
       style={{ backgroundColor: "#fff", boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
         <div>
           <h3 className="font-bold" style={{ fontSize: "1rem", color: "#1A1A1A", marginBottom: "2px" }}>
             Invite contributions
           </h3>
           <p style={{ fontSize: "0.8rem", color: "#999" }}>
-            Let the people who know you add their memories to your page.
+            Enter an email and we&apos;ll send them a personal invitation on your behalf.
           </p>
         </div>
         {pending.length > 0 && (
@@ -109,7 +120,7 @@ export default function ContributionsCard() {
         )}
       </div>
 
-      {/* Pending approvals — show first, most urgent */}
+      {/* Pending approvals — show first */}
       {pending.length > 0 && (
         <div style={{ marginBottom: "24px" }}>
           <p style={{ fontSize: "0.75rem", fontWeight: 700, color: "#C9932A", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "10px" }}>
@@ -179,39 +190,102 @@ export default function ContributionsCard() {
         </div>
       )}
 
-      {/* Create invite */}
-      <button
-        onClick={handleCreateInvite}
-        disabled={creating}
+      {/* Email invite form */}
+      <div
         style={{
-          width: "100%",
-          padding: "10px 16px",
-          borderRadius: "8px",
-          border: "1px dashed #D6EAF4",
-          backgroundColor: "#EEF7FC",
-          color: "#1B4F6B",
-          fontSize: "0.85rem",
-          fontWeight: 600,
-          cursor: creating ? "default" : "pointer",
-          opacity: creating ? 0.6 : 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "6px",
+          backgroundColor: "#F8FBFD",
+          borderRadius: "10px",
+          border: "1px solid #E0EEF6",
+          padding: "16px",
           marginBottom: invites.length > 0 ? "16px" : "0",
         }}
       >
-        {creating ? "Creating link…" : (
-          <>
-            <span style={{ fontSize: "1rem" }}>+</span>
-            {invites.length === 0 ? "Create your first invite link" : "Create another invite link"}
-          </>
-        )}
-      </button>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <div>
+            <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 600, color: "#555", marginBottom: "4px" }}>
+              Their email address
+            </label>
+            <input
+              type="email"
+              value={emailInput}
+              onChange={(e) => { setEmailInput(e.target.value); setSendError(""); }}
+              onKeyDown={(e) => e.key === "Enter" && handleSendInvite()}
+              placeholder="e.g. carol@example.com"
+              style={{
+                width: "100%",
+                padding: "9px 11px",
+                borderRadius: "7px",
+                border: "1px solid #D6EAF4",
+                fontSize: "0.875rem",
+                color: "#1A1A1A",
+                outline: "none",
+                boxSizing: "border-box",
+                backgroundColor: "#fff",
+              }}
+            />
+          </div>
+          <div>
+            <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 600, color: "#555", marginBottom: "4px" }}>
+              Who are they to you? <span style={{ fontWeight: 400, color: "#aaa" }}>(optional)</span>
+            </label>
+            <input
+              type="text"
+              value={labelInput}
+              onChange={(e) => setLabelInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSendInvite()}
+              placeholder="e.g. My sister Carol, college roommate"
+              style={{
+                width: "100%",
+                padding: "9px 11px",
+                borderRadius: "7px",
+                border: "1px solid #E5E5E5",
+                fontSize: "0.875rem",
+                color: "#1A1A1A",
+                outline: "none",
+                boxSizing: "border-box",
+                backgroundColor: "#fff",
+              }}
+            />
+          </div>
 
-      {/* Invite list */}
-      {invites.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          {sendError && (
+            <p style={{ margin: 0, fontSize: "0.78rem", color: "#c0392b" }}>{sendError}</p>
+          )}
+
+          {recentlySent && (
+            <p style={{ margin: 0, fontSize: "0.78rem", color: "#155724", fontWeight: 600 }}>
+              ✓ Invite sent to {recentlySent}
+            </p>
+          )}
+
+          <button
+            onClick={handleSendInvite}
+            disabled={sending || !emailInput.includes("@")}
+            style={{
+              alignSelf: "flex-start",
+              padding: "9px 20px",
+              borderRadius: "7px",
+              border: "none",
+              backgroundColor: "#1B4F6B",
+              color: "#fff",
+              fontSize: "0.82rem",
+              fontWeight: 700,
+              cursor: sending || !emailInput.includes("@") ? "default" : "pointer",
+              opacity: sending || !emailInput.includes("@") ? 0.5 : 1,
+              transition: "opacity 0.15s",
+            }}
+          >
+            {sending ? "Sending…" : "Send invite"}
+          </button>
+        </div>
+      </div>
+
+      {/* Sent invites list */}
+      {!loading && invites.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+          <p style={{ fontSize: "0.72rem", fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 6px" }}>
+            Invites sent
+          </p>
           {invites.map((inv) => (
             <div
               key={inv.id}
@@ -220,37 +294,29 @@ export default function ContributionsCard() {
                 alignItems: "center",
                 justifyContent: "space-between",
                 gap: "10px",
-                padding: "10px 12px",
+                padding: "9px 12px",
                 borderRadius: "8px",
                 backgroundColor: "#FAFAFA",
                 border: "1px solid #F0F0F0",
               }}
             >
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: "0.8rem", color: "#555", fontFamily: "monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  /contribute/{inv.token}
+                <div style={{ fontSize: "0.82rem", color: "#333", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontWeight: 500 }}>
+                  {inv.email ?? `…${inv.token}`}
                 </div>
-                {inv.used_at && (
-                  <div style={{ fontSize: "0.7rem", color: "#2E7DA3", marginTop: "2px" }}>Used ✓</div>
+                {inv.label && (
+                  <div style={{ fontSize: "0.72rem", color: "#aaa", marginTop: "1px" }}>{inv.label}</div>
                 )}
               </div>
-              <button
-                onClick={() => copyLink(inv.token)}
-                style={{
-                  flexShrink: 0,
-                  padding: "5px 12px",
-                  borderRadius: "6px",
-                  border: "1px solid #D6EAF4",
-                  backgroundColor: copiedToken === inv.token ? "#1B4F6B" : "#EEF7FC",
-                  color: copiedToken === inv.token ? "#fff" : "#1B4F6B",
-                  fontSize: "0.78rem",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "all 0.15s",
-                }}
-              >
-                {copiedToken === inv.token ? "Copied ✓" : "Copy link"}
-              </button>
+              <div style={{ flexShrink: 0, textAlign: "right" }}>
+                {inv.used_at ? (
+                  <span style={{ fontSize: "0.72rem", color: "#2E7DA3", fontWeight: 700 }}>Memory submitted ✓</span>
+                ) : (
+                  <span style={{ fontSize: "0.72rem", color: "#bbb" }}>
+                    Sent {new Date(inv.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                  </span>
+                )}
+              </div>
             </div>
           ))}
         </div>
