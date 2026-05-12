@@ -16,6 +16,39 @@ export const REPLY_TO = "scott@myafterword.co";
 // Email templates
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Template variable interpolation — used when DB overrides are active
+// ---------------------------------------------------------------------------
+
+/** Replace {{varName}} tokens in a template string with values from the vars map. */
+export function interpolateEmailVars(template: string, vars: Record<string, string>): string {
+  return template.replace(/\{\{(\w+)\}\}/g, (_, key) => vars[key] ?? `{{${key}}}`);
+}
+
+/**
+ * Fetch a saved override from the email_templates table.
+ * Returns null if no override exists or the table is not yet present.
+ * Failures are swallowed — callers fall back to the hardcoded default.
+ */
+export async function fetchEmailOverride(id: string): Promise<{ subject: string; html: string } | null> {
+  try {
+    const { createAdminClient } = await import("@/lib/supabase/admin");
+    const admin = createAdminClient();
+    const { data } = await admin
+      .from("email_templates")
+      .select("subject, html_body")
+      .eq("id", id)
+      .maybeSingle();
+    return data ? { subject: data.subject, html: data.html_body } : null;
+  } catch {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Email templates
+// ---------------------------------------------------------------------------
+
 export function passwordSetupEmail(setupLink: string): { subject: string; html: string } {
   return {
     subject: "Set up your Afterword password",

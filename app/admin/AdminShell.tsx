@@ -10,6 +10,7 @@ import FeatureRoadmap from "./FeatureRoadmap";
 import QRCampaigns from "./QRCampaigns";
 import CreateBetaAccount from "./CreateBetaAccount";
 import BetaAttribution from "./BetaAttribution";
+import EmailTemplatesEditor from "./EmailTemplatesEditor";
 
 type Order = Parameters<typeof AdminOrdersTable>[0]["orders"][number];
 type AdminRow = Parameters<typeof ManageAdmins>[0]["initialAdmins"][number];
@@ -28,6 +29,7 @@ interface Props {
 const TABS = [
   { id: "orders", label: "Orders" },
   { id: "beta", label: "Founding Authors" },
+  { id: "emails", label: "Emails" },
   { id: "launch", label: "Launch checklist" },
   { id: "roadmap", label: "Roadmap" },
   { id: "qr", label: "QR campaigns" },
@@ -175,6 +177,28 @@ export default function AdminShell({ stats, orders, appUrl, role, adminsList, cu
             }}
           >
             <BetaAttribution />
+          </div>
+        </div>
+      )}
+
+      {/* Emails tab */}
+      {activeTab === "emails" && (
+        <div
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: "16px",
+            boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+            overflow: "hidden",
+          }}
+        >
+          <div style={{ padding: "20px 24px", borderBottom: "1px solid #F0F0F0" }}>
+            <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "#1A1A1A" }}>Email templates</h2>
+            <p style={{ fontSize: "0.78rem", color: "#999", marginTop: "4px" }}>
+              All emails the system sends. Click any row to view or edit the subject and body. Edits are saved to the database and used immediately — no deploy required.
+            </p>
+          </div>
+          <div style={{ padding: "0 24px 24px" }}>
+            <EmailTemplatesEditor />
           </div>
         </div>
       )}

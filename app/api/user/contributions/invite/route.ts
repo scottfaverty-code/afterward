@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getResend, FROM_ADDRESS, contributorInviteEmail } from "@/lib/email";
+import { getResend, FROM_ADDRESS, contributorInviteEmail, fetchEmailOverride, interpolateEmailVars } from "@/lib/email";
 
 function makeToken(): string {
   const chars = "abcdefghjkmnpqrstuvwxyz23456789";
@@ -64,7 +64,11 @@ export async function POST(req: Request) {
 
   try {
     const resend = getResend();
-    const { subject, html } = contributorInviteEmail(inviteUrl, authorFirstName, authorFullName, email);
+    const override = await fetchEmailOverride("contributor-invite");
+    const vars = { authorFirstName, authorFullName, inviteUrl, recipientEmail: email };
+    const { subject, html } = override
+      ? { subject: interpolateEmailVars(override.subject, vars), html: interpolateEmailVars(override.html, vars) }
+      : contributorInviteEmail(inviteUrl, authorFirstName, authorFullName, email);
     await resend.emails.send({
       from: FROM_ADDRESS,
       replyTo: user.email ?? undefined,

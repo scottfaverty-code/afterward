@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getStripe } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getResend, FROM_ADDRESS, REPLY_TO, purchaseConfirmationEmail } from "@/lib/email";
+import { getResend, FROM_ADDRESS, REPLY_TO, purchaseConfirmationEmail, fetchEmailOverride, interpolateEmailVars } from "@/lib/email";
 
 export default async function WelcomePage({
   searchParams,
@@ -84,7 +84,11 @@ export default async function WelcomePage({
         // Send purchase confirmation email via Resend
         try {
           const resend = getResend();
-          const { subject, html } = purchaseConfirmationEmail(customerEmail);
+          const override = await fetchEmailOverride("purchase-confirmation");
+          const vars = { firstName: customerEmail.split("@")[0], customerEmail };
+          const { subject, html } = override
+            ? { subject: interpolateEmailVars(override.subject, vars), html: interpolateEmailVars(override.html, vars) }
+            : purchaseConfirmationEmail(customerEmail);
           await resend.emails.send({
             from: FROM_ADDRESS,
             replyTo: REPLY_TO,
