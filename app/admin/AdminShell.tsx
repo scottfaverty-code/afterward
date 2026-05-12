@@ -27,7 +27,7 @@ interface Props {
 
 const TABS = [
   { id: "orders", label: "Orders" },
-  { id: "beta", label: "Beta program" },
+  { id: "beta", label: "Founding members" },
   { id: "launch", label: "Launch checklist" },
   { id: "roadmap", label: "Roadmap" },
   { id: "qr", label: "QR campaigns" },
