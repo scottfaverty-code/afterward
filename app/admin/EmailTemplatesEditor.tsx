@@ -122,9 +122,9 @@ export default function EmailTemplatesEditor() {
 );
 alter table email_templates enable row level security;
 create policy "Admin read" on email_templates for select
-  using (exists (select 1 from admins where user_id = auth.uid()));
+  using (exists (select 1 from admins where email = auth.email()));
 create policy "Admin write" on email_templates for all
-  using (exists (select 1 from admins where user_id = auth.uid()));`}
+  using (exists (select 1 from admins where email = auth.email()));`}
           </pre>
         </details>
       </div>
