@@ -239,27 +239,27 @@ export async function POST() {
       {
         contributor_name: "Susan Reilly (née Mitchell)",
         contributor_relationship: "Daughter",
-        memory_text: "Every year, the week before the harvest supper, Mom would be up by five. Not because she had to be — she'd been running that supper for so long she could have done it in her sleep — but because she loved the preparing of it as much as the night itself. She'd have lists on the counter, pies cooling on the rack, and she'd be humming something under her breath, some hymn she probably didn't even realize she was singing. When I was a teenager I found this mildly embarrassing. When I was in my thirties with children of my own, I understood that I was watching someone who had figured out how to be exactly where they wanted to be. I've spent my whole adult life trying to learn what she already knew.",
+        memory_text: "Every year, the week before the harvest supper, Mom would be up by five. Not because she had to be , she'd been running that supper for so long she could have done it in her sleep , but because she loved the preparing of it as much as the night itself. She'd have lists on the counter, pies cooling on the rack, and she'd be humming something under her breath, some hymn she probably didn't even realize she was singing. When I was a teenager I found this mildly embarrassing. When I was in my thirties with children of my own, I understood that I was watching someone who had figured out how to be exactly where they wanted to be. I've spent my whole adult life trying to learn what she already knew.",
       },
       {
         contributor_name: "Susan Reilly (née Mitchell)",
         contributor_relationship: "Daughter",
-        memory_text: "What I want my own children to understand about their grandmother is this: she made every person who came into her house feel like the visit mattered. Not with grand gestures. With a cup of tea that appeared before you asked for it, with the particular way she looked at you when you were talking — fully, with both eyes, as if there were nowhere else she'd rather be. That's not a small thing. In fact, I've come to think it may be the largest thing a person can give another person. She gave it freely, her whole life long.",
+        memory_text: "What I want my own children to understand about their grandmother is this: she made every person who came into her house feel like the visit mattered. Not with grand gestures. With a cup of tea that appeared before you asked for it, with the particular way she looked at you when you were talking , fully, with both eyes, as if there were nowhere else she'd rather be. That's not a small thing. In fact, I've come to think it may be the largest thing a person can give another person. She gave it freely, her whole life long.",
       },
       {
         contributor_name: "Dorothy Pearce",
-        contributor_relationship: "Friend of twenty-six years — quilting circle, First Congregational Church",
-        memory_text: "I want to tell you something about Eleanor that her family may not have known, because she was not a woman who talked about herself. For three years running — I know because I was keeping track — she quietly paid the entry fees for two younger women in our circle who couldn't afford them. She never mentioned it. I only found out because one of the women told me years later, with tears in her eyes. That was Eleanor. She didn't do kind things to be seen doing them. She did them because they needed doing and she was there.",
+        contributor_relationship: "Friend of twenty-six years , quilting circle, First Congregational Church",
+        memory_text: "I want to tell you something about Eleanor that her family may not have known, because she was not a woman who talked about herself. For three years running , I know because I was keeping track , she quietly paid the entry fees for two younger women in our circle who couldn't afford them. She never mentioned it. I only found out because one of the women told me years later, with tears in her eyes. That was Eleanor. She didn't do kind things to be seen doing them. She did them because they needed doing and she was there.",
       },
       {
         contributor_name: "Dorothy Pearce",
-        contributor_relationship: "Friend of twenty-six years — quilting circle, First Congregational Church",
+        contributor_relationship: "Friend of twenty-six years , quilting circle, First Congregational Church",
         memory_text: "At our last meeting before she moved in with Susan, she finished the border on a quilt she'd been working on for her youngest granddaughter. Her hands weren't what they used to be by then, but she sat with it for two hours and got it done. When someone asked if she needed help, she looked up and said, \"I'll ask when I do.\" That was her whole philosophy in six words. I've thought about it every week since.",
       },
       {
         contributor_name: "Thomas Mitchell III",
         contributor_relationship: "Grandson",
-        memory_text: "I was about eight the summer Grandma taught me to make pie crust. She had strong opinions about pie crust — cold butter, cold hands, no overworking — and she communicated these opinions very seriously, as if the fate of something important depended on getting it right. I ruined the first one completely. She looked at it, nodded once, and said, \"Good. Now you know what not to do. That's worth more than getting it right the first time.\" I use that line with my own kids now. I use it at work. I'm not sure Grandma knew she was teaching me something about more than pie, but she was.",
+        memory_text: "I was about eight the summer Grandma taught me to make pie crust. She had strong opinions about pie crust , cold butter, cold hands, no overworking , and she communicated these opinions very seriously, as if the fate of something important depended on getting it right. I ruined the first one completely. She looked at it, nodded once, and said, \"Good. Now you know what not to do. That's worth more than getting it right the first time.\" I use that line with my own kids now. I use it at work. I'm not sure Grandma knew she was teaching me something about more than pie, but she was.",
       },
       {
         contributor_name: "Thomas Mitchell III",
