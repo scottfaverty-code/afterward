@@ -74,14 +74,42 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
   const [updating, setUpdating] = useState<string | null>(null);
   const [trackingInputs, setTrackingInputs] = useState<Record<string, string>>({});
   const [localStatuses, setLocalStatuses] = useState<Record<string, string>>({});
+  const [confirmingDelete, setConfirmingDelete] = useState<string | null>(null); // order.id
+  const [deleting, setDeleting] = useState<string | null>(null); // order.id
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  async function handleDelete(order: Order) {
+    if (!order.user_id) return;
+    setDeleting(order.id);
+    setDeleteError(null);
+    try {
+      const res = await fetch("/api/admin/delete-user", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: order.user_id }),
+      });
+      const data = await res.json() as { ok?: boolean; error?: string };
+      if (data.ok) {
+        setDeletedIds((prev) => new Set([...prev, order.id]));
+        setConfirmingDelete(null);
+      } else {
+        setDeleteError(data.error ?? "Delete failed");
+      }
+    } catch {
+      setDeleteError("Network error");
+    } finally {
+      setDeleting(null);
+    }
+  }
 
   // QR download state
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [downloading, setDownloading] = useState<string | null>(null); // orderId+format or "bulk"
   const [bulkProgress, setBulkProgress] = useState<string | null>(null);
 
-  // Orders that have a memorial slug (can generate QR)
-  const downloadableOrders = orders.filter((o) => o.profile?.memorial_slug);
+  const visibleOrders = orders.filter((o) => !deletedIds.has(o.id));
+  const downloadableOrders = visibleOrders.filter((o) => o.profile?.memorial_slug);
 
   const allSelected =
     downloadableOrders.length > 0 &&
@@ -182,7 +210,7 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
     }
   }
 
-  const selectedOrders = orders.filter((o) => selected.has(o.id));
+  const selectedOrders = visibleOrders.filter((o) => selected.has(o.id));
 
   return (
     <div>
@@ -305,7 +333,7 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => {
+            {visibleOrders.map((order) => {
               const status = localStatuses[order.id] ?? order.plaque_status;
               const statusStyle = STATUS_COLORS[status] ?? STATUS_COLORS.pending;
               const fullName = [order.profile?.first_name, order.profile?.last_name].filter(Boolean).join(" ") || "-";
@@ -559,6 +587,71 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
                           })}
                         </div>
                       )}
+
+                      {/* Delete */}
+                      {order.user_id && (
+                        <div style={{ marginTop: 2 }}>
+                          {confirmingDelete === order.id ? (
+                            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                              <span style={{ fontSize: "0.7rem", color: "#7B1D1D", fontWeight: 600 }}>
+                                Delete permanently?
+                              </span>
+                              {deleteError && deleting === order.id && (
+                                <span style={{ fontSize: "0.68rem", color: "#c0392b" }}>{deleteError}</span>
+                              )}
+                              <div style={{ display: "flex", gap: 4 }}>
+                                <button
+                                  onClick={() => handleDelete(order)}
+                                  disabled={deleting === order.id}
+                                  style={{
+                                    padding: "3px 8px",
+                                    fontSize: "0.7rem",
+                                    fontWeight: 700,
+                                    borderRadius: "4px",
+                                    border: "none",
+                                    backgroundColor: "#c0392b",
+                                    color: "#fff",
+                                    cursor: deleting === order.id ? "wait" : "pointer",
+                                    opacity: deleting === order.id ? 0.6 : 1,
+                                  }}
+                                >
+                                  {deleting === order.id ? "Deleting…" : "Confirm"}
+                                </button>
+                                <button
+                                  onClick={() => { setConfirmingDelete(null); setDeleteError(null); }}
+                                  style={{
+                                    padding: "3px 8px",
+                                    fontSize: "0.7rem",
+                                    borderRadius: "4px",
+                                    border: "1px solid #E0E0E0",
+                                    backgroundColor: "#fff",
+                                    color: "#999",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => { setConfirmingDelete(order.id); setDeleteError(null); }}
+                              style={{
+                                padding: "3px 8px",
+                                fontSize: "0.7rem",
+                                fontWeight: 600,
+                                borderRadius: "4px",
+                                border: "1px solid #f5c6cb",
+                                backgroundColor: "#fff",
+                                color: "#c0392b",
+                                cursor: "pointer",
+                              }}
+                            >
+                              Delete
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -567,7 +660,7 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
           </tbody>
         </table>
 
-        {orders.length === 0 && (
+        {visibleOrders.length === 0 && (
           <div style={{ padding: "48px", textAlign: "center", color: "#999" }}>
             No orders yet.
           </div>
