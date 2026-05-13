@@ -220,5 +220,68 @@ export async function POST() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  // ── Contributor sections ─────────────────────────────────────────────────
+  // Upsert a stable seed invite so we have an invite_id to reference.
+  const SEED_INVITE_TOKEN = "seed-eleanor-mitchell-invite";
+  await admin.from("contribution_invites").delete().eq("token", SEED_INVITE_TOKEN);
+  const { data: invite } = await admin.from("contribution_invites").insert({
+    user_id: userId,
+    token: SEED_INVITE_TOKEN,
+    label: "Seed invite",
+    expires_at: "2099-01-01T00:00:00Z",
+  }).select("id").single();
+
+  if (invite) {
+    // Remove any existing seed contributions for this memorial.
+    await admin.from("contributions").delete().eq("memorial_slug", DEMO_SLUG);
+
+    const CONTRIBUTIONS: { contributor_name: string; contributor_relationship: string; memory_text: string }[] = [
+      {
+        contributor_name: "Susan Reilly (née Mitchell)",
+        contributor_relationship: "Daughter",
+        memory_text: "Every year, the week before the harvest supper, Mom would be up by five. Not because she had to be — she'd been running that supper for so long she could have done it in her sleep — but because she loved the preparing of it as much as the night itself. She'd have lists on the counter, pies cooling on the rack, and she'd be humming something under her breath, some hymn she probably didn't even realize she was singing. When I was a teenager I found this mildly embarrassing. When I was in my thirties with children of my own, I understood that I was watching someone who had figured out how to be exactly where they wanted to be. I've spent my whole adult life trying to learn what she already knew.",
+      },
+      {
+        contributor_name: "Susan Reilly (née Mitchell)",
+        contributor_relationship: "Daughter",
+        memory_text: "What I want my own children to understand about their grandmother is this: she made every person who came into her house feel like the visit mattered. Not with grand gestures. With a cup of tea that appeared before you asked for it, with the particular way she looked at you when you were talking — fully, with both eyes, as if there were nowhere else she'd rather be. That's not a small thing. In fact, I've come to think it may be the largest thing a person can give another person. She gave it freely, her whole life long.",
+      },
+      {
+        contributor_name: "Dorothy Pearce",
+        contributor_relationship: "Friend of twenty-six years — quilting circle, First Congregational Church",
+        memory_text: "I want to tell you something about Eleanor that her family may not have known, because she was not a woman who talked about herself. For three years running — I know because I was keeping track — she quietly paid the entry fees for two younger women in our circle who couldn't afford them. She never mentioned it. I only found out because one of the women told me years later, with tears in her eyes. That was Eleanor. She didn't do kind things to be seen doing them. She did them because they needed doing and she was there.",
+      },
+      {
+        contributor_name: "Dorothy Pearce",
+        contributor_relationship: "Friend of twenty-six years — quilting circle, First Congregational Church",
+        memory_text: "At our last meeting before she moved in with Susan, she finished the border on a quilt she'd been working on for her youngest granddaughter. Her hands weren't what they used to be by then, but she sat with it for two hours and got it done. When someone asked if she needed help, she looked up and said, \"I'll ask when I do.\" That was her whole philosophy in six words. I've thought about it every week since.",
+      },
+      {
+        contributor_name: "Thomas Mitchell III",
+        contributor_relationship: "Grandson",
+        memory_text: "I was about eight the summer Grandma taught me to make pie crust. She had strong opinions about pie crust — cold butter, cold hands, no overworking — and she communicated these opinions very seriously, as if the fate of something important depended on getting it right. I ruined the first one completely. She looked at it, nodded once, and said, \"Good. Now you know what not to do. That's worth more than getting it right the first time.\" I use that line with my own kids now. I use it at work. I'm not sure Grandma knew she was teaching me something about more than pie, but she was.",
+      },
+      {
+        contributor_name: "Thomas Mitchell III",
+        contributor_relationship: "Grandson",
+        memory_text: "Her kitchen smelled like woodsmoke and cinnamon and something I've never been able to name but would recognize anywhere. When I drove up for her eightieth birthday, I walked in the door and the smell hit me and I was eight years old again. I stood in the hallway for a moment and didn't want to move. That farmhouse was always the same. She was always the same. In a life that changes fast and often, that kind of constancy is something you hold onto. I'm holding onto it now.",
+      },
+    ];
+
+    const contributionRows = CONTRIBUTIONS.map((c) => ({
+      invite_id: invite.id,
+      memorial_slug: DEMO_SLUG,
+      contributor_name: c.contributor_name,
+      contributor_relationship: c.contributor_relationship,
+      memory_text: c.memory_text,
+      status: "approved",
+    }));
+
+    const { error: contribError } = await admin.from("contributions").insert(contributionRows);
+    if (contribError) {
+      return NextResponse.json({ error: `Contributions insert failed: ${contribError.message}` }, { status: 500 });
+    }
+  }
+
   return NextResponse.json({ ok: true, slug: DEMO_SLUG, userId });
 }

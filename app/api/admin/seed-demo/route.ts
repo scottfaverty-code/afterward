@@ -258,5 +258,63 @@ export async function POST() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  // ── Contributor sections ─────────────────────────────────────────────────
+  // Upsert a stable seed invite so we have an invite_id to reference.
+  const SEED_INVITE_TOKEN = "seed-jonathan-williams-invite";
+  await admin.from("contribution_invites").delete().eq("token", SEED_INVITE_TOKEN);
+  const { data: invite } = await admin.from("contribution_invites").insert({
+    user_id: userId,
+    token: SEED_INVITE_TOKEN,
+    label: "Seed invite",
+    expires_at: "2099-01-01T00:00:00Z",
+  }).select("id").single();
+
+  if (invite) {
+    // Remove any existing seed contributions for this memorial.
+    await admin.from("contributions").delete().eq("memorial_slug", DEMO_SLUG);
+
+    const CONTRIBUTIONS: { contributor_name: string; contributor_relationship: string; memory_text: string }[] = [
+      {
+        contributor_name: "Michael Callahan",
+        contributor_relationship: "Son",
+        memory_text: "My father graded papers at the kitchen table every Sunday night for as long as I can remember. He'd have a cup of coffee going cold beside him, a red pen in one hand, and he'd be muttering to himself — sometimes approvingly, sometimes not — the whole time. I asked him once why he didn't just skim them. He looked at me as if I'd suggested something slightly criminal. He said, \"Because someone wrote it. You read what someone wrote.\" I was probably twelve. I've thought about that sentence at least a thousand times since, in contexts that had nothing to do with teaching.",
+      },
+      {
+        contributor_name: "Michael Callahan",
+        contributor_relationship: "Son",
+        memory_text: "What my father couldn't always say out loud, he said through what he did. He showed up to every play, every game, every recital — even the ones where showing up meant leaving a staff meeting early or rearranging a schedule he'd built carefully. He never made a production of it. He was just there. In the back row or the third row or wherever there was a seat. Looking back, I understand that being there was the whole message. I try every day to send the same one to my own kids.",
+      },
+      {
+        contributor_name: "Linda Torres",
+        contributor_relationship: "Former student, Chula Vista — Class of 1974",
+        memory_text: "I was not a good student when I walked into Mr. Callahan's English class. I'd been told, in various ways, by various people, that I wasn't particularly smart and that my options were limited. He disagreed. He disagreed so quietly and so persistently, through the way he responded to what I wrote and the questions he asked me after class, that by the second semester I had started to disagree too. I went on to finish college, then graduate school, then a career I am proud of. Every time someone asks how I got there, the honest answer starts with a seventh-grade English teacher in California who read what his students wrote.",
+      },
+      {
+        contributor_name: "Patricia Oakes",
+        contributor_relationship: "Assistant Principal, Desert Ridge Middle School — colleague of fourteen years",
+        memory_text: "After Carol died, I started leaving dinner at John's door on Friday evenings. I want to be clear that this was not a grand gesture — it was pot roast or pasta or whatever I had made too much of, left in a dish on the porch, no knock, no fanfare. I did it because he had fed that school community for over a decade, in every sense of the word, and it seemed to me that someone should feed him for a while. He mentioned it exactly once, two years later, in a toast at a retirement dinner. He thanked me for \"Friday evenings,\" and that was all he said, and then he moved on, which was very like him — to acknowledge something and then immediately get back to the business of other people.",
+      },
+      {
+        contributor_name: "Patricia Oakes",
+        contributor_relationship: "Assistant Principal, Desert Ridge Middle School — colleague of fourteen years",
+        memory_text: "The thing I want people to know about John as a principal is that he listened first. Every time. A parent came in furious, a teacher came in overwhelmed, a student came in scared — he listened until they were done, and he didn't perform the listening. He actually did it. There's a difference, and anyone who's been on the receiving end of both knows it. Our school was a better place because he ran it the way he did. I've worked for people since him who did not listen first, and the difference is not subtle.",
+      },
+    ];
+
+    const contributionRows = CONTRIBUTIONS.map((c) => ({
+      invite_id: invite.id,
+      memorial_slug: DEMO_SLUG,
+      contributor_name: c.contributor_name,
+      contributor_relationship: c.contributor_relationship,
+      memory_text: c.memory_text,
+      status: "approved",
+    }));
+
+    const { error: contribError } = await admin.from("contributions").insert(contributionRows);
+    if (contribError) {
+      return NextResponse.json({ error: `Contributions insert failed: ${contribError.message}` }, { status: 500 });
+    }
+  }
+
   return NextResponse.json({ ok: true, slug: DEMO_SLUG, userId });
 }
