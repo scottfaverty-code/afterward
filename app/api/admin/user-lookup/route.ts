@@ -41,6 +41,10 @@ export async function POST(req: NextRequest) {
     .eq("id", user.id)
     .maybeSingle();
 
+  // Check password status via auth.users.encrypted_password (identity-based check unreliable)
+  const { data: pwRows } = await admin.rpc("admin_users_have_password", { user_ids: [user.id] });
+  const hasPassword = ((pwRows ?? []) as { user_id: string; has_password: boolean }[])[0]?.has_password ?? false;
+
   const userInfo = {
     found: true,
     id: user.id,
@@ -49,17 +53,13 @@ export async function POST(req: NextRequest) {
     lastSignIn: user.last_sign_in_at ?? null,
     emailConfirmed: !!user.email_confirmed_at,
     emailConfirmedAt: user.email_confirmed_at ?? null,
-    hasPassword: user.identities?.some((i) => i.provider === "email") ?? false,
+    hasPassword,
     purchase: purchase ?? null,
     profile: profile ?? null,
   };
 
   if (action === "magic_link") {
-    // Generate a magic link so the user can log in immediately
-    // (bypasses email confirmation requirement)
     const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.myafterword.co";
-
-    const hasPassword = user.identities?.some((i) => i.provider === "email") ?? false;
 
     // New users: recovery link direct to /setup-account — Supabase sends hash
     // tokens (#access_token=...&type=recovery) which SetupAccountForm handles.

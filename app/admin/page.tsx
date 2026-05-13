@@ -51,6 +51,14 @@ export default async function AdminPage() {
   const { data: authUsersData } = await admin.auth.admin.listUsers({ perPage: 1000 });
   const authUsers = authUsersData?.users ?? [];
 
+  // Check password status via direct auth.users query (identity-based check is unreliable
+  // for users who set passwords through recovery links rather than email signup)
+  const allUserIds = authUsers.map((u) => u.id);
+  const { data: passwordRows } = await admin.rpc("admin_users_have_password", { user_ids: allUserIds });
+  const passwordMap = Object.fromEntries(
+    ((passwordRows ?? []) as { user_id: string; has_password: boolean }[]).map((r) => [r.user_id, r.has_password])
+  );
+
   const profileMap = Object.fromEntries((profiles ?? []).map((p) => [p.id, p]));
   const addressMap = Object.fromEntries((shippingAddresses ?? []).map((a) => [a.user_id, a]));
   const answerCountMap: Record<string, number> = {};
@@ -60,7 +68,7 @@ export default async function AdminPage() {
   const authUserMap = Object.fromEntries(authUsers.map((u) => [u.id, {
     lastSignIn: u.last_sign_in_at ?? null,
     emailConfirmed: !!u.email_confirmed_at,
-    hasPassword: u.identities?.some((i) => i.provider === "email") ?? false,
+    hasPassword: passwordMap[u.id] ?? false,
   }]));
 
   const orders = (purchases ?? []).map((p) => ({
