@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getResend, FROM_ADDRESS, REPLY_TO, passwordResetEmail } from "@/lib/email";
+import { getResend, FROM_ADDRESS, REPLY_TO, passwordResetEmail, fetchEmailOverride, interpolateEmailVars } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json() as { email: string };
@@ -11,25 +11,37 @@ export async function POST(req: NextRequest) {
 
   const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.myafterword.co";
 
+  // Generate a recovery link via Supabase admin (no email sent by Supabase)
+  const admin = createAdminClient();
+  const { data: linkData, error: linkErr } = await admin.auth.admin.generateLink({
+    type: "recovery",
+    email,
+    options: { redirectTo: `${siteUrl}/setup-account` },
+  });
+
+  if (linkErr) {
+    // Log the real error for Vercel logs, but don't expose it to the client
+    // (avoids leaking whether an email address is registered)
+    console.error("[send-password-reset] generateLink failed for", email, "—", linkErr.message);
+    return NextResponse.json({ ok: true });
+  }
+
+  if (!linkData?.properties?.action_link) {
+    console.error("[send-password-reset] generateLink returned no action_link for", email);
+    return NextResponse.json({ ok: true });
+  }
+
+  const resetLink = linkData.properties.action_link;
+
   try {
-    // Generate a recovery link via Supabase admin (no email sent by Supabase)
-    const admin = createAdminClient();
-    const { data: linkData, error: linkErr } = await admin.auth.admin.generateLink({
-      type: "recovery",
-      email,
-      options: { redirectTo: `${siteUrl}/setup-account` },
-    });
-
-    if (linkErr || !linkData?.properties?.action_link) {
-      // If user doesn't exist in Supabase, still return 200 to avoid email enumeration
-      return NextResponse.json({ ok: true });
-    }
-
-    const resetLink = linkData.properties.action_link;
-    const { subject, html } = passwordResetEmail(resetLink);
+    const override = await fetchEmailOverride("password-reset");
+    const vars = { resetLink };
+    const { subject, html } = override
+      ? { subject: interpolateEmailVars(override.subject, vars), html: interpolateEmailVars(override.html, vars) }
+      : passwordResetEmail(resetLink);
 
     const resend = getResend();
-    await resend.emails.send({
+    const sendResult = await resend.emails.send({
       from: FROM_ADDRESS,
       replyTo: REPLY_TO,
       to: email,
@@ -37,10 +49,11 @@ export async function POST(req: NextRequest) {
       html,
     });
 
+    console.log("[send-password-reset] Email sent to", email, "— Resend id:", (sendResult as { data?: { id?: string } }).data?.id ?? "unknown");
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("send-password-reset error:", err);
-    // Don't expose internal errors to the client
+    console.error("[send-password-reset] Resend send failed for", email, "—", err);
+    // Don't expose the error to the client
     return NextResponse.json({ ok: true });
   }
 }
