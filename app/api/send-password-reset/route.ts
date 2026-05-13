@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
       : passwordResetEmail(resetLink);
 
     const resend = getResend();
-    const sendResult = await resend.emails.send({
+    const { data: sendData, error: sendError } = await resend.emails.send({
       from: FROM_ADDRESS,
       replyTo: REPLY_TO,
       to: email,
@@ -49,11 +49,14 @@ export async function POST(req: NextRequest) {
       html,
     });
 
-    console.log("[send-password-reset] Email sent to", email, "— Resend id:", (sendResult as { data?: { id?: string } }).data?.id ?? "unknown");
+    if (sendError) {
+      console.error("[send-password-reset] Resend error for", email, "—", sendError);
+    } else {
+      console.log("[send-password-reset] Email sent to", email, "— Resend id:", sendData?.id ?? "unknown");
+    }
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("[send-password-reset] Resend send failed for", email, "—", err);
-    // Don't expose the error to the client
+    console.error("[send-password-reset] Unexpected error for", email, "—", err);
     return NextResponse.json({ ok: true });
   }
 }
