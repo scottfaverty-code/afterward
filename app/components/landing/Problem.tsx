@@ -82,7 +82,7 @@ export default function Problem() {
                   color: "#999",
                 }}
               >
-                A typical tribute
+                A typical obituary
               </div>
               <div
                 className="font-serif mb-1"
@@ -103,7 +103,7 @@ export default function Problem() {
               <p className="mb-3" style={{ fontSize: "0.9rem", color: "#555", lineHeight: "1.7" }}>
                 She was born on March 12, 1944, in Waterloo, Iowa, to Harold and Ruth
                 (née Carlson) Becker. She graduated from East High School in 1962 and
-                married Robert James Williams on June 14, 1964, at First Lutheran Church —
+                married Robert James Williams on June 14, 1964, at First Lutheran Church,
                 a partnership of 47 years that lasted until his passing in 2011.
               </p>
               <p className="mb-3" style={{ fontSize: "0.9rem", color: "#555", lineHeight: "1.7" }}>
