@@ -59,6 +59,17 @@ function slugLabel(order: Order): string {
   return name || order.profile?.memorial_slug || order.id;
 }
 
+/** Filename-safe version of the author's name, e.g. "Margaret Williams" → "margaret-williams" */
+function nameSlug(order: Order): string {
+  const name = [order.profile?.first_name, order.profile?.last_name]
+    .filter(Boolean)
+    .join("-")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  return name || order.profile?.memorial_slug || order.id;
+}
+
 type QRFormat = "eps" | "svg";
 
 /** Fetch EPS from the server route */
@@ -138,14 +149,14 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
     const key = `${order.id}-${format}`;
     setDownloading(key);
     try {
-      const appUrl = window.location.origin;
-      const memUrl = `${appUrl}/memorial/${slug}`;
+      const origin = window.location.origin;
+      const memUrl = `${origin}/memorial/${slug}`;
       const content = format === "svg"
         ? await generateStyledSVG(memUrl)
         : await fetchEPS(slug, slugLabel(order));
       downloadText(
         content,
-        `afterword-qr-${slug}.${format}`,
+        `afterword-qr-${nameSlug(order)}.${format}`,
         format === "svg" ? "image/svg+xml" : "application/postscript",
       );
     } catch (e) {
@@ -164,19 +175,19 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
 
     try {
       const zip = new JSZip();
-      const appUrl = window.location.origin;
+      const origin = window.location.origin;
 
       for (let i = 0; i < valid.length; i++) {
         const order = valid[i];
         const slug = order.profile!.memorial_slug!;
         setBulkProgress(`${i + 1} / ${valid.length}, ${slugLabel(order)}`);
 
-        const memUrl = `${appUrl}/memorial/${slug}`;
+        const memUrl = `${origin}/memorial/${slug}`;
         const content = format === "svg"
           ? await generateStyledSVG(memUrl)
           : await fetchEPS(slug, slugLabel(order));
 
-        zip.file(`afterword-qr-${slug}.${format}`, content);
+        zip.file(`afterword-qr-${nameSlug(order)}.${format}`, content);
       }
 
       const blob = await zip.generateAsync({ type: "blob" });
@@ -192,6 +203,59 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
       setDownloading(null);
       setBulkProgress(null);
     }
+  }
+
+  function downloadCSV(targetOrders: Order[]) {
+    const valid = targetOrders.filter((o) => o.profile?.memorial_slug);
+    if (valid.length === 0) return;
+
+    const headers = [
+      "Name",
+      "Email",
+      "QR Filename (EPS)",
+      "QR Filename (SVG)",
+      "Recipient Name",
+      "Address Line 1",
+      "City",
+      "State / Province",
+      "Postal Code",
+      "Country",
+      "Plaque Status",
+    ];
+
+    const escape = (v: string | null | undefined) => {
+      const s = v ?? "";
+      return s.includes(",") || s.includes('"') || s.includes("\n")
+        ? `"${s.replace(/"/g, '""')}"`
+        : s;
+    };
+
+    const rows = valid.map((o) => {
+      const ns = nameSlug(o);
+      const a = o.shippingAddress;
+      return [
+        slugLabel(o),
+        o.email ?? "",
+        `afterword-qr-${ns}.eps`,
+        `afterword-qr-${ns}.svg`,
+        a?.recipient_name ?? "",
+        a?.address_line_1 ?? "",
+        a?.city ?? "",
+        a?.state_province ?? "",
+        a?.postal_code ?? "",
+        a?.country ?? "",
+        o.plaque_status,
+      ].map(escape).join(",");
+    });
+
+    const csv = [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `afterword-plaque-manifest-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   async function updateStatus(orderId: string, status: string, trackingUrl?: string) {
@@ -252,7 +316,26 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
           </button>
         ))}
 
-        {/* Selected, EPS + SVG */}
+        {/* All → CSV manifest */}
+        <button
+          onClick={() => downloadCSV(downloadableOrders)}
+          disabled={downloadableOrders.length === 0}
+          style={{
+            padding: "5px 14px",
+            fontSize: "0.75rem",
+            fontWeight: 600,
+            borderRadius: "6px",
+            border: "1px solid #27AE60",
+            backgroundColor: "#27AE60",
+            color: "#fff",
+            cursor: downloadableOrders.length === 0 ? "default" : "pointer",
+            opacity: downloadableOrders.length === 0 ? 0.5 : 1,
+          }}
+        >
+          All ({downloadableOrders.length}) → CSV
+        </button>
+
+        {/* Selected, EPS + SVG + CSV */}
         {selected.size > 0 && (["eps", "svg"] as QRFormat[]).map((fmt) => (
           <button
             key={`sel-${fmt}`}
@@ -273,6 +356,23 @@ export default function AdminOrdersTable({ orders, appUrl }: { orders: Order[]; 
             Selected ({selected.size}) → {fmt.toUpperCase()} ZIP
           </button>
         ))}
+        {selected.size > 0 && (
+          <button
+            onClick={() => downloadCSV(selectedOrders)}
+            style={{
+              padding: "5px 14px",
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              borderRadius: "6px",
+              border: "1px solid #1E8449",
+              backgroundColor: "transparent",
+              color: "#1E8449",
+              cursor: "pointer",
+            }}
+          >
+            Selected ({selected.size}) → CSV
+          </button>
+        )}
 
         {downloading === "bulk" && bulkProgress && (
           <span style={{ fontSize: "0.75rem", color: "#1B4F6B", fontStyle: "italic" }}>
