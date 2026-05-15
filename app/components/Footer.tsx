@@ -44,6 +44,8 @@ export default function Footer() {
             <ul className="flex flex-col gap-2 list-none" style={{ padding: 0 }}>
               <li><Link href="/terms" style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.875rem" }} className="hover:text-white transition-colors">Terms of Service</Link></li>
               <li><Link href="/privacy" style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.875rem" }} className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/returns" style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.875rem" }} className="hover:text-white transition-colors">Returns &amp; Refunds</Link></li>
+              <li><Link href="/accessibility" style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.875rem" }} className="hover:text-white transition-colors">Accessibility</Link></li>
               <li><a href="mailto:scott@myafterword.co" style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.875rem" }} className="hover:text-white transition-colors">Contact</a></li>
             </ul>
           </div>
