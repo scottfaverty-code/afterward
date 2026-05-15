@@ -4,7 +4,7 @@ export const metadata = { title: "Returns & Refunds Policy — Afterword" };
 
 export default function ReturnsPage() {
   return (
-    <LegalLayout title="Returns & Refunds Policy" effectiveDate="[EFFECTIVE DATE]" draft>
+    <LegalLayout title="Returns & Refunds Policy" effectiveDate="May 1, 2026">
       <p style={{ color: "#666", marginBottom: "36px" }}>
         This Returns &amp; Refunds Policy applies to physical products sold by Afterword (for example, QR plaques and keepsake cards). Digital subscriptions and service fees are governed by Section 17 of the <a href="/terms">Terms of Service</a>.
       </p>

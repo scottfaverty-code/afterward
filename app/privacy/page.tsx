@@ -4,7 +4,7 @@ export const metadata = { title: "Privacy Policy — Afterword" };
 
 export default function PrivacyPage() {
   return (
-    <LegalLayout title="Privacy Policy" effectiveDate="[EFFECTIVE DATE]" lastUpdated="[LAST UPDATED DATE]" draft>
+    <LegalLayout title="Privacy Policy" effectiveDate="May 1, 2026" lastUpdated="May 15, 2026">
 
       <Section n="1" title="Introduction">
         <p>This Privacy Policy explains how Afterword LLC (&ldquo;Afterword,&rdquo; &ldquo;we,&rdquo; or &ldquo;us&rdquo;) collects, uses, shares, and protects personal information when you use our websites, apps, QR-code experiences, and related services (the &ldquo;Service&rdquo;).</p>

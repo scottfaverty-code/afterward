@@ -4,7 +4,7 @@ export const metadata = { title: "Terms of Service — Afterword" };
 
 export default function TermsPage() {
   return (
-    <LegalLayout title="Terms of Service" effectiveDate="[EFFECTIVE DATE]" lastUpdated="[LAST UPDATED DATE]" draft>
+    <LegalLayout title="Terms of Service" effectiveDate="May 1, 2026" lastUpdated="May 15, 2026">
 
       <p style={{ backgroundColor: "#FDF3DC", border: "1px solid #F0D080", borderRadius: "6px", padding: "12px 16px", fontSize: "0.85rem", color: "#7A5A00", marginBottom: "36px" }}>
         PLEASE READ SECTIONS 19 (LIMITATION OF LIABILITY) AND 22 (DISPUTE RESOLUTION; ARBITRATION; CLASS-ACTION WAIVER) CAREFULLY. THEY LIMIT YOUR REMEDIES AND REQUIRE MOST DISPUTES TO BE RESOLVED BY INDIVIDUAL ARBITRATION.

@@ -4,7 +4,7 @@ export const metadata = { title: "Accessibility Statement — Afterword" };
 
 export default function AccessibilityPage() {
   return (
-    <LegalLayout title="Accessibility Statement" effectiveDate="[EFFECTIVE DATE]" draft>
+    <LegalLayout title="Accessibility Statement" effectiveDate="May 1, 2026">
       <Section title="Our commitment">
         <p>Afterword is committed to making our Service accessible to people with disabilities. We believe everyone should be able to preserve and share stories with the people they love, regardless of ability.</p>
       </Section>
