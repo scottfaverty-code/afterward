@@ -11,6 +11,7 @@ import QRCampaigns from "./QRCampaigns";
 import CreateBetaAccount from "./CreateBetaAccount";
 import BetaAttribution from "./BetaAttribution";
 import EmailTemplatesEditor from "./EmailTemplatesEditor";
+import OutreachTracker from "./OutreachTracker";
 
 type Order = Parameters<typeof AdminOrdersTable>[0]["orders"][number];
 type AdminRow = Parameters<typeof ManageAdmins>[0]["initialAdmins"][number];
@@ -26,17 +27,19 @@ interface Props {
   currentUserEmail: string;
 }
 
-const TABS = [
-  { id: "orders", label: "Orders" },
-  { id: "beta", label: "Founding Authors" },
-  { id: "emails", label: "Emails" },
-  { id: "launch", label: "Launch checklist" },
-  { id: "roadmap", label: "Roadmap" },
-  { id: "qr", label: "QR campaigns" },
+const ALL_TABS = [
+  { id: "orders",   label: "Orders",          superOnly: false },
+  { id: "beta",     label: "Founding Authors", superOnly: false },
+  { id: "outreach", label: "Outreach",         superOnly: true  },
+  { id: "emails",   label: "Emails",           superOnly: false },
+  { id: "launch",   label: "Launch checklist", superOnly: false },
+  { id: "roadmap",  label: "Roadmap",          superOnly: false },
+  { id: "qr",       label: "QR campaigns",     superOnly: false },
 ];
 
 export default function AdminShell({ stats, orders, appUrl, role, adminsList, currentUserEmail }: Props) {
   const [activeTab, setActiveTab] = useState<string>("orders");
+  const TABS = ALL_TABS.filter((t) => !t.superOnly || role === "super_admin");
 
   return (
     <div style={{ padding: "32px" }}>
@@ -177,6 +180,28 @@ export default function AdminShell({ stats, orders, appUrl, role, adminsList, cu
             }}
           >
             <BetaAttribution />
+          </div>
+        </div>
+      )}
+
+      {/* Outreach tab (super_admin only) */}
+      {activeTab === "outreach" && role === "super_admin" && (
+        <div
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: "16px",
+            boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+            overflow: "hidden",
+          }}
+        >
+          <div style={{ padding: "20px 24px", borderBottom: "1px solid #F0F0F0" }}>
+            <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "#1A1A1A" }}>Beta outreach</h2>
+            <p style={{ fontSize: "0.78rem", color: "#999", marginTop: "4px" }}>
+              Track outreach to friends and family about Afterword. Click a status badge to filter, click a name&rsquo;s note to edit it.
+            </p>
+          </div>
+          <div style={{ padding: "24px" }}>
+            <OutreachTracker />
           </div>
         </div>
       )}
