@@ -6,9 +6,6 @@ export default function TermsPage() {
   return (
     <LegalLayout title="Terms of Service" effectiveDate="May 1, 2026" lastUpdated="May 15, 2026">
 
-      <p style={{ backgroundColor: "#FDF3DC", border: "1px solid #F0D080", borderRadius: "6px", padding: "12px 16px", fontSize: "0.85rem", color: "#7A5A00", marginBottom: "36px" }}>
-        PLEASE READ SECTIONS 19 (LIMITATION OF LIABILITY) AND 22 (DISPUTE RESOLUTION; ARBITRATION; CLASS-ACTION WAIVER) CAREFULLY. THEY LIMIT YOUR REMEDIES AND REQUIRE MOST DISPUTES TO BE RESOLVED BY INDIVIDUAL ARBITRATION.
-      </p>
 
       <Section n="1" title="Introduction and the Parties">
         <p>These Terms of Service (&ldquo;Terms&rdquo;) form a binding agreement between Afterword LLC, an Ohio limited liability company (&ldquo;Afterword,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) and you (&ldquo;you&rdquo; or &ldquo;User&rdquo;). Our principal address is 6545 Market Ave North, Suite 100, Canton, OH 44721. For legal notices, contact <a href="mailto:legal@myafterword.co">legal@myafterword.co</a>.</p>
