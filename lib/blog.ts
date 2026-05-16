@@ -12,6 +12,8 @@ import yourStoryShouldntWait from "@/content/blog/your-story-shouldnt-wait";
 import rememberedVsReduced from "@/content/blog/remembered-vs-reduced";
 import yourLoveStoryDeservesToLast from "@/content/blog/your-love-story-deserves-to-last";
 import legacyIsntAboutPerfection from "@/content/blog/legacy-isnt-about-perfection";
+import sciencePsychologyFearForgotten from "@/content/blog/science-psychology-fear-forgotten";
+import recordYourLifeStory from "@/content/blog/record-your-life-story-30-minutes-a-week";
 
 const posts: BlogPost[] = [
   fearOfBeingForgotten,
@@ -19,6 +21,8 @@ const posts: BlogPost[] = [
   rememberedVsReduced,
   yourLoveStoryDeservesToLast,
   legacyIsntAboutPerfection,
+  sciencePsychologyFearForgotten,
+  recordYourLifeStory,
 ];
 
 // Sorted newest first
