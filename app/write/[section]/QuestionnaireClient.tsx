@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Section } from "@/lib/sections";
 
 // Inline invite nudge shown after section completion
-function InviteNudge() {
+function InviteNudge({ headline, body }: { headline: string; body: string }) {
   const [inviteUrl, setInviteUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -46,7 +46,7 @@ function InviteNudge() {
   return (
     <div
       style={{
-        marginTop: "20px",
+        marginBottom: "20px",
         padding: "20px",
         borderRadius: "12px",
         backgroundColor: "#EEF7FC",
@@ -76,10 +76,10 @@ function InviteNudge() {
         className="font-serif"
         style={{ fontSize: "1rem", color: "#1B4F6B", lineHeight: "1.5", marginBottom: "8px", paddingRight: "20px" }}
       >
-        The stories others tell about you are part of your story too.
+        {headline}
       </p>
       <p style={{ fontSize: "0.82rem", color: "#555", lineHeight: "1.65", marginBottom: "16px" }}>
-        Invite someone who knows you to add a memory. They get a private link — you approve what appears.
+        {body}
       </p>
 
       {!inviteUrl ? (
@@ -257,8 +257,8 @@ export default function QuestionnaireClient({
 
   const progressPct = ((section.number - 1) / 7) * 100;
 
-  // Completion card
-  if (showCompletion && section.number < 7) {
+  // Completion card (all sections, including section 7 which routes to /write/complete)
+  if (showCompletion) {
     return (
       <div className="flex flex-col items-center justify-center" style={{ minHeight: "60vh", padding: "64px 24px" }}>
         <div
@@ -279,20 +279,26 @@ export default function QuestionnaireClient({
           <h2 className="font-serif mb-4" style={{ fontSize: "1.5rem", color: "#1B4F6B" }}>
             You&apos;ve finished {section.label}.
           </h2>
-          <p className="mb-7" style={{ fontSize: "0.95rem", color: "#555", lineHeight: "1.75" }}>
-            {section.completion}
-          </p>
+          {section.completion && (
+            <p className="mb-7" style={{ fontSize: "0.95rem", color: "#555", lineHeight: "1.75" }}>
+              {section.completion}
+            </p>
+          )}
+
+          <InviteNudge
+            headline={section.inviteNudge.headline}
+            body={section.inviteNudge.body}
+          />
+
           <button
             onClick={handleContinueToNext}
             className="btn-primary-lg block w-full text-center mb-3"
           >
-            Continue to {nextSectionSlug ? section.label.replace(section.label, "Next Section") : "complete"} &rarr;
+            {nextSectionSlug ? "Continue to Next Section" : "Finish my story"} &rarr;
           </button>
           <Link href="/dashboard" className="block text-center" style={{ fontSize: "0.875rem", color: "#999", textDecoration: "underline" }}>
             Return to my dashboard
           </Link>
-
-          <InviteNudge />
         </div>
       </div>
     );

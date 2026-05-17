@@ -12,6 +12,7 @@ export type Section = {
   completion: string;
   questions: Question[];
   goldIntro?: boolean;
+  inviteNudge: { headline: string; body: string };
 };
 
 export const SECTIONS: Section[] = [
@@ -23,6 +24,10 @@ export const SECTIONS: Section[] = [
       "We\u2019ll start at the very beginning, not with dates and facts, but with what it felt like. Take your time. There are no wrong answers here.",
     completion:
       "Your roots are recorded. These are the foundations that everything else in your story is built on, and now they\u2019ll be part of your page forever.",
+    inviteNudge: {
+      headline: "Is there a sibling, cousin, or childhood friend who remembers this time?",
+      body: "The same family, two different memories. Invite them to add their version to your page \u2014 you approve everything before it appears.",
+    },
     questions: [
       {
         id: "roots-q1",
@@ -54,6 +59,10 @@ export const SECTIONS: Section[] = [
       "This section is about the chapters you chose, the work, the decisions, the turns in the road. Your life as you made it.",
     completion:
       "The life you built is something worth knowing about. These stories, the risks, the hard chapters, the moments you\u2019d return to, are the ones families hold on to longest.",
+    inviteNudge: {
+      headline: "Was someone there for the chapters you just described?",
+      body: "A colleague, a business partner, a mentor \u2014 someone who witnessed the work and the risks. Their memory of what you built would add something yours can\u2019t.",
+    },
     questions: [
       {
         id: "built-q1",
@@ -85,6 +94,10 @@ export const SECTIONS: Section[] = [
       "Every life is shaped by its relationships. This section is about the people who made you who you are, and the ones you most want to say something to.",
     completion:
       "The relationships you\u2019ve described are at the heart of your story. These are the words the people you love will come back to most.",
+    inviteNudge: {
+      headline: "The people you just wrote about \u2014 they might want to add their words too.",
+      body: "Invite someone you named in this section. They may have a memory of you that belongs in this story \u2014 and you approve everything before it appears.",
+    },
     questions: [
       {
         id: "people-q1",
@@ -116,6 +129,10 @@ export const SECTIONS: Section[] = [
       "This is the section where your wisdom lives. The things you\u2019ve learned, about life, about people, about what matters, that took decades to arrive at.",
     completion:
       "What you believe is one of the most valuable things you can leave behind. These aren\u2019t opinions, they\u2019re the distilled wisdom of a life actually lived.",
+    inviteNudge: {
+      headline: "Is there a longtime friend who\u2019s watched these beliefs shape your life?",
+      body: "Someone who\u2019s known you long enough to speak to who you are. Their perspective on how you\u2019ve lived these values tells a different story.",
+    },
     questions: [
       {
         id: "believe-q1",
@@ -147,6 +164,10 @@ export const SECTIONS: Section[] = [
       "This is where you get to claim what you\u2019ve done. Not for anyone else\u2019s validation, just so it\u2019s recorded, and remembered.",
     completion:
       "These moments are yours. They belong on your page, and in the record of who you were.",
+    inviteNudge: {
+      headline: "Someone witnessed some of these moments. Would they want to share their account?",
+      body: "A collaborator, a colleague, someone who watched you build something — their memory of what you did would add something yours can't.",
+    },
     questions: [
       {
         id: "proud-q1",
@@ -174,6 +195,10 @@ export const SECTIONS: Section[] = [
     completion:
       "What you\u2019ve written in this section is a gift that cannot be bought or replicated. It is the most personal thing on your page, and it will matter most to the people you love.",
     goldIntro: true,
+    inviteNudge: {
+      headline: "Could the people you just wrote to add their own message back?",
+      body: "What would they want future generations to know about you? Invite them — their words alongside yours would mean everything to anyone who finds this page.",
+    },
     questions: [
       {
         id: "letter-q1",
@@ -199,6 +224,10 @@ export const SECTIONS: Section[] = [
     intro:
       "The final section. This is where you get to speak directly to the future, to people you may never meet, who will scan a QR code one day and want to know who you were.",
     completion: "", // Not used, redirects to /write/complete
+    inviteNudge: {
+      headline: "Before you go — is there someone who should add their voice?",
+      body: "The people who've watched you live your life have memories that belong here too. An invite takes less than a minute to create.",
+    },
     questions: [
       {
         id: "remember-q1",

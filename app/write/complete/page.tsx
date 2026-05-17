@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import InviteWidget from "./InviteWidget";
 
 export default async function WriteCompletePage() {
   const supabase = await createClient();
@@ -67,6 +68,8 @@ export default async function WriteCompletePage() {
             </div>
           ))}
         </div>
+
+        <InviteWidget />
 
         {/* Buttons */}
         <div className="flex flex-col items-center gap-3">
