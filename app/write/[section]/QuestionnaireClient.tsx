@@ -8,39 +8,46 @@ import type { Section } from "@/lib/sections";
 
 // Inline invite nudge shown after section completion
 function InviteNudge({ headline, body }: { headline: string; body: string }) {
-  const [inviteUrl, setInviteUrl] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [sent, setSent] = useState<string[]>([]); // list of emails sent
+  const [error, setError] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
   if (dismissed) return null;
 
-  async function handleCreate() {
+  async function handleSend() {
+    const trimmedEmail = email.trim().toLowerCase();
+    if (!trimmedEmail || !trimmedEmail.includes("@")) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    setError(null);
     setLoading(true);
     try {
       const res = await fetch("/api/user/contributions/invite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
+        body: JSON.stringify({ email: trimmedEmail, label: name.trim() || null }),
       });
-      const data = await res.json();
       if (res.ok) {
-        setInviteUrl(data.invite_url);
-        // Auto-copy
-        await navigator.clipboard.writeText(data.invite_url).catch(() => {});
-        setCopied(true);
-        setTimeout(() => setCopied(false), 3000);
+        setSent((prev) => [...prev, name.trim() || trimmedEmail]);
+        setEmail("");
+        setName("");
+      } else {
+        const data = await res.json();
+        setError(data.error ?? "Something went wrong. Please try again.");
       }
+    } catch {
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   }
 
-  async function handleCopy() {
-    if (!inviteUrl) return;
-    await navigator.clipboard.writeText(inviteUrl).catch(() => {});
-    setCopied(true);
-    setTimeout(() => setCopied(false), 3000);
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Enter") { e.preventDefault(); handleSend(); }
   }
 
   return (
@@ -74,22 +81,77 @@ function InviteNudge({ headline, body }: { headline: string; body: string }) {
 
       <p
         className="font-serif"
-        style={{ fontSize: "1rem", color: "#1B4F6B", lineHeight: "1.5", marginBottom: "8px", paddingRight: "20px" }}
+        style={{ fontSize: "1rem", color: "#1B4F6B", lineHeight: "1.5", marginBottom: "6px", paddingRight: "20px" }}
       >
         {headline}
       </p>
-      <p style={{ fontSize: "0.82rem", color: "#555", lineHeight: "1.65", marginBottom: "16px" }}>
+      <p style={{ fontSize: "0.82rem", color: "#555", lineHeight: "1.65", marginBottom: "14px" }}>
         {body}
       </p>
 
-      {!inviteUrl ? (
+      {/* Sent confirmations */}
+      {sent.length > 0 && (
+        <div style={{ marginBottom: "10px", display: "flex", flexDirection: "column", gap: "4px" }}>
+          {sent.map((s, i) => (
+            <div key={i} style={{ fontSize: "0.8rem", color: "#2E7DA3", display: "flex", alignItems: "center", gap: "6px" }}>
+              <span>✓</span>
+              <span>Invitation sent to {s}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Name field */}
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Their name (optional)"
+        style={{
+          width: "100%",
+          padding: "9px 12px",
+          borderRadius: "6px",
+          border: "1px solid #D6EAF4",
+          backgroundColor: "#fff",
+          fontSize: "0.85rem",
+          color: "#1A1A1A",
+          marginBottom: "8px",
+          outline: "none",
+          boxSizing: "border-box",
+        }}
+        onFocus={(e) => { e.target.style.borderColor = "#2E7DA3"; }}
+        onBlur={(e) => { e.target.style.borderColor = "#D6EAF4"; }}
+        onKeyDown={handleKeyDown}
+      />
+
+      {/* Email + Send row */}
+      <div style={{ display: "flex", gap: "8px" }}>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => { setEmail(e.target.value); setError(null); }}
+          placeholder="Their email address"
+          style={{
+            flex: 1,
+            padding: "9px 12px",
+            borderRadius: "6px",
+            border: `1px solid ${error ? "#d9534f" : "#D6EAF4"}`,
+            backgroundColor: "#fff",
+            fontSize: "0.85rem",
+            color: "#1A1A1A",
+            outline: "none",
+          }}
+          onFocus={(e) => { e.target.style.borderColor = error ? "#d9534f" : "#2E7DA3"; }}
+          onBlur={(e) => { e.target.style.borderColor = error ? "#d9534f" : "#D6EAF4"; }}
+          onKeyDown={handleKeyDown}
+        />
         <button
-          onClick={handleCreate}
+          onClick={handleSend}
           disabled={loading}
           style={{
-            width: "100%",
-            padding: "10px 16px",
-            borderRadius: "8px",
+            flexShrink: 0,
+            padding: "9px 16px",
+            borderRadius: "6px",
             border: "none",
             backgroundColor: "#1B4F6B",
             color: "#fff",
@@ -97,47 +159,21 @@ function InviteNudge({ headline, body }: { headline: string; body: string }) {
             fontWeight: 700,
             cursor: loading ? "default" : "pointer",
             opacity: loading ? 0.7 : 1,
+            whiteSpace: "nowrap",
           }}
         >
-          {loading ? "Creating link…" : "Create an invite link"}
+          {loading ? "Sending…" : "Send invite"}
         </button>
-      ) : (
-        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-          <input
-            readOnly
-            value={inviteUrl}
-            style={{
-              flex: 1,
-              fontSize: "0.78rem",
-              padding: "8px 10px",
-              borderRadius: "6px",
-              border: "1px solid #D6EAF4",
-              backgroundColor: "#fff",
-              color: "#555",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          />
-          <button
-            onClick={handleCopy}
-            style={{
-              flexShrink: 0,
-              padding: "8px 14px",
-              borderRadius: "6px",
-              border: "none",
-              backgroundColor: copied ? "#2E7DA3" : "#1B4F6B",
-              color: "#fff",
-              fontSize: "0.8rem",
-              fontWeight: 700,
-              cursor: "pointer",
-              transition: "background-color 0.15s",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {copied ? "Copied ✓" : "Copy"}
-          </button>
-        </div>
+      </div>
+
+      {error && (
+        <p style={{ fontSize: "0.78rem", color: "#d9534f", marginTop: "6px" }}>{error}</p>
+      )}
+
+      {sent.length > 0 && (
+        <p style={{ fontSize: "0.78rem", color: "#888", marginTop: "8px" }}>
+          Add another name and email to send more invitations.
+        </p>
       )}
     </div>
   );
