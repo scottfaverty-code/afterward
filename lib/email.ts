@@ -406,9 +406,17 @@ export function contributorInviteEmail(
   authorFirstName: string,
   authorFullName: string,
   recipientEmail: string,
+  referredAs: "he" | "she" | "they" = "they",
 ): { subject: string; html: string } {
+  // Build pronoun set from the author's profile preference
+  const p = referredAs === "he"
+    ? { sub: "he", pos: "his", obj: "him", wouldContr: "he’d", hasContr: "He’s", tells: "tells", loves: "loves" }
+    : referredAs === "she"
+    ? { sub: "she", pos: "her", obj: "her", wouldContr: "she’d", hasContr: "She’s", tells: "tells", loves: "loves" }
+    : { sub: "they", pos: "their", obj: "them", wouldContr: "they’d", hasContr: "They’ve", tells: "tell", loves: "love" };
+
   return {
-    subject: `${authorFirstName} is writing their life story — they'd love a memory from you`,
+    subject: `${authorFirstName} is writing ${p.pos} life story — ${p.wouldContr} love a memory from you`,
     html: `
 <!DOCTYPE html>
 <html>
@@ -426,13 +434,13 @@ export function contributorInviteEmail(
         <!-- Body -->
         <tr><td style="padding:40px 40px 32px;">
           <h1 style="margin:0 0 20px;font-family:Georgia,'Times New Roman',serif;font-size:1.5rem;color:#1B4F6B;line-height:1.25;">
-            ${authorFirstName} is writing their life story.
+            ${authorFirstName} is writing ${p.pos} life story.
           </h1>
           <p style="margin:0 0 16px;font-size:1rem;color:#555;line-height:1.75;">
-            ${authorFullName} is building their Afterword — a permanent page where they tell their own story, in their own words. Their memories. Their values. A message to the people they love.
+            ${authorFullName} is building ${p.pos} Afterword — a permanent page where ${p.sub} ${p.tells} ${p.pos} own story, in ${p.pos} own words. ${p.pos.charAt(0).toUpperCase() + p.pos.slice(1)} memories. ${p.pos.charAt(0).toUpperCase() + p.pos.slice(1)} values. A message to the people ${p.sub} ${p.loves}.
           </p>
           <p style="margin:0 0 16px;font-size:1rem;color:#555;line-height:1.75;">
-            They've asked us to reach out to you personally. There's a memory only you could share — something you saw, something you shared with them, a version of ${authorFirstName} that only you know.
+            ${p.hasContr} asked us to reach out to you personally. There’s a memory only you could share — something you saw, something you shared with ${p.obj}, a version of ${authorFirstName} that only you know.
           </p>
           <p style="margin:0 0 28px;font-size:1rem;color:#555;line-height:1.75;">
             It takes just a few minutes. Your words will become part of ${authorFirstName}'s story, permanently.

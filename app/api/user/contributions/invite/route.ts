@@ -29,12 +29,13 @@ export async function POST(req: Request) {
   // Get the author's profile for personalisation
   const { data: profile } = await supabase
     .from("profiles")
-    .select("first_name, last_name")
+    .select("first_name, last_name, referred_as")
     .eq("id", user.id)
     .single();
 
   const authorFirstName = profile?.first_name ?? "Someone";
   const authorFullName = [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") || authorFirstName;
+  const referredAs = (profile?.referred_as as "he" | "she" | "they") ?? "they";
 
   // Generate a unique token
   let token = "";
@@ -68,7 +69,7 @@ export async function POST(req: Request) {
     const vars = { authorFirstName, authorFullName, inviteUrl, recipientEmail: email };
     const { subject, html } = override
       ? { subject: interpolateEmailVars(override.subject, vars), html: interpolateEmailVars(override.html, vars) }
-      : contributorInviteEmail(inviteUrl, authorFirstName, authorFullName, email);
+      : contributorInviteEmail(inviteUrl, authorFirstName, authorFullName, email, referredAs);
     await resend.emails.send({
       from: FROM_ADDRESS,
       replyTo: user.email ?? undefined,
