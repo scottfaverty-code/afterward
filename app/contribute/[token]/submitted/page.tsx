@@ -3,11 +3,13 @@ import Link from "next/link";
 export default async function ContributeSubmittedPage({
   searchParams,
 }: {
-  searchParams: Promise<{ code?: string; name?: string }>;
+  searchParams: Promise<{ code?: string; name?: string; ref?: string }>;
 }) {
-  const { code, name } = await searchParams;
+  const { code, name, ref } = await searchParams;
   const ownerFirstName = name ?? null;
   const discountCode = code ?? null;
+  const referredAs = (ref === "he" || ref === "she") ? ref : "they";
+  const pos = referredAs === "he" ? "his" : referredAs === "she" ? "her" : "their";
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.myafterword.co";
   const checkoutUrl = discountCode
@@ -67,7 +69,7 @@ export default async function ContributeSubmittedPage({
 
         <p style={{ fontSize: "0.95rem", color: "#666", lineHeight: "1.8", marginBottom: "8px" }}>
           {ownerFirstName
-            ? <>{ownerFirstName} will see it shortly and can add it to their page.</>
+            ? <>{ownerFirstName} will see it shortly and can add it to {pos} page.</>
             : <>The person who invited you will see it shortly and can add it to their page.</>
           }
         </p>

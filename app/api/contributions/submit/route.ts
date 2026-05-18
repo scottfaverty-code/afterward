@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getStripe } from "@/lib/stripe";
+import { getResend, FROM_ADDRESS, contributionNotificationEmail } from "@/lib/email";
 
 function promoCode(): string {
   const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
@@ -40,12 +41,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "This invite link has expired." }, { status: 410 });
   }
 
-  // Get memorial slug from the invite owner's profile
+  // Get memorial slug and author details from the invite owner's profile
   const { data: profile } = await supabase
     .from("profiles")
     .select("memorial_slug, first_name")
     .eq("id", invite.user_id)
     .single();
+
+  // Admin client — used to bypass RLS for insert and to fetch author email
+  const admin = createAdminClient();
+
+  // Get the author's email for the notification
+  const { data: authorAuthData } = await admin.auth.admin.getUserById(invite.user_id);
 
   if (!profile?.memorial_slug) {
     return NextResponse.json({ error: "Memorial not found." }, { status: 404 });
@@ -96,8 +103,7 @@ export async function POST(req: NextRequest) {
     discount_code = null;
   }
 
-  // Save the contribution — use admin client to bypass RLS on this public endpoint
-  const admin = createAdminClient();
+  // Save the contribution — admin client bypasses RLS on this public endpoint
   const { data: contribution, error } = await admin
     .from("contributions")
     .insert({
@@ -119,6 +125,30 @@ export async function POST(req: NextRequest) {
     .from("contribution_invites")
     .update({ used_at: new Date().toISOString() })
     .eq("id", invite.id);
+
+  // Send notification email to the author
+  const authorEmail = authorAuthData?.user?.email;
+  if (authorEmail && profile?.first_name) {
+    try {
+      const resend = getResend();
+      const dashboardUrl = `${appUrl}/dashboard`;
+      const { subject, html } = contributionNotificationEmail(
+        profile.first_name,
+        contributor_name.trim(),
+        contributor_relationship.trim(),
+        memory_text.trim(),
+        dashboardUrl,
+      );
+      await resend.emails.send({
+        from: FROM_ADDRESS,
+        to: authorEmail,
+        subject,
+        html,
+      });
+    } catch (emailErr) {
+      console.error("[contribution notify] Failed to send author notification:", emailErr);
+    }
+  }
 
   const checkout_url = discount_code
     ? `${appUrl}/checkout?code=${discount_code}`

@@ -484,6 +484,88 @@ export function contributorInviteEmail(
   };
 }
 
+/**
+ * Sent to the Afterword author when a contributor submits a memory.
+ * Notifies them to review + approve, and nudges them to invite more people.
+ */
+export function contributionNotificationEmail(
+  authorFirstName: string,
+  contributorName: string,
+  contributorRelationship: string,
+  memoryExcerpt: string,
+  dashboardUrl: string,
+): { subject: string; html: string } {
+  const excerpt = memoryExcerpt.length > 200 ? memoryExcerpt.slice(0, 197) + "…" : memoryExcerpt;
+  return {
+    subject: `${contributorName} shared a memory about you — ready to review`,
+    html: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#EEF7FC;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#EEF7FC;padding:48px 24px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+
+        <!-- Header -->
+        <tr><td style="background:linear-gradient(135deg,#0f2d3d,#1B4F6B);padding:32px 40px;text-align:center;">
+          <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:1.5rem;color:#ffffff;letter-spacing:0.04em;">Afterword</p>
+        </td></tr>
+
+        <!-- Body -->
+        <tr><td style="padding:40px 40px 32px;">
+          <h1 style="margin:0 0 20px;font-family:Georgia,'Times New Roman',serif;font-size:1.5rem;color:#1B4F6B;line-height:1.25;">
+            ${contributorName} shared a memory about you.
+          </h1>
+          <p style="margin:0 0 16px;font-size:1rem;color:#555;line-height:1.75;">
+            Hi ${authorFirstName} — <strong>${contributorName}</strong> (${contributorRelationship}) just added a memory to your Afterword page. Here's what they wrote:
+          </p>
+
+          <!-- Memory excerpt -->
+          <table cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 24px;">
+            <tr><td style="background:#EEF7FC;border-left:4px solid #2E7DA3;border-radius:0 8px 8px 0;padding:16px 20px;">
+              <p style="margin:0;font-size:0.95rem;color:#444;line-height:1.75;font-style:italic;">&ldquo;${excerpt}&rdquo;</p>
+            </td></tr>
+          </table>
+
+          <p style="margin:0 0 28px;font-size:1rem;color:#555;line-height:1.75;">
+            Log in to approve it and add it to your page — or decline it if it's not right. You stay in control of everything that appears.
+          </p>
+
+          <!-- CTA -->
+          <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;">
+            <tr><td style="background:#1B4F6B;border-radius:8px;">
+              <a href="${dashboardUrl}" style="display:inline-block;padding:16px 32px;font-size:1rem;font-weight:600;color:#ffffff;text-decoration:none;">Review ${contributorName}&rsquo;s memory &rarr;</a>
+            </td></tr>
+          </table>
+
+          <!-- Invite nudge -->
+          <table cellpadding="0" cellspacing="0" width="100%" style="margin:0;">
+            <tr><td style="background:#F9F5EE;border:1px solid #E8DFC8;border-radius:10px;padding:20px 24px;">
+              <p style="margin:0 0 8px;font-size:0.78rem;font-weight:700;color:#C9932A;text-transform:uppercase;letter-spacing:0.08em;">While you&rsquo;re thinking about it</p>
+              <p style="margin:0 0 14px;font-size:0.9rem;color:#555;line-height:1.7;">
+                Is there anyone else whose memory you&rsquo;d want on your page? The more voices, the richer your story.
+              </p>
+              <a href="${dashboardUrl}" style="font-size:0.88rem;font-weight:600;color:#1B4F6B;text-decoration:none;">Invite someone else from your dashboard &rarr;</a>
+            </td></tr>
+          </table>
+        </td></tr>
+
+        <!-- Footer -->
+        <tr><td style="padding:24px 40px;border-top:1px solid #E5E5E5;text-align:center;">
+          <p style="margin:0;font-size:0.75rem;color:#bbb;line-height:1.6;">
+            Afterword · <a href="https://www.myafterword.co" style="color:#2E7DA3;text-decoration:none;">myafterword.co</a>
+          </p>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`,
+  };
+}
+
 export function reminderDay30Email(customerEmail: string, firstName?: string): { subject: string; html: string } {
   const name = firstName ?? "there";
   const loginUrl = "https://www.myafterword.co/login";

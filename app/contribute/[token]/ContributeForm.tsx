@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 interface Props {
   token: string;
   ownerFirstName: string | null;
+  referredAs?: "he" | "she" | "they";
 }
 
-export default function ContributeForm({ token, ownerFirstName }: Props) {
+export default function ContributeForm({ token, ownerFirstName, referredAs = "they" }: Props) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [relationship, setRelationship] = useState("");
@@ -17,6 +18,7 @@ export default function ContributeForm({ token, ownerFirstName }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   const firstName = ownerFirstName ?? "them";
+  const pos = referredAs === "he" ? "his" : referredAs === "she" ? "her" : "their";
   const charLimit = 2000;
 
   async function handleSubmit(e: React.FormEvent) {
@@ -47,10 +49,11 @@ export default function ContributeForm({ token, ownerFirstName }: Props) {
         return;
       }
 
-      // Navigate to thank-you page, passing discount code in search params
+      // Navigate to thank-you page, passing discount code and pronoun in search params
       const params = new URLSearchParams();
       if (data.discount_code) params.set("code", data.discount_code);
       if (ownerFirstName) params.set("name", ownerFirstName);
+      params.set("ref", referredAs);
       router.push(`/contribute/${token}/submitted?${params.toString()}`);
     } catch {
       setError("Something went wrong. Please try again.");
@@ -112,7 +115,7 @@ export default function ContributeForm({ token, ownerFirstName }: Props) {
             type="text"
             value={relationship}
             onChange={(e) => setRelationship(e.target.value)}
-            placeholder={`e.g. his daughter, her college roommate, their colleague`}
+            placeholder={referredAs === "he" ? "e.g. his daughter, his colleague" : referredAs === "she" ? "e.g. her daughter, her college roommate" : "e.g. their daughter, their colleague"}
             maxLength={100}
             style={inputStyle}
             onFocus={(e) => { e.target.style.borderColor = "#2E7DA3"; }}
@@ -160,7 +163,7 @@ export default function ContributeForm({ token, ownerFirstName }: Props) {
         </button>
 
         <p style={{ fontSize: "0.75rem", color: "#bbb", textAlign: "center", marginTop: "14px", lineHeight: "1.6" }}>
-          {firstName} will review your memory before it appears on their page.
+          {firstName} will review your memory before it appears on {pos} page.
           Your name and relationship will be shown — no other personal information is collected.
         </p>
       </div>
