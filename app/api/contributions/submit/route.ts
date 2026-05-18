@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getStripe } from "@/lib/stripe";
-import { getResend, FROM_ADDRESS, contributionNotificationEmail } from "@/lib/email";
+import { getResend, FROM_ADDRESS, contributionNotificationEmail, fetchEmailOverride, interpolateEmailVars } from "@/lib/email";
 
 function promoCode(): string {
   const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
@@ -132,13 +132,17 @@ export async function POST(req: NextRequest) {
     try {
       const resend = getResend();
       const dashboardUrl = `${appUrl}/dashboard`;
-      const { subject, html } = contributionNotificationEmail(
-        profile.first_name,
-        contributor_name.trim(),
-        contributor_relationship.trim(),
-        memory_text.trim(),
+      const override = await fetchEmailOverride("contribution-notification");
+      const vars = {
+        authorFirstName: profile.first_name,
+        contributorName: contributor_name.trim(),
+        contributorRelationship: contributor_relationship.trim(),
+        memoryExcerpt: memory_text.trim().slice(0, 200),
         dashboardUrl,
-      );
+      };
+      const { subject, html } = override
+        ? { subject: interpolateEmailVars(override.subject, vars), html: interpolateEmailVars(override.html, vars) }
+        : contributionNotificationEmail(profile.first_name, contributor_name.trim(), contributor_relationship.trim(), memory_text.trim(), dashboardUrl);
       await resend.emails.send({
         from: FROM_ADDRESS,
         to: authorEmail,

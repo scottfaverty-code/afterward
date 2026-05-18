@@ -10,6 +10,7 @@ import {
   reminderDay14InviteEmail,
   reminderDay30Email,
   contributorInviteEmail,
+  contributionNotificationEmail,
   passingNotificationEmail,
 } from "@/lib/email";
 
@@ -26,7 +27,8 @@ export type TemplateId =
   | "reminder-day-30"
   | "password-setup"
   | "password-reset"
-  | "passing-notification";
+  | "passing-notification"
+  | "contribution-notification";
 
 export const EMAIL_TEMPLATE_META: { id: TemplateId; name: string; trigger: string; recipient: string; vars: readonly string[] }[] = [
   {
@@ -92,6 +94,13 @@ export const EMAIL_TEMPLATE_META: { id: TemplateId; name: string; trigger: strin
     recipient: "Scott (admin)",
     vars: ["fullName", "deathYear", "reporterName", "memorialUrl"],
   },
+  {
+    id: "contribution-notification",
+    name: "Contribution received",
+    trigger: "Sent to the author when a contributor submits a memory",
+    recipient: "Author",
+    vars: ["authorFirstName", "contributorName", "contributorRelationship", "memoryExcerpt", "dashboardUrl"],
+  },
 ] as const;
 
 /**
@@ -129,6 +138,14 @@ function getHardcodedDefault(id: string): { subject: string; html: string } | nu
         2024, // placeholder year — not editable inline
         "{{reporterName}}",
         "{{memorialUrl}}",
+      );
+    case "contribution-notification":
+      return contributionNotificationEmail(
+        "{{authorFirstName}}",
+        "{{contributorName}}",
+        "{{contributorRelationship}}",
+        "{{memoryExcerpt}}",
+        "{{dashboardUrl}}",
       );
     default:
       return null;
