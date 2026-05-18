@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getStripe } from "@/lib/stripe";
 
 function promoCode(): string {
@@ -95,8 +96,9 @@ export async function POST(req: NextRequest) {
     discount_code = null;
   }
 
-  // Save the contribution
-  const { data: contribution, error } = await supabase
+  // Save the contribution — use admin client to bypass RLS on this public endpoint
+  const admin = createAdminClient();
+  const { data: contribution, error } = await admin
     .from("contributions")
     .insert({
       invite_id: invite.id,
@@ -113,7 +115,7 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   // Mark invite as used (non-fatal if fails)
-  void supabase
+  void admin
     .from("contribution_invites")
     .update({ used_at: new Date().toISOString() })
     .eq("id", invite.id);
